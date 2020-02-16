@@ -46,7 +46,7 @@ all: test
 ci-test: SILENT=
 ci-test: prerequisites
 	$(SILENT) $(PHPDBG) $(PHPUNIT) $(PHPUNIT_COVERAGE_CLOVER)
-	tests/e2e_tests
+	#tests/e2e_tests
 
 ci-analyze: SILENT=
 ci-analyze: prerequisites ci-cs ci-infection ci-phpstan ci-psalm
