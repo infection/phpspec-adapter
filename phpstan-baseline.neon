@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#7 \\$sourceDirectories \\(array\\<string\\>\\) of method Infection\\\\TestFramework\\\\PhpSpec\\\\PhpSpecAdapterFactory\\:\\:create\\(\\) should be contravariant with parameter \\$sourceDirectories \\(array\\) of method Infection\\\\AbstractTestFramework\\\\TestFrameworkAdapterFactory\\:\\:create\\(\\)$#"
+			count: 1
+			path: src/PhpSpecAdapterFactory.php
+
