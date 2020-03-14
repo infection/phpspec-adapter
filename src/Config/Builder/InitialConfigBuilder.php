@@ -36,6 +36,7 @@ declare(strict_types=1);
 namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
 use Infection\TestFramework\PhpSpec\Config\InitialYamlConfiguration;
+use function Safe\file_put_contents;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -54,7 +55,7 @@ class InitialConfigBuilder
         $this->skipCoverage = $skipCoverage;
     }
 
-    public function build(string $version): string
+    public function build(): string
     {
         $path = $this->buildPath();
 

@@ -58,7 +58,6 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         self::assertSame(
             $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
             $builder->build(
-                [],
                 self::MUTATED_FILE_PATH,
                 self::MUTATION_HASH,
                 self::ORIGINAL_FILE_PATH
@@ -76,7 +75,6 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         self::assertSame(
             $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
             $builder->build(
-                [],
                 self::MUTATED_FILE_PATH,
                 self::MUTATION_HASH,
                 self::ORIGINAL_FILE_PATH
@@ -98,7 +96,6 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         self::assertSame(
             $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
             $builder->build(
-                [],
                 self::MUTATED_FILE_PATH,
                 self::MUTATION_HASH,
                 self::ORIGINAL_FILE_PATH

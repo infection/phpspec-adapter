@@ -35,7 +35,12 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec;
 
+use function array_filter;
+use function array_merge;
+use function is_executable;
 use const PHP_SAPI;
+use function shell_exec;
+use function substr;
 use Symfony\Component\Process\PhpExecutableFinder;
 
 /**
@@ -71,7 +76,11 @@ final class CommandLineBuilder
          *
          * This lets folks use, say, a bash wrapper over phpunit.
          */
-        if ('cli' === PHP_SAPI && $phpExtraArgs === [] && is_executable($testFrameworkExecutable) && `command -v php`) {
+        if ('cli' === PHP_SAPI
+            && $phpExtraArgs === []
+            && is_executable($testFrameworkExecutable)
+            && ((string) shell_exec('command -v php')) !== ''
+        ) {
             return array_merge([$testFrameworkExecutable], $frameworkArgs);
         }
 

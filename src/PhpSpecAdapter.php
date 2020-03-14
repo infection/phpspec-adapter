@@ -127,12 +127,12 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     /**
      * Returns array of arguments to pass them into the Mutant Symfony Process
      *
-     * @param CoverageLineData[] $coverageTests
+     * @param CoverageLineData[] $tests
      *
      * @return string[]
      */
     public function getMutantCommandLine(
-        array $coverageTests,
+        array $tests,
         string $mutantFilePath,
         string $mutationHash,
         string $mutationOriginalFilePath,
@@ -140,7 +140,6 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     ): array {
         return $this->getCommandLine(
             $this->buildMutationConfigFile(
-                $coverageTests,
                 $mutantFilePath,
                 $mutationHash,
                 $mutationOriginalFilePath
@@ -185,20 +184,15 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
 
     protected function buildInitialConfigFile(): string
     {
-        return $this->initialConfigBuilder->build($this->getVersion());
+        return $this->initialConfigBuilder->build();
     }
 
-    /**
-     * @param CoverageLineData[] $coverageTests
-     */
     private function buildMutationConfigFile(
-        array $coverageTests,
         string $mutantFilePath,
         string $mutationHash,
         string $mutationOriginalFilePath
     ): string {
         return $this->mutationConfigBuilder->build(
-            $coverageTests,
             $mutantFilePath,
             $mutationHash,
             $mutationOriginalFilePath

@@ -40,11 +40,4 @@ namespace Infection\TestFramework\PhpSpec;
  */
 final class PhpSpecExtraOptions
 {
-    /**
-     * @return string[]
-     */
-    protected function getInitialRunOnlyOptions(): array
-    {
-        return [];
-    }
 }

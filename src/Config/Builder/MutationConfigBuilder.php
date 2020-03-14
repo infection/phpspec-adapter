@@ -36,10 +36,17 @@ declare(strict_types=1);
 namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
 use function array_key_exists;
-use Infection\AbstractTestFramework\Coverage\CoverageLineData;
+use function assert;
 use Infection\StreamWrapper\IncludeInterceptor;
 use Infection\TestFramework\PhpSpec\Config\MutationYamlConfiguration;
+use function is_string;
+use const LOCK_EX;
 use Phar;
+use function Safe\file_put_contents;
+use function Safe\sprintf;
+use function str_replace;
+use function strpos;
+use function strstr;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -58,11 +65,7 @@ class MutationConfigBuilder
         $this->projectDir = $projectDir;
     }
 
-    /**
-     * @param CoverageLineData[] $coverageTests
-     */
     public function build(
-        array $coverageTests,
         string $mutantFilePath,
         string $mutationHash,
         string $mutationOriginalFilePath
@@ -75,7 +78,15 @@ class MutationConfigBuilder
 
         $parsedYaml = Yaml::parseFile($this->originalYamlConfigPath);
 
-        file_put_contents($customAutoloadFilePath, $this->createCustomAutoloadWithInterceptor($mutationOriginalFilePath, $mutantFilePath, $parsedYaml));
+        file_put_contents(
+            $customAutoloadFilePath,
+            $this->createCustomAutoloadWithInterceptor(
+                $mutationOriginalFilePath,
+                $mutantFilePath,
+                $parsedYaml
+            ),
+            LOCK_EX
+        );
 
         $yamlConfiguration = new MutationYamlConfiguration(
             $this->tempDirectory,

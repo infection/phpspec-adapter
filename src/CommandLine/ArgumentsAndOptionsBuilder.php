@@ -35,6 +35,10 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec\CommandLine;
 
+use function array_filter;
+use function array_merge;
+use function explode;
+
 /**
  * @internal
  */
