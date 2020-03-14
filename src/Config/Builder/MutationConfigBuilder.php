@@ -36,7 +36,7 @@ declare(strict_types=1);
 namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
 use function array_key_exists;
-use Infection\AbstractTestFramework\Coverage\CoverageLineData;
+use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\StreamWrapper\IncludeInterceptor;
 use Infection\TestFramework\PhpSpec\Config\MutationYamlConfiguration;
 use Phar;
@@ -59,10 +59,10 @@ class MutationConfigBuilder
     }
 
     /**
-     * @param CoverageLineData[] $coverageTests
+     * @param TestLocation[] $tests
      */
     public function build(
-        array $coverageTests,
+        array $tests,
         string $mutantFilePath,
         string $mutationHash,
         string $mutationOriginalFilePath
