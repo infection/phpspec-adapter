@@ -35,8 +35,8 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
-use Infection\AbstractTestFramework\Coverage\TestLocation;
 use function array_key_exists;
+use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\StreamWrapper\IncludeInterceptor;
 use Infection\TestFramework\PhpSpec\Config\MutationYamlConfiguration;
 use Phar;
