@@ -35,7 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec;
 
-use Infection\AbstractTestFramework\Coverage\CoverageLineData;
+use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
@@ -127,12 +127,12 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     /**
      * Returns array of arguments to pass them into the Mutant Symfony Process
      *
-     * @param CoverageLineData[] $coverageTests
+     * @param TestLocation[] $tests
      *
      * @return string[]
      */
     public function getMutantCommandLine(
-        array $coverageTests,
+        array $tests,
         string $mutantFilePath,
         string $mutationHash,
         string $mutationOriginalFilePath,
@@ -140,7 +140,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     ): array {
         return $this->getCommandLine(
             $this->buildMutationConfigFile(
-                $coverageTests,
+                $tests,
                 $mutantFilePath,
                 $mutationHash,
                 $mutationOriginalFilePath
@@ -189,16 +189,16 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     }
 
     /**
-     * @param CoverageLineData[] $coverageTests
+     * @param TestLocation[] $tests
      */
     private function buildMutationConfigFile(
-        array $coverageTests,
+        array $tests,
         string $mutantFilePath,
         string $mutationHash,
         string $mutationOriginalFilePath
     ): string {
         return $this->mutationConfigBuilder->build(
-            $coverageTests,
+            $tests,
             $mutantFilePath,
             $mutationHash,
             $mutationOriginalFilePath
