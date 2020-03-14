@@ -35,7 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec;
 
-use Infection\AbstractTestFramework\Coverage\CoverageLineData;
+use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
@@ -127,7 +127,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     /**
      * Returns array of arguments to pass them into the Mutant Symfony Process
      *
-     * @param CoverageLineData[] $tests
+     * @param TestLocation[] $tests
      *
      * @return string[]
      */
@@ -182,7 +182,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         return sprintf('Check the executed command to identify the problem: %s', $commandLine);
     }
 
-    protected function buildInitialConfigFile(): string
+    private function buildInitialConfigFile(): string
     {
         return $this->initialConfigBuilder->build();
     }
