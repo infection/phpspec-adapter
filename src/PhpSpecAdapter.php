@@ -183,7 +183,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         return sprintf('Check the executed command to identify the problem: %s', $commandLine);
     }
 
-    protected function buildInitialConfigFile(): string
+    private function buildInitialConfigFile(): string
     {
         return $this->initialConfigBuilder->build($this->getVersion());
     }

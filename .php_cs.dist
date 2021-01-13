@@ -133,6 +133,7 @@ return Config::create()
             'case' => 'snake',
             'style' => 'prefix',
         ],
+        'protected_to_private' => false,
         'self_static_accessor' => true,
         'single_line_throw' => false,
         'static_lambda' => true,
