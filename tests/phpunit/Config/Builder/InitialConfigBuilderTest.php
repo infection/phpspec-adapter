@@ -49,6 +49,9 @@ final class InitialConfigBuilderTest extends FileSystemTestCase
 
         $builder = new InitialConfigBuilder($this->tmp, $originalYamlConfigPath, false);
 
-        self::assertSame($this->tmp . '/phpspecConfiguration.initial.infection.yml', $builder->build('2.0'));
+        $actualPath = $builder->build('2.0');
+
+        self::assertFileExists($actualPath);
+        self::assertSame($this->tmp . '/phpspecConfiguration.initial.infection.yml', $actualPath);
     }
 }

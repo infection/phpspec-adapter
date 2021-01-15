@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.8.5@e6ec5fa22a7b9e61670a24d07b3119aff80dcd89">
+<files psalm-version="4.4.1@9fd7a7d885b3a216cff8dec9d8c21a132f275224">
   <file src="src/CommandLineBuilder.php">
     <ForbiddenCode occurrences="1">
-      <code>`command -v php`</code>
+      <code>shell_exec('command -v php')</code>
     </ForbiddenCode>
   </file>
   <file src="src/Config/AbstractYamlConfiguration.php">
     <MixedArgument occurrences="1">
       <code>$extensionName</code>
     </MixedArgument>
-    <MixedAssignment occurrences="1">
+    <MixedAssignment occurrences="2">
+      <code>$extensionName</code>
       <code>$options</code>
     </MixedAssignment>
   </file>
@@ -41,7 +42,13 @@
     <MixedArrayAccess occurrences="1">
       <code>$parsedYaml['extensions'][$extensionName]</code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="2">
+    <MixedArrayAssignment occurrences="2">
+      <code>$options['format']</code>
+      <code>$options['output']</code>
+    </MixedArrayAssignment>
+    <MixedAssignment occurrences="4">
+      <code>$extensionName</code>
+      <code>$extensionName</code>
       <code>$options</code>
       <code>$options</code>
     </MixedAssignment>
@@ -53,9 +60,10 @@
     <MixedArgument occurrences="1">
       <code>$extensionName</code>
     </MixedArgument>
-    <MixedAssignment occurrences="2">
-      <code>$options</code>
+    <MixedAssignment occurrences="3">
+      <code>$extensionName</code>
       <code>$filteredExtensions[$extensionName]</code>
+      <code>$options</code>
     </MixedAssignment>
   </file>
   <file src="src/PhpSpecAdapterFactory.php">

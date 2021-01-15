@@ -58,10 +58,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     private $mutationConfigBuilder;
     private $versionParser;
     private $commandLineBuilder;
-    /**
-     * @var string|null
-     */
-    private $cachedVersion;
+    private ?string $cachedVersion = null;
 
     public function __construct(
         string $testFrameworkExecutable,
@@ -127,21 +124,21 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     /**
      * Returns array of arguments to pass them into the Mutant Symfony Process
      *
-     * @param TestLocation[] $tests
+     * @param TestLocation[] $coverageTests
      *
      * @return string[]
      */
     public function getMutantCommandLine(
-        array $tests,
-        string $mutantFilePath,
+        array $coverageTests,
+        string $mutatedFilePath,
         string $mutationHash,
         string $mutationOriginalFilePath,
         string $extraOptions
     ): array {
         return $this->getCommandLine(
             $this->buildMutationConfigFile(
-                $tests,
-                $mutantFilePath,
+                $coverageTests,
+                $mutatedFilePath,
                 $mutationHash,
                 $mutationOriginalFilePath
             ),
@@ -165,15 +162,13 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         $process = new Process($testFrameworkVersionExecutable);
         $process->mustRun();
 
-        $version = 'unknown';
-
         try {
             $version = $this->versionParser->parse($process->getOutput());
         } catch (InvalidArgumentException $e) {
             $version = 'unknown';
-        } finally {
-            $this->cachedVersion = $version;
         }
+
+        $this->cachedVersion = $version;
 
         return $this->cachedVersion;
     }

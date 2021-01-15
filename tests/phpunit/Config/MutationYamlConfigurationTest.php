@@ -66,6 +66,7 @@ final class MutationYamlConfigurationTest extends TestCase
             'SomeOtherExtension' => ['option' => 123],
         ],
         'bootstrap' => '/path/to/adc',
+        'verbose' => true,
     ];
 
     public function test_it_removes_code_coverage_extension(): void
@@ -80,6 +81,7 @@ final class MutationYamlConfigurationTest extends TestCase
                 'FirstExtension' => [],
                 'SomeOtherExtension' => ['option' => 123],
             ],
+            'verbose' => true,
         ];
 
         self::assertSame($expectedConfig, $parsedYaml);
