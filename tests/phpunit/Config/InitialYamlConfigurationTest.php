@@ -97,6 +97,7 @@ final class InitialYamlConfigurationTest extends TestCase
         $expectedPath = $this->tempDir . '/' . PhpSpecAdapter::COVERAGE_DIR;
 
         self::assertSame($expectedPath, $parsedYaml['extensions']['PhpSpecCodeCoverageExtension']['output']['xml']);
+        self::assertSame(['xml'], $parsedYaml['extensions']['PhpSpecCodeCoverageExtension']['format']);
     }
 
     public function test_it_removes_all_coverage_extensions_if_coverage_should_be_skipped(): void

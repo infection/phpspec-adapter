@@ -66,6 +66,7 @@ final class MutationYamlConfigurationTest extends TestCase
             'SomeOtherExtension' => ['option' => 123],
         ],
         'bootstrap' => '/path/to/adc',
+        'verbose' => true,
     ];
 
     public function test_it_removes_code_coverage_extension(): void
@@ -74,8 +75,16 @@ final class MutationYamlConfigurationTest extends TestCase
 
         $parsedYaml = Yaml::parse($configuration->getYaml());
 
-        self::assertCount(2, $parsedYaml['extensions']);
-        self::assertArrayNotHasKey('PhpSpecCodeCoverageExtension', $parsedYaml['extensions']);
+        $expectedConfig = [
+            'bootstrap' => '/custom/path',
+            'extensions' => [
+                'FirstExtension' => [],
+                'SomeOtherExtension' => ['option' => 123],
+            ],
+            'verbose' => true,
+        ];
+
+        self::assertSame($expectedConfig, $parsedYaml);
     }
 
     public function test_it_returns_same_extensions_when_no_coverage_extension_found(): void
