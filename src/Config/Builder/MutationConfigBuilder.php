@@ -47,9 +47,9 @@ use Symfony\Component\Yaml\Yaml;
  */
 class MutationConfigBuilder
 {
-    private $tempDirectory;
-    private $originalYamlConfigPath;
-    private $projectDir;
+    private string $tempDirectory;
+    private string $originalYamlConfigPath;
+    private string $projectDir;
 
     public function __construct(string $tempDirectory, string $originalYamlConfigPath, string $projectDir)
     {

@@ -41,20 +41,14 @@ use Symfony\Component\Yaml\Yaml;
 
 final class MutationYamlConfigurationTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $tempDir = '/path/to/tmp';
+    private string $tempDir = '/path/to/tmp';
 
-    /**
-     * @var string
-     */
-    private $customAutoloadFilePath = '/custom/path';
+    private string $customAutoloadFilePath = '/custom/path';
 
     /**
      * @var array<string, mixed>
      */
-    private $defaultConfig = [
+    private array $defaultConfig = [
         'extensions' => [
             'FirstExtension' => [],
             'PhpSpecCodeCoverageExtension' => [

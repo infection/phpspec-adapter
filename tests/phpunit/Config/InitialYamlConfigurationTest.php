@@ -43,15 +43,12 @@ use Symfony\Component\Yaml\Yaml;
 
 final class InitialYamlConfigurationTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $tempDir = '/path/to/tmp';
+    private string $tempDir = '/path/to/tmp';
 
     /**
      * @var array<string, mixed>
      */
-    private $defaultConfig = [
+    private array $defaultConfig = [
         'extensions' => [
             'SomeOtherExtension' => [],
             'PhpSpecCodeCoverageExtension' => [

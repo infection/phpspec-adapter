@@ -43,7 +43,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 final class InitialYamlConfiguration extends AbstractYamlConfiguration
 {
-    private $skipCoverage;
+    private bool $skipCoverage;
 
     /**
      * @param array<string, mixed> $parsedYaml

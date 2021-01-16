@@ -52,12 +52,12 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         '/Fatal error happened/i',
     ];
 
-    private $testFrameworkExecutable;
-    private $argumentsAndOptionsBuilder;
-    private $initialConfigBuilder;
-    private $mutationConfigBuilder;
-    private $versionParser;
-    private $commandLineBuilder;
+    private string $testFrameworkExecutable;
+    private ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder;
+    private InitialConfigBuilder $initialConfigBuilder;
+    private MutationConfigBuilder $mutationConfigBuilder;
+    private VersionParser $versionParser;
+    private CommandLineBuilder $commandLineBuilder;
     private ?string $cachedVersion = null;
 
     public function __construct(

@@ -42,19 +42,14 @@ use function array_key_exists;
  */
 abstract class AbstractYamlConfiguration
 {
-    /**
-     * @var string
-     */
-    protected $tempDirectory;
+    protected string $tempDirectory;
 
     /**
      * @var array<string, mixed>
      */
-    protected $parsedYaml;
+    protected array $parsedYaml;
 
     /**
-     * AbstractYamlConfiguration constructor.
-     *
      * @param array<string, mixed> $parsedYaml
      */
     public function __construct(string $tmpDir, array $parsedYaml)
