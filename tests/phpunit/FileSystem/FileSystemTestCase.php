@@ -60,15 +60,8 @@ abstract class FileSystemTestCase extends TestCase
 {
     private const TMP_DIR_NAME = 'infection-test';
 
-    /**
-     * @var string
-     */
-    protected $cwd;
-
-    /**
-     * @var string
-     */
-    protected $tmp;
+    protected string $cwd;
+    protected string $tmp;
 
     public static function tearDownAfterClass(): void
     {

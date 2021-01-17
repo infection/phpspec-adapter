@@ -46,7 +46,7 @@ final class CommandLineBuilder
     /**
      * @var string[]|null
      */
-    private $cachedPhpCmdLine;
+    private ?array $cachedPhpCmdLine = null;
 
     /**
      * @param string[] $frameworkArgs
