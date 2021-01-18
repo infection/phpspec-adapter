@@ -8,7 +8,7 @@ JOBS=$(shell nproc)
 
 # PHP CS Fixer
 PHP_CS_FIXER=vendor/bin/php-cs-fixer
-PHP_CS_FIXER_ARGS=--cache-file=build/cache/.php_cs.cache --verbose
+PHP_CS_FIXER_ARGS=--diff --diff-format=udiff --verbose
 export PHP_CS_FIXER_IGNORE_ENV=1
 
 # PHPUnit
@@ -35,7 +35,7 @@ INFECTION_ARGS=--min-msi=$(MIN_MSI) --min-covered-msi=$(MIN_COVERED_MSI) --threa
 all: test
 
 cs:
-	$(PHP_CS_FIXER) $(PHP_CS_FIXER_ARGS) fix --diff --diff-format=udiff --dry-run --verbose
+	$(PHP_CS_FIXER) fix $(PHP_CS_FIXER_ARGS) --dry-run
 	LC_ALL=C sort -c -u .gitignore
 
 phpstan:
@@ -74,7 +74,7 @@ analyze: cs-fix
 	$(PSALM) $(PSALM_ARGS)
 
 cs-fix: test-prerequisites
-	$(PHP_CS_FIXER) $(PHP_CS_FIXER_ARGS) --diff fix
+	$(PHP_CS_FIXER) fix $(PHP_CS_FIXER_ARGS)
 	LC_ALL=C sort -u .gitignore -o .gitignore
 
 ##############################################################
