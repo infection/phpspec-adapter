@@ -13,7 +13,8 @@ export PHP_CS_FIXER_IGNORE_ENV=1
 
 # PHPUnit
 PHPUNIT=vendor/bin/phpunit
-PHPUNIT_ARGS=--coverage-xml=build/logs/coverage-xml --log-junit=build/logs/junit.xml --coverage-clover=build/logs/clover.xml
+PHPUNIT_COVERAGE_CLOVER=--coverage-clover=build/logs/clover.xml
+PHPUNIT_ARGS=--coverage-xml=build/logs/coverage-xml --log-junit=build/logs/junit.xml $(PHPUNIT_COVERAGE_CLOVER)
 
 # PHPStan
 PHPSTAN=vendor/bin/phpstan
@@ -47,7 +48,7 @@ psalm:
 static-analyze: phpstan psalm
 
 test-unit:
-	$(PHPUNIT)
+	$(PHPUNIT) $(PHPUNIT_ARGS)
 
 infection:
 	$(INFECTION) $(INFECTION_ARGS)
