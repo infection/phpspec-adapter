@@ -1,4 +1,4 @@
-[![Continuous Integration](https://github.com/infection/phpspec-adapter/workflows/Continuous%20Integration/badge.svg)](https://github.com/infection/phpspec-adapter)
+[![CI](https://github.com/infection/phpspec-adapter/workflows/Tests/badge.svg?branch=master)](https://github.com/infection/phpspec-adapter)
 [![Coverage Status](https://coveralls.io/repos/github/infection/phpspec-adapter/badge.svg?branch=master)](https://coveralls.io/github/infection/phpspec-adapter?branch=master)
 
 # PHPSpec Test Framework Adapter for Infection
