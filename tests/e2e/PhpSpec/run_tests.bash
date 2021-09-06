@@ -8,7 +8,7 @@ then
     exit 0
 fi
 
-readonly INFECTION=../../../bin/infection
+readonly INFECTION=../../../.tools/infection.phar
 
 if [ "$DRIVER" = "phpdbg" ]
 then

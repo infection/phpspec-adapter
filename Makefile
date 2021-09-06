@@ -28,16 +28,17 @@ PSALM_ARGS=--show-info=false
 COMPOSER=$(PHP) $(shell which composer)
 
 # Infection
-INFECTION=vendor/bin/infection
-MIN_MSI=52.212389380531
-MIN_COVERED_MSI=95
+INFECTION=./.tools/infection.phar
+INFECTION_URL="https://github.com/infection/infection/releases/download/0.24.0/infection.phar"
+MIN_MSI=57
+MIN_COVERED_MSI=97
 INFECTION_ARGS=--min-msi=$(MIN_MSI) --min-covered-msi=$(MIN_COVERED_MSI) --threads=$(JOBS) --log-verbosity=none --no-interaction --no-progress
 
 all: test
 
 cs:
 	$(PHP_CS_FIXER) fix $(PHP_CS_FIXER_ARGS) --dry-run
-	LC_ALL=C sort -c -u .gitignore
+	LC_ALL=C sort -u .gitignore -o .gitignore
 
 phpstan:
 	$(PHPSTAN) $(PHPSTAN_ARGS) --no-progress
@@ -50,7 +51,7 @@ static-analyze: phpstan psalm
 test-unit:
 	$(PHPUNIT) $(PHPUNIT_ARGS)
 
-infection:
+infection: $(INFECTION)
 	$(INFECTION) $(INFECTION_ARGS)
 
 ##############################################################
@@ -98,3 +99,8 @@ composer.lock: composer.json
 
 build/cache:
 	mkdir -p build/cache
+
+$(INFECTION): Makefile
+	wget -q $(INFECTION_URL) --output-document=$(INFECTION)
+	chmod a+x $(INFECTION)
+	touch $@
