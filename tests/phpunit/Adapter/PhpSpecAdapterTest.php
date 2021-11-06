@@ -49,7 +49,7 @@ final class PhpSpecAdapterTest extends TestCase
     {
         $adapter = $this->getAdapter();
 
-        self::assertSame('PhpSpec', $adapter->getName());
+        $this->assertSame('PhpSpec', $adapter->getName());
     }
 
     public function test_it_determines_when_tests_do_not_pass(): void
@@ -68,7 +68,7 @@ OUTPUT;
 
         $adapter = $this->getAdapter();
 
-        self::assertFalse($adapter->testsPass($output));
+        $this->assertFalse($adapter->testsPass($output));
     }
 
     public function test_it_determines_when_tests_pass(): void
@@ -85,7 +85,7 @@ OUTPUT;
 
         $adapter = $this->getAdapter();
 
-        self::assertTrue($adapter->testsPass($output));
+        $this->assertTrue($adapter->testsPass($output));
     }
 
     public function test_it_catches_fatal_errors(): void
@@ -103,7 +103,7 @@ OUTPUT;
 
         $adapter = $this->getAdapter();
 
-        self::assertFalse($adapter->testsPass($output));
+        $this->assertFalse($adapter->testsPass($output));
     }
 
     public function test_it_catches_fatal_errors_from_start(): void
@@ -119,7 +119,7 @@ OUTPUT;
 
         $adapter = $this->getAdapter();
 
-        self::assertFalse($adapter->testsPass($output));
+        $this->assertFalse($adapter->testsPass($output));
     }
 
     private function getAdapter(): PhpSpecAdapter

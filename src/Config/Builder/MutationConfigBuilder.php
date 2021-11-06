@@ -36,10 +36,17 @@ declare(strict_types=1);
 namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
 use function array_key_exists;
+use function assert;
+use function file_put_contents;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\StreamWrapper\IncludeInterceptor;
 use Infection\TestFramework\PhpSpec\Config\MutationYamlConfiguration;
+use function is_string;
 use Phar;
+use function sprintf;
+use function str_replace;
+use function strpos;
+use function strstr;
 use Symfony\Component\Yaml\Yaml;
 
 /**

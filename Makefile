@@ -7,9 +7,8 @@ PHP=$(shell which php)
 JOBS=$(shell nproc)
 
 # PHP CS Fixer
-PHP_CS_FIXER=vendor/bin/php-cs-fixer
-PHP_CS_FIXER_ARGS=--diff --diff-format=udiff --verbose
-export PHP_CS_FIXER_IGNORE_ENV=1
+PHP_CS_FIXER=./.tools/php-cs-fixer
+PHP_CS_FIXER_URL="https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v3.2.1/php-cs-fixer.phar"
 
 # PHPUnit
 PHPUNIT=vendor/bin/phpunit
@@ -37,7 +36,8 @@ INFECTION_ARGS=--min-msi=$(MIN_MSI) --min-covered-msi=$(MIN_COVERED_MSI) --threa
 all: test
 
 cs:
-	$(PHP_CS_FIXER) fix $(PHP_CS_FIXER_ARGS) --dry-run
+cs: $(PHP_CS_FIXER)
+	$(PHP_CS_FIXER) fix -v --diff
 	LC_ALL=C sort -u .gitignore -o .gitignore
 
 phpstan:
@@ -103,4 +103,9 @@ build/cache:
 $(INFECTION): Makefile
 	wget -q $(INFECTION_URL) --output-document=$(INFECTION)
 	chmod a+x $(INFECTION)
+	touch $@
+
+$(PHP_CS_FIXER): Makefile
+	wget -q $(PHP_CS_FIXER_URL) --output-document=$(PHP_CS_FIXER)
+	chmod a+x $(PHP_CS_FIXER)
 	touch $@

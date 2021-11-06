@@ -44,7 +44,7 @@ final class NoCodeCoverageExceptionTest extends TestCase
     {
         $exception = NoCodeCoverageException::fromTestFramework('Foo');
 
-        self::assertSame(
+        $this->assertSame(
             "No code coverage Extension detected for Foo. \nWithout code coverage, running Infection is not useful.",
             $exception->getMessage()
         );

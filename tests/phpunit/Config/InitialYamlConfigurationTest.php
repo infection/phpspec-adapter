@@ -35,6 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec\Config;
 
+use function count;
 use Infection\TestFramework\PhpSpec\Config\InitialYamlConfiguration;
 use Infection\TestFramework\PhpSpec\Config\NoCodeCoverageException;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
@@ -93,8 +94,8 @@ final class InitialYamlConfigurationTest extends TestCase
         $parsedYaml = Yaml::parse($configuration->getYaml());
         $expectedPath = $this->tempDir . '/' . PhpSpecAdapter::COVERAGE_DIR;
 
-        self::assertSame($expectedPath, $parsedYaml['extensions']['PhpSpecCodeCoverageExtension']['output']['xml']);
-        self::assertSame(['xml'], $parsedYaml['extensions']['PhpSpecCodeCoverageExtension']['format']);
+        $this->assertSame($expectedPath, $parsedYaml['extensions']['PhpSpecCodeCoverageExtension']['output']['xml']);
+        $this->assertSame(['xml'], $parsedYaml['extensions']['PhpSpecCodeCoverageExtension']['format']);
     }
 
     public function test_it_removes_all_coverage_extensions_if_coverage_should_be_skipped(): void
@@ -106,7 +107,7 @@ final class InitialYamlConfigurationTest extends TestCase
 
         $parsedYaml = Yaml::parse($configuration->getYaml());
 
-        self::assertCount(0, $parsedYaml['extensions']);
+        $this->assertCount(0, $parsedYaml['extensions']);
     }
 
     public function test_it_preserves_options_form_coverage_extension(): void
@@ -115,7 +116,7 @@ final class InitialYamlConfigurationTest extends TestCase
 
         $parsedYaml = Yaml::parse($configuration->getYaml());
 
-        self::assertSame(['.'], $parsedYaml['extensions']['PhpSpecCodeCoverageExtension']['whitelist']);
+        $this->assertSame(['.'], $parsedYaml['extensions']['PhpSpecCodeCoverageExtension']['whitelist']);
     }
 
     /**
