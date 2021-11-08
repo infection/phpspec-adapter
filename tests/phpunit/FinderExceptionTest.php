@@ -37,58 +37,15 @@ namespace Infection\Tests\TestFramework\PhpSpec;
 
 use Infection\TestFramework\PhpSpec\FinderException;
 use PHPUnit\Framework\TestCase;
-use function Safe\sprintf;
 
 final class FinderExceptionTest extends TestCase
 {
-    public function test_composer_not_found_exception(): void
-    {
-        $exception = FinderException::composerNotFound();
-
-        $this->assertSame(
-            'Unable to locate a Composer executable on local system. Ensure that Composer is installed and available.',
-            $exception->getMessage()
-        );
-    }
-
     public function test_php_executable_not_found(): void
     {
         $exception = FinderException::phpExecutableNotFound();
 
         $this->assertSame(
             'Unable to locate the PHP executable on the local system. Please report this issue, and include details about your setup.',
-            $exception->getMessage()
-        );
-    }
-
-    public function test_test_framework_not_found(): void
-    {
-        $framework = 'framework';
-
-        $exception = FinderException::testFrameworkNotFound($framework);
-
-        $this->assertSame(
-            sprintf(
-                'Unable to locate a %s executable on local system. Ensure that %s is installed and available.',
-                $framework,
-                $framework
-            ),
-            $exception->getMessage()
-        );
-    }
-
-    public function test_test_custom_path_does_not_exist(): void
-    {
-        $framework = 'framework';
-        $path = 'foo/bar/abc';
-
-        $exception = FinderException::testCustomPathDoesNotExist($framework, $path);
-
-        $this->assertSame(
-            sprintf('The custom path to %s was set as "%s" but this file did not exist.',
-                $framework,
-                $path
-            ),
             $exception->getMessage()
         );
     }
