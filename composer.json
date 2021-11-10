@@ -42,7 +42,7 @@
         }
     },
     "require-dev": {
-        "php-coveralls/php-coveralls": "^2.4",
+        "php-coveralls/php-coveralls": "^2.5",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^0.12.66",
         "phpstan/phpstan-phpunit": "^0.12.17",

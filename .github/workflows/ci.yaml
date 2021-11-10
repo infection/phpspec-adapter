@@ -59,8 +59,6 @@ jobs:
       - name: Configure Symfony v6@dev hacks
         if: matrix.symfony-require == '^6'
         run: |
-          # not ready for v6 yet
-          composer remove --no-update --dev php-coveralls/php-coveralls
           composer config minimum-stability beta
 
       - name: Install dependencies
