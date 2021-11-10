@@ -101,13 +101,13 @@ final class InitialYamlConfigurationTest extends TestCase
     public function test_it_removes_all_coverage_extensions_if_coverage_should_be_skipped(): void
     {
         $configuration = $this->getConfigurationObject(
-            ['extensions' => ['CodeCoverage1' => [], 'CodeCoverage2' => []]],
+            ['extensions' => ['notCoverageExtension' => [], 'CodeCoverage1' => [], 'CodeCoverage2' => []]],
             true
         );
 
         $parsedYaml = Yaml::parse($configuration->getYaml());
 
-        $this->assertCount(0, $parsedYaml['extensions']);
+        $this->assertCount(1, $parsedYaml['extensions']);
     }
 
     public function test_it_preserves_options_form_coverage_extension(): void

@@ -35,6 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec\Adapter;
 
+use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
@@ -42,6 +43,7 @@ use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
 use Infection\TestFramework\PhpSpec\VersionParser;
 use PHPUnit\Framework\TestCase;
+use function sprintf;
 
 final class PhpSpecAdapterTest extends TestCase
 {
@@ -120,6 +122,134 @@ OUTPUT;
         $adapter = $this->getAdapter();
 
         $this->assertFalse($adapter->testsPass($output));
+    }
+
+    public function test_has_junit_report_returns_false(): void
+    {
+        $adapter = $this->getAdapter();
+
+        $this->assertFalse($adapter->hasJUnitReport(), 'PhpSpec does not have JUnit Report');
+    }
+
+    public function test_it_returns_initial_tests_fail_recommendations(): void
+    {
+        $adapter = $this->getAdapter();
+
+        $commandLine = 'cli';
+
+        $this->assertSame(
+            sprintf('Check the executed command to identify the problem: %s', $commandLine),
+            $adapter->getInitialTestsFailRecommendations($commandLine)
+        );
+    }
+
+    public function test_it_provides_initial_test_run_command_line(): void
+    {
+        $initialConfigBuilder = $this->createMock(InitialConfigBuilder::class);
+        $initialConfigBuilder->expects($this->once())
+            ->method('build')
+            ->with('7.2.0')
+            ->willReturn('/tmp/phpspecConfiguration.initial.infection.yml');
+
+        $commandLineBuilder = $this->createMock(CommandLineBuilder::class);
+
+        $commandLineBuilder->expects($this->once())
+            ->method('build')
+            ->with(
+                '/path/to/phpspec',
+                ['-d', 'memory_limit=-1'],
+                [
+                    'run',
+                    '--config',
+                    '/tmp/phpspecConfiguration.initial.infection.yml',
+                    '--no-ansi',
+                    '--format=tap',
+                    '--stop-on-failure',
+                    '--ansi',
+                ]
+            )
+            ->willReturn(['/path/to/phpspec', '--dummy-argument']);
+
+        $adapter = new PhpSpecAdapter(
+            '/path/to/phpspec',
+            $initialConfigBuilder,
+            $this->createMock(MutationConfigBuilder::class),
+            new ArgumentsAndOptionsBuilder(),
+            new VersionParser(),
+            $commandLineBuilder,
+            '7.2.0'
+        );
+
+        $initialTestRunCommandLine = $adapter->getInitialTestRunCommandLine('--ansi', ['-d', 'memory_limit=-1'], true);
+
+        $this->assertSame(
+            [
+                '/path/to/phpspec',
+                '--dummy-argument',
+            ],
+            $initialTestRunCommandLine
+        );
+    }
+
+    public function test_it_provides_mutant_test_run_command_line(): void
+    {
+        $coverageTests = [new TestLocation('test', 'path', 1.2)];
+        $mutatedFilePath = '/tmp/mutated_file_path.php';
+        $mutationHash = 'hash';
+        $mutationOriginalFilePath = '/src/Class.php';
+
+        $expectedMutationConfigFile = '/path/file';
+
+        $mutationConfigBuilder = $this->createMock(MutationConfigBuilder::class);
+
+        $mutationConfigBuilder->expects($this->once())
+            ->method('build')
+            ->with($coverageTests, $mutatedFilePath, $mutationHash, $mutationOriginalFilePath)
+            ->willReturn($expectedMutationConfigFile);
+
+        $commandLineBuilder = $this->createMock(CommandLineBuilder::class);
+
+        $commandLineBuilder->expects($this->once())
+            ->method('build')
+            ->with(
+                '/path/to/phpspec',
+                [],
+                [
+                    'run',
+                    '--config',
+                    $expectedMutationConfigFile,
+                    '--no-ansi',
+                    '--format=tap',
+                    '--stop-on-failure',
+                ]
+            )
+            ->willReturn(['/path/to/phpspec', '--dummy-argument']);
+
+        $adapter = new PhpSpecAdapter(
+            '/path/to/phpspec',
+            $this->createMock(InitialConfigBuilder::class),
+            $mutationConfigBuilder,
+            new ArgumentsAndOptionsBuilder(),
+            new VersionParser(),
+            $commandLineBuilder,
+            '7.2.0'
+        );
+
+        $initialTestRunCommandLine = $adapter->getMutantCommandLine(
+            [new TestLocation('test', 'path', 1.2)],
+            $mutatedFilePath,
+            $mutationHash,
+            $mutationOriginalFilePath,
+            ''
+        );
+
+        $this->assertSame(
+            [
+                '/path/to/phpspec',
+                '--dummy-argument',
+            ],
+            $initialTestRunCommandLine
+        );
     }
 
     private function getAdapter(): PhpSpecAdapter

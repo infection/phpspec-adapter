@@ -33,7 +33,7 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec;
+namespace Infection\Tests\TestFramework\PhpSpec\Adapter;
 
 use Infection\TestFramework\PhpSpec\FinderException;
 use PHPUnit\Framework\TestCase;
