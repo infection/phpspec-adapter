@@ -35,6 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec\Config;
 
+use function count;
 use Infection\TestFramework\PhpSpec\Config\MutationYamlConfiguration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
@@ -78,7 +79,7 @@ final class MutationYamlConfigurationTest extends TestCase
             'verbose' => true,
         ];
 
-        self::assertSame($expectedConfig, $parsedYaml);
+        $this->assertSame($expectedConfig, $parsedYaml);
     }
 
     public function test_it_returns_same_extensions_when_no_coverage_extension_found(): void
@@ -88,7 +89,7 @@ final class MutationYamlConfigurationTest extends TestCase
 
         $parsedYaml = Yaml::parse($configuration->getYaml());
 
-        self::assertCount(0, $parsedYaml['extensions']);
+        $this->assertCount(0, $parsedYaml['extensions']);
     }
 
     public function test_it_sets_custom_autoloader_path(): void
@@ -97,7 +98,7 @@ final class MutationYamlConfigurationTest extends TestCase
 
         $parsedYaml = Yaml::parse($configuration->getYaml());
 
-        self::assertSame($this->customAutoloadFilePath, $parsedYaml['bootstrap']);
+        $this->assertSame($this->customAutoloadFilePath, $parsedYaml['bootstrap']);
     }
 
     /**

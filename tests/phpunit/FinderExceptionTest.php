@@ -33,18 +33,20 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec;
+namespace Infection\Tests\TestFramework\PhpSpec;
 
-/**
- * @internal
- */
-final class PhpSpecExtraOptions
+use Infection\TestFramework\PhpSpec\FinderException;
+use PHPUnit\Framework\TestCase;
+
+final class FinderExceptionTest extends TestCase
 {
-    /**
-     * @return string[]
-     */
-    protected function getInitialRunOnlyOptions(): array
+    public function test_php_executable_not_found(): void
     {
-        return [];
+        $exception = FinderException::phpExecutableNotFound();
+
+        $this->assertSame(
+            'Unable to locate the PHP executable on the local system. Please report this issue, and include details about your setup.',
+            $exception->getMessage()
+        );
     }
 }

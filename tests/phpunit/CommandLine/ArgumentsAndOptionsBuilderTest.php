@@ -45,7 +45,7 @@ final class ArgumentsAndOptionsBuilderTest extends TestCase
         $configPath = '/config/path';
         $builder = new ArgumentsAndOptionsBuilder();
 
-        self::assertSame(
+        $this->assertSame(
             [
                 'run',
                 '--config',
@@ -65,7 +65,7 @@ final class ArgumentsAndOptionsBuilderTest extends TestCase
         $configPath = '/config/path';
         $builder = new ArgumentsAndOptionsBuilder();
 
-        self::assertSame(
+        $this->assertSame(
             [
                 'run',
                 '--config',

@@ -62,8 +62,8 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
             self::ORIGINAL_FILE_PATH
         );
 
-        self::assertFileExists($actualPath);
-        self::assertSame($this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml', $actualPath);
+        $this->assertFileExists($actualPath);
+        $this->assertSame($this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml', $actualPath);
     }
 
     public function test_it_adds_original_bootstrap_file_to_custom_autoload(): void
@@ -73,7 +73,7 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
 
         $builder = new MutationConfigBuilder($this->tmp, $originalYamlConfigPath, $projectDir);
 
-        self::assertSame(
+        $this->assertSame(
             $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
             $builder->build(
                 [],
@@ -85,8 +85,8 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
 
         $actualContent = file_get_contents($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');
 
-        self::assertStringContainsString("require_once '/project/dir/bootstrap.php';", $actualContent);
-        self::assertStringNotContainsString('\Phar::loadPhar("%s", "%s");', $actualContent);
+        $this->assertStringContainsString("require_once '/project/dir/bootstrap.php';", $actualContent);
+        $this->assertStringNotContainsString('\Phar::loadPhar("%s", "%s");', $actualContent);
     }
 
     public function test_interceptor_is_included(): void
@@ -96,7 +96,7 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
 
         $builder = new MutationConfigBuilder($this->tmp, $originalYamlConfigPath, $projectDir);
 
-        self::assertSame(
+        $this->assertSame(
             $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
             $builder->build(
                 [],
@@ -106,9 +106,9 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
             )
         );
 
-        self::assertFileExists($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');
+        $this->assertFileExists($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');
         $content = file_get_contents($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');
 
-        self::assertStringContainsString('IncludeInterceptor.php', $content);
+        $this->assertStringContainsString('IncludeInterceptor.php', $content);
     }
 }

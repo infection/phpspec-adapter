@@ -35,12 +35,16 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec;
 
+use function explode;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
 use InvalidArgumentException;
+use const PHP_EOL;
+use function preg_match;
+use function sprintf;
 use Symfony\Component\Process\Process;
 
 final class PhpSpecAdapter implements TestFrameworkAdapter

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.4.1@9fd7a7d885b3a216cff8dec9d8c21a132f275224">
+<files psalm-version="4.12.0@e42bc4a23f67acba28a23bb09c348e2ff38a1d87">
   <file src="src/CommandLineBuilder.php">
     <ForbiddenCode occurrences="1">
       <code>shell_exec('command -v php')</code>
@@ -13,6 +13,9 @@
       <code>$extensionName</code>
       <code>$options</code>
     </MixedAssignment>
+    <UnusedForeachValue occurrences="1">
+      <code>$options</code>
+    </UnusedForeachValue>
   </file>
   <file src="src/Config/Builder/InitialConfigBuilder.php">
     <MixedArgument occurrences="1">
@@ -32,9 +35,6 @@
     </MixedAssignment>
   </file>
   <file src="src/Config/InitialYamlConfiguration.php">
-    <MissingPropertyType occurrences="1">
-      <code>$skipCoverage</code>
-    </MissingPropertyType>
     <MixedArgument occurrences="2">
       <code>$extensionName</code>
       <code>$extensionName</code>
@@ -54,9 +54,6 @@
     </MixedAssignment>
   </file>
   <file src="src/Config/MutationYamlConfiguration.php">
-    <MissingPropertyType occurrences="1">
-      <code>$customAutoloadFilePath</code>
-    </MissingPropertyType>
     <MixedArgument occurrences="1">
       <code>$extensionName</code>
     </MixedArgument>

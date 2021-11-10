@@ -57,6 +57,6 @@ final class PhpSpecAdapterFactoryTest extends TestCase
             true
         );
 
-        self::assertInstanceOf(PhpSpecAdapter::class, $adapter);
+        $this->assertInstanceOf(PhpSpecAdapter::class, $adapter);
     }
 }
