@@ -36,9 +36,6 @@
     "extra": {
         "infection": {
             "class": "Infection\\TestFramework\\PhpSpec\\PhpSpecAdapterFactory"
-        },
-        "symfony": {
-            "require": "^6"
         }
     },
     "require-dev": {
