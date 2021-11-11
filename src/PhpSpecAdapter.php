@@ -41,7 +41,6 @@ use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
-use InvalidArgumentException;
 use const PHP_EOL;
 use function preg_match;
 use function sprintf;
@@ -62,7 +61,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     private MutationConfigBuilder $mutationConfigBuilder;
     private VersionParser $versionParser;
     private CommandLineBuilder $commandLineBuilder;
-    private ?string $cachedVersion = null;
+    private ?string $version;
 
     public function __construct(
         string $testFrameworkExecutable,
@@ -70,7 +69,8 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         MutationConfigBuilder $mutationConfigBuilder,
         ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder,
         VersionParser $versionParser,
-        CommandLineBuilder $commandLineBuilder
+        CommandLineBuilder $commandLineBuilder,
+        ?string $version = null
     ) {
         $this->testFrameworkExecutable = $testFrameworkExecutable;
         $this->initialConfigBuilder = $initialConfigBuilder;
@@ -78,6 +78,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         $this->argumentsAndOptionsBuilder = $argumentsAndOptionsBuilder;
         $this->versionParser = $versionParser;
         $this->commandLineBuilder = $commandLineBuilder;
+        $this->version = $version;
     }
 
     public function hasJUnitReport(): bool
@@ -153,28 +154,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
 
     public function getVersion(): string
     {
-        if ($this->cachedVersion !== null) {
-            return $this->cachedVersion;
-        }
-
-        $testFrameworkVersionExecutable = $this->commandLineBuilder->build(
-            $this->testFrameworkExecutable,
-            [],
-            ['--version']
-        );
-
-        $process = new Process($testFrameworkVersionExecutable);
-        $process->mustRun();
-
-        try {
-            $version = $this->versionParser->parse($process->getOutput());
-        } catch (InvalidArgumentException $e) {
-            $version = 'unknown';
-        }
-
-        $this->cachedVersion = $version;
-
-        return $this->cachedVersion;
+        return $this->version ?? $this->version = $this->retrieveVersion();
     }
 
     public function getInitialTestsFailRecommendations(string $commandLine): string
@@ -217,5 +197,19 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         $frameworkArgs = $this->argumentsAndOptionsBuilder->build($configPath, $extraOptions);
 
         return $this->commandLineBuilder->build($this->testFrameworkExecutable, $phpExtraArgs, $frameworkArgs);
+    }
+
+    private function retrieveVersion(): string
+    {
+        $testFrameworkVersionExecutable = $this->commandLineBuilder->build(
+            $this->testFrameworkExecutable,
+            [],
+            ['--version']
+        );
+
+        $process = new Process($testFrameworkVersionExecutable);
+        $process->mustRun();
+
+        return $this->versionParser->parse($process->getOutput());
     }
 }

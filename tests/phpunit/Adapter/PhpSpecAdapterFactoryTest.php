@@ -59,4 +59,14 @@ final class PhpSpecAdapterFactoryTest extends TestCase
 
         $this->assertInstanceOf(PhpSpecAdapter::class, $adapter);
     }
+
+    public function test_it_returns_right_adapter_name(): void
+    {
+        $this->assertSame('phpspec', PhpSpecAdapterFactory::getAdapterName());
+    }
+
+    public function test_it_returns_right_executable_name(): void
+    {
+        $this->assertSame('phpspec', PhpSpecAdapterFactory::getExecutableName());
+    }
 }
