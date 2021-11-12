@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b9f0c795ed6bd90a9e05c582da06704e",
+    "content-hash": "b86317abf81706dc3ea5bf4539487576",
     "packages": [
         {
             "name": "infection/abstract-testframework-adapter",

@@ -37,7 +37,7 @@ all: test
 
 cs:
 cs: $(PHP_CS_FIXER)
-	$(PHP_CS_FIXER) fix -v --diff
+	$(PHP_CS_FIXER) fix -v --diff --dry-run
 	LC_ALL=C sort -u .gitignore -o .gitignore
 
 phpstan:
