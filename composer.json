@@ -29,9 +29,9 @@
         "php": "^7.4 || ^8.0",
         "infection/abstract-testframework-adapter": "^0.5.0",
         "infection/include-interceptor": "^0.2.3",
-        "symfony/filesystem": "^4.4 || ^5.0 || ^6.0",
-        "symfony/process": "^4.4 || ^5.0 || ^6.0",
-        "symfony/yaml": "^4.4 || ^5.0 || ^6.0"
+        "symfony/filesystem": "^4.4 || ^5.0 || ^6.0 || ^7.0",
+        "symfony/process": "^4.4 || ^5.0 || ^6.0 || ^7.0",
+        "symfony/yaml": "^4.4 || ^5.0 || ^6.0 || ^7.0"
     },
     "extra": {
         "infection": {
