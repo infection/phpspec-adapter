@@ -53,9 +53,6 @@ jobs:
             composer-${{ runner.os }}-
             composer-
 
-      - name: Globally install symfony/flex
-        run: composer global require --no-progress --no-scripts --no-plugins symfony/flex
-
       - name: Install dependencies
         run: composer update --optimize-autoloader --no-interaction --no-progress --prefer-dist
 
