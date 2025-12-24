@@ -56,11 +56,6 @@ jobs:
       - name: Run tests and generate coverage
         run: make test-unit
 
-      - name: Upload coverage results to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: vendor/bin/php-coveralls
-
   # This is a meta job to avoid to have to constantly change the protection rules
   # whenever we touch the matrix.
   tests-status:
