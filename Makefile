@@ -23,13 +23,17 @@ INFECTION_ARGS=--min-msi=$(MIN_MSI) --min-covered-msi=$(MIN_COVERED_MSI) --threa
 all: test
 
 .PHONY: cs
-cs: gitignore php-cs-fixer
+cs: gitignore composer-validate php-cs-fixer
 
 .PHONY: cs-lint
-cs-lint: php-cs-fixer-lint
+cs-lint: composer-validate php-cs-fixer-lint
 
 gitignore:
 	LC_ALL=C sort -u .gitignore -o .gitignore
+
+.PHONY: composer-validate
+composer-validate: vendor
+	composer validate --strict
 
 .PHONY: php-cs-fixer
 php-cs-fixer: vendor
