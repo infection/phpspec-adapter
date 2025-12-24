@@ -54,7 +54,7 @@ final class PhpSpecAdapterFactoryTest extends TestCase
             '/path/to/junit.xml',
             '/path/to/project',
             [],
-            true
+            true,
         );
 
         $this->assertInstanceOf(PhpSpecAdapter::class, $adapter);

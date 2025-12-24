@@ -54,7 +54,7 @@ final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
         string $jUnitFilePath,
         string $projectDir,
         array $sourceDirectories,
-        bool $skipCoverage
+        bool $skipCoverage,
     ): TestFrameworkAdapter {
         return new PhpSpecAdapter(
             $testFrameworkExecutable,
@@ -62,7 +62,7 @@ final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
             new MutationConfigBuilder($tmpDir, $testFrameworkConfigPath, $projectDir),
             new ArgumentsAndOptionsBuilder(),
             new VersionParser(),
-            new CommandLineBuilder()
+            new CommandLineBuilder(),
         );
     }
 

@@ -46,7 +46,7 @@ final class FinderExceptionTest extends TestCase
 
         $this->assertSame(
             'Unable to locate the PHP executable on the local system. Please report this issue, and include details about your setup.',
-            $exception->getMessage()
+            $exception->getMessage(),
         );
     }
 }

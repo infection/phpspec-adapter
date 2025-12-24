@@ -56,11 +56,17 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     ];
 
     private string $testFrameworkExecutable;
+
     private ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder;
+
     private InitialConfigBuilder $initialConfigBuilder;
+
     private MutationConfigBuilder $mutationConfigBuilder;
+
     private VersionParser $versionParser;
+
     private CommandLineBuilder $commandLineBuilder;
+
     private ?string $version;
 
     public function __construct(
@@ -70,7 +76,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder,
         VersionParser $versionParser,
         CommandLineBuilder $commandLineBuilder,
-        ?string $version = null
+        ?string $version = null,
     ) {
         $this->testFrameworkExecutable = $testFrameworkExecutable;
         $this->initialConfigBuilder = $initialConfigBuilder;
@@ -121,7 +127,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     public function getInitialTestRunCommandLine(
         string $extraOptions,
         array $phpExtraArgs,
-        bool $skipCoverage
+        bool $skipCoverage,
     ): array {
         return $this->getCommandLine($this->buildInitialConfigFile(), $extraOptions, $phpExtraArgs);
     }
@@ -138,17 +144,17 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         string $mutatedFilePath,
         string $mutationHash,
         string $mutationOriginalFilePath,
-        string $extraOptions
+        string $extraOptions,
     ): array {
         return $this->getCommandLine(
             $this->buildMutationConfigFile(
                 $coverageTests,
                 $mutatedFilePath,
                 $mutationHash,
-                $mutationOriginalFilePath
+                $mutationOriginalFilePath,
             ),
             $extraOptions,
-            []
+            [],
         );
     }
 
@@ -174,13 +180,13 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         array $tests,
         string $mutantFilePath,
         string $mutationHash,
-        string $mutationOriginalFilePath
+        string $mutationOriginalFilePath,
     ): string {
         return $this->mutationConfigBuilder->build(
             $tests,
             $mutantFilePath,
             $mutationHash,
-            $mutationOriginalFilePath
+            $mutationOriginalFilePath,
         );
     }
 
@@ -192,7 +198,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     private function getCommandLine(
         string $configPath,
         string $extraOptions,
-        array $phpExtraArgs
+        array $phpExtraArgs,
     ): array {
         $frameworkArgs = $this->argumentsAndOptionsBuilder->build($configPath, $extraOptions);
 
@@ -204,7 +210,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         $testFrameworkVersionExecutable = $this->commandLineBuilder->build(
             $this->testFrameworkExecutable,
             [],
-            ['--version']
+            ['--version'],
         );
 
         $process = new Process($testFrameworkVersionExecutable);

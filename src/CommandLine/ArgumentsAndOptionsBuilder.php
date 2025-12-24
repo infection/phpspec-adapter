@@ -58,7 +58,7 @@ final class ArgumentsAndOptionsBuilder
                 '--format=tap',
                 '--stop-on-failure',
             ],
-            explode(' ', $extraOptions)
+            explode(' ', $extraOptions),
         );
 
         return array_filter($options);

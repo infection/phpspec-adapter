@@ -36,7 +36,7 @@ declare(strict_types=1);
 namespace Infection\TestFramework\PhpSpec\Config;
 
 use function array_key_exists;
-use function strpos;
+use function str_contains;
 
 /**
  * @internal
@@ -63,7 +63,7 @@ abstract class AbstractYamlConfiguration
 
     protected function isCodeCoverageExtension(string $extensionName): bool
     {
-        return strpos($extensionName, 'CodeCoverage') !== false;
+        return str_contains($extensionName, 'CodeCoverage');
     }
 
     /**

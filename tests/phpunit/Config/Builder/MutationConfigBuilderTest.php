@@ -45,7 +45,9 @@ use function Safe\file_get_contents;
 final class MutationConfigBuilderTest extends FileSystemTestCase
 {
     private const MUTATION_HASH = 'a1b2c3';
+
     private const ORIGINAL_FILE_PATH = '/original/file/path';
+
     private const MUTATED_FILE_PATH = '/mutated/file/path';
 
     public function test_it_builds_path_to_mutation_config_file(): void
@@ -59,7 +61,7 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
             [],
             self::MUTATED_FILE_PATH,
             self::MUTATION_HASH,
-            self::ORIGINAL_FILE_PATH
+            self::ORIGINAL_FILE_PATH,
         );
 
         $this->assertFileExists($actualPath);
@@ -79,8 +81,8 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
                 [],
                 self::MUTATED_FILE_PATH,
                 self::MUTATION_HASH,
-                self::ORIGINAL_FILE_PATH
-            )
+                self::ORIGINAL_FILE_PATH,
+            ),
         );
 
         $actualContent = file_get_contents($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');
@@ -102,8 +104,8 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
                 [],
                 self::MUTATED_FILE_PATH,
                 self::MUTATION_HASH,
-                self::ORIGINAL_FILE_PATH
-            )
+                self::ORIGINAL_FILE_PATH,
+            ),
         );
 
         $this->assertFileExists($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');

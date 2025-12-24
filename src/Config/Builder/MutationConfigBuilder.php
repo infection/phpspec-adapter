@@ -45,7 +45,7 @@ use function is_string;
 use Phar;
 use function sprintf;
 use function str_replace;
-use function strpos;
+use function str_starts_with;
 use function strstr;
 use Symfony\Component\Yaml\Yaml;
 
@@ -55,7 +55,9 @@ use Symfony\Component\Yaml\Yaml;
 class MutationConfigBuilder
 {
     private string $tempDirectory;
+
     private string $originalYamlConfigPath;
+
     private string $projectDir;
 
     public function __construct(string $tempDirectory, string $originalYamlConfigPath, string $projectDir)
@@ -72,12 +74,12 @@ class MutationConfigBuilder
         array $tests,
         string $mutantFilePath,
         string $mutationHash,
-        string $mutationOriginalFilePath
+        string $mutationOriginalFilePath,
     ): string {
         $customAutoloadFilePath = sprintf(
             '%s/interceptor.phpspec.autoload.%s.infection.php',
             $this->tempDirectory,
-            $mutationHash
+            $mutationHash,
         );
 
         $parsedYaml = Yaml::parseFile($this->originalYamlConfigPath);
@@ -87,7 +89,7 @@ class MutationConfigBuilder
         $yamlConfiguration = new MutationYamlConfiguration(
             $this->tempDirectory,
             $parsedYaml,
-            $customAutoloadFilePath
+            $customAutoloadFilePath,
         );
 
         $newYaml = $yamlConfiguration->getYaml();
@@ -110,17 +112,17 @@ class MutationConfigBuilder
         $interceptorPath = IncludeInterceptor::LOCATION;
 
         $customAutoload = <<<AUTOLOAD
-<?php
+            <?php
 
-%s
-%s
+            %s
+            %s
 
-AUTOLOAD;
+            AUTOLOAD;
 
         return sprintf(
             $customAutoload,
             $autoloadPlaceholder,
-            $this->getInterceptorFileContent($interceptorPath, $originalFilePath, $mutantFilePath)
+            $this->getInterceptorFileContent($interceptorPath, $originalFilePath, $mutantFilePath),
         );
     }
 
@@ -147,25 +149,25 @@ AUTOLOAD;
     {
         $infectionPhar = '';
 
-        if (strpos(__FILE__, 'phar:') === 0) {
+        if (str_starts_with(__FILE__, 'phar:')) {
             $infectionPhar = sprintf(
                 '\Phar::loadPhar("%s", "%s");',
                 str_replace('phar://', '', Phar::running(true)),
-                'infection.phar'
+                'infection.phar',
             );
         }
 
         $namespacePrefix = $this->getInterceptorNamespacePrefix();
 
         return <<<CONTENT
-{$infectionPhar}
-require_once '{$interceptorPath}';
+            {$infectionPhar}
+            require_once '{$interceptorPath}';
 
-use {$namespacePrefix}Infection\StreamWrapper\IncludeInterceptor;
+            use {$namespacePrefix}Infection\StreamWrapper\IncludeInterceptor;
 
-IncludeInterceptor::intercept('{$originalFilePath}', '{$mutantFilePath}');
-IncludeInterceptor::enable();
-CONTENT;
+            IncludeInterceptor::intercept('{$originalFilePath}', '{$mutantFilePath}');
+            IncludeInterceptor::enable();
+            CONTENT;
     }
 
     private function getInterceptorNamespacePrefix(): string

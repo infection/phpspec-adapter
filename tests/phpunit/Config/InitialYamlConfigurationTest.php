@@ -102,7 +102,7 @@ final class InitialYamlConfigurationTest extends TestCase
     {
         $configuration = $this->getConfigurationObject(
             ['extensions' => ['notCoverageExtension' => [], 'CodeCoverage1' => [], 'CodeCoverage2' => []]],
-            true
+            true,
         );
 
         $parsedYaml = Yaml::parse($configuration->getYaml());

@@ -56,7 +56,7 @@ final class ArgumentsAndOptionsBuilderTest extends TestCase
                 '--verbose',
                 '--debug',
             ],
-            $builder->build($configPath, '--verbose --debug')
+            $builder->build($configPath, '--verbose --debug'),
         );
     }
 
@@ -74,7 +74,7 @@ final class ArgumentsAndOptionsBuilderTest extends TestCase
                 '--format=tap',
                 '--stop-on-failure',
             ],
-            $builder->build($configPath, '')
+            $builder->build($configPath, ''),
         );
     }
 }
