@@ -22,7 +22,7 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         php-version: ['8.2']
-        check: ['cs-lint', 'static-analyze']
+        check: ['cs-lint', 'phpstan']
 
     name: Coding Standards on PHP ${{ matrix.php-version }}
 

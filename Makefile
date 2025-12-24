@@ -44,10 +44,13 @@ php-cs-fixer: vendor
 php-cs-fixer-lint: vendor
 	vendor/bin/php-cs-fixer fix --verbose --diff --dry-run
 
-phpstan:
-	$(PHPSTAN) $(PHPSTAN_ARGS) --no-progress
+.PHONY: phpstan
+phpstan: vendor
+	vendor/bin/phpstan analyse
 
-static-analyze: phpstan
+.PHONY: phpstan-update-baseline
+phpstan-update-baseline: vendor
+	vendor/bin/phpstan --generate-baseline
 
 test-unit:
 	$(PHPUNIT) $(PHPUNIT_ARGS)
