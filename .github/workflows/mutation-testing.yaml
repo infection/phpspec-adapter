@@ -22,7 +22,6 @@ jobs:
       matrix:
         operating-system: [ ubuntu-latest ]
         php-version: [ '8.2' ]
-        coverage-driver: [ pcov ]
 
     name: Infection PHP ${{ matrix.php-version }}
 
@@ -34,11 +33,22 @@ jobs:
         uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # 2.36.0
         with:
           php-version: ${{ matrix.php-version }}
-          coverage: ${{ matrix.coverage-driver }}
+          coverage: pcov
           tools: composer:v2
 
       - name: Install Composer dependencies
         uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
+
+      - name: Cache Infection
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        id: infection-cache
+        with:
+          path: var/tools/infection.phar
+          key: infection-${{ hashFiles('.tools/infection-version') }}
+
+      - name: Build Infection
+        if: steps.infection-cache.outputs.cache-hit != 'true'
+        run: make var/tools/infection.phar
 
       - name: Run Infection
         run: make infection
