@@ -15,10 +15,6 @@ PHPUNIT_ARGS=--coverage-xml=build/logs/coverage-xml --log-junit=build/logs/junit
 PHPSTAN=vendor/bin/phpstan
 PHPSTAN_ARGS=analyse src tests/phpunit -c .phpstan.neon
 
-# Psalm
-PSALM=vendor/bin/psalm
-PSALM_ARGS=--show-info=false
-
 # Composer
 COMPOSER=$(PHP) $(shell which composer)
 
@@ -51,10 +47,7 @@ php-cs-fixer-lint: vendor
 phpstan:
 	$(PHPSTAN) $(PHPSTAN_ARGS) --no-progress
 
-psalm:
-	$(PSALM) $(PSALM_ARGS) --no-cache --shepherd
-
-static-analyze: phpstan psalm
+static-analyze: phpstan
 
 test-unit:
 	$(PHPUNIT) $(PHPUNIT_ARGS)
