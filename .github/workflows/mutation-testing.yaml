@@ -39,12 +39,16 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
 
-      - name: Cache Infection
+      - name: Cache the Infection PHAR
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         id: infection-cache
         with:
           path: var/tools/infection.phar
           key: infection-${{ hashFiles('.tools/infection-version') }}
+
+      - name: Build Infection
+        if: steps.infection-cache.outputs.cache-hit != 'true'
+        run: make var/tools/infection.phar
 
       - name: Build Infection
         if: steps.infection-cache.outputs.cache-hit != 'true'

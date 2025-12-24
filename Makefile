@@ -57,15 +57,11 @@ test-unit:
 
 .PHONY: test-unit-xml-coverage
 test-unit-xml-coverage:
+	@rm -rf $(COVERAGE_DIR) || true
 	XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-xml=$(COVERAGE_DIR)/xml --log-junit=$(COVERAGE_DIR)/junit.xml
 
-$(COVERAGE_DIR):
-	@rm -rf $(COVERAGE_DIR) || true
-	$(MAKE) test-unit-xml-coverage
-	touch -c $@
-
 .PHONY: infection
-infection: $(INFECTION) $(COVERAGE_DIR)
+infection: $(INFECTION)
 	$(INFECTION) \
 		--min-msi=$(MIN_MSI) \
 		--min-covered-msi=$(MIN_COVERED_MSI) \
