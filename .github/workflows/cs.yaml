@@ -36,23 +36,8 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer:v2
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache dependencies
-        uses: actions/cache@8492260343ad570701412c2f464a5877dc76bace # v2
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('composer.*') }}
-          restore-keys: |
-            composer-${{ runner.os }}-${{ matrix.php-version }}-
-            composer-${{ runner.os }}-
-            composer-
-
-      - name: Install dependencies
-        run: |
-          composer install --no-interaction --no-progress --prefer-dist
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
 
       - name: Run ${{ matrix.check }}
         run: make ${{ matrix.check }}
