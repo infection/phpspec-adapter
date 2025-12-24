@@ -22,9 +22,13 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         php-version: ['8.2']
-        check: ['cs-lint', 'phpstan']
+        check:
+          - makefile-target: 'cs-lint'
+            name: 'PHP-CS-Fixer lint'
+          - makefile-target: 'phpstan'
+            name: 'PHPStan lint'
 
-    name: Coding Standards on PHP ${{ matrix.php-version }}
+    name: ${{ matrix.check.name }} on PHP ${{ matrix.php-version }}
 
     steps:
       - name: Checkout
@@ -39,8 +43,8 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
 
-      - name: Run ${{ matrix.check }}
-        run: make ${{ matrix.check }}
+      - name: Run ${{ matrix.check.makefile-target }}
+        run: make ${{ matrix.check.makefile-target }}
 
   # This is a meta job to avoid to have to constantly change the protection rules
   # whenever we touch the matrix.
