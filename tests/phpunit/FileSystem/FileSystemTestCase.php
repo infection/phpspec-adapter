@@ -61,6 +61,7 @@ abstract class FileSystemTestCase extends TestCase
     private const TMP_DIR_NAME = 'infection-test';
 
     protected string $cwd;
+
     protected string $tmp;
 
     public static function tearDownAfterClass(): void
@@ -89,8 +90,8 @@ abstract class FileSystemTestCase extends TestCase
     {
         (new Filesystem())->remove(
             normalizePath(
-                realpath(sys_get_temp_dir()) . '/' . self::TMP_DIR_NAME
-            )
+                realpath(sys_get_temp_dir()) . '/' . self::TMP_DIR_NAME,
+            ),
         );
     }
 }

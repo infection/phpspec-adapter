@@ -6,10 +6,6 @@ PHP=$(shell which php)
 # Default parallelism
 JOBS=$(shell nproc)
 
-# PHP CS Fixer
-PHP_CS_FIXER=./.tools/php-cs-fixer
-PHP_CS_FIXER_URL="https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v3.2.1/php-cs-fixer.phar"
-
 # PHPUnit
 PHPUNIT=vendor/bin/phpunit
 PHPUNIT_COVERAGE_CLOVER=--coverage-clover=build/logs/clover.xml
@@ -35,10 +31,22 @@ INFECTION_ARGS=--min-msi=$(MIN_MSI) --min-covered-msi=$(MIN_COVERED_MSI) --threa
 
 all: test
 
-cs:
-cs: $(PHP_CS_FIXER)
-	$(PHP_CS_FIXER) fix -v --diff --dry-run
+.PHONY: cs
+cs: gitignore php-cs-fixer
+
+.PHONY: cs-lint
+cs-lint: php-cs-fixer-lint
+
+gitignore:
 	LC_ALL=C sort -u .gitignore -o .gitignore
+
+.PHONY: php-cs-fixer
+php-cs-fixer: vendor
+	vendor/bin/php-cs-fixer fix --verbose --diff
+
+.PHONY: php-cs-fixer-lint
+php-cs-fixer-lint: vendor
+	vendor/bin/php-cs-fixer fix --verbose --diff --dry-run
 
 phpstan:
 	$(PHPSTAN) $(PHPSTAN_ARGS) --no-progress

@@ -57,16 +57,16 @@ final class PhpSpecAdapterTest extends TestCase
     public function test_it_determines_when_tests_do_not_pass(): void
     {
         $output = <<<OUTPUT
-TAP version 13
-not ok 1 - Error: Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-ok 1 - Infection\Application\Handler\AddViolationHandler: should add violation
-ok 2 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should add goal
-ok 3 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should remove existing one
-ok 4 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-not ok 103 - Error: Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-1..103
+            TAP version 13
+            not ok 1 - Error: Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
+            ok 1 - Infection\Application\Handler\AddViolationHandler: should add violation
+            ok 2 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should add goal
+            ok 3 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should remove existing one
+            ok 4 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
+            not ok 103 - Error: Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
+            1..103
 
-OUTPUT;
+            OUTPUT;
 
         $adapter = $this->getAdapter();
 
@@ -76,14 +76,14 @@ OUTPUT;
     public function test_it_determines_when_tests_pass(): void
     {
         $output = <<<OUTPUT
-TAP version 13
-ok 1 - Infection\Application\Handler\AddViolationHandler: should add violation
-ok 2 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should add goal
-ok 3 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should remove existing one
-ok 4 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-1..4
+            TAP version 13
+            ok 1 - Infection\Application\Handler\AddViolationHandler: should add violation
+            ok 2 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should add goal
+            ok 3 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should remove existing one
+            ok 4 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
+            1..4
 
-OUTPUT;
+            OUTPUT;
 
         $adapter = $this->getAdapter();
 
@@ -93,15 +93,15 @@ OUTPUT;
     public function test_it_catches_fatal_errors(): void
     {
         $output = <<<OUTPUT
-TAP version 13
-ok 1 - Infection\Application\Handler\AddViolationHandler: should add violation
-ok 2 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should add goal
-ok 3 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should remove existing one
-ok 4 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-Fatal error happened .....
-1..5
+            TAP version 13
+            ok 1 - Infection\Application\Handler\AddViolationHandler: should add violation
+            ok 2 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should add goal
+            ok 3 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should remove existing one
+            ok 4 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
+            Fatal error happened .....
+            1..5
 
-OUTPUT;
+            OUTPUT;
 
         $adapter = $this->getAdapter();
 
@@ -111,13 +111,13 @@ OUTPUT;
     public function test_it_catches_fatal_errors_from_start(): void
     {
         $output = <<<OUTPUT
-TAP version 13
+            TAP version 13
 
-Fatal error: Access level to Foo\Bar\Foobar::foobar() must be public (as in class Foo\Bar\FoobarInterface) in...
+            Fatal error: Access level to Foo\Bar\Foobar::foobar() must be public (as in class Foo\Bar\FoobarInterface) in...
 
-Call Stack:
+            Call Stack:
 
-OUTPUT;
+            OUTPUT;
 
         $adapter = $this->getAdapter();
 
@@ -139,7 +139,7 @@ OUTPUT;
 
         $this->assertSame(
             sprintf('Check the executed command to identify the problem: %s', $commandLine),
-            $adapter->getInitialTestsFailRecommendations($commandLine)
+            $adapter->getInitialTestsFailRecommendations($commandLine),
         );
     }
 
@@ -166,7 +166,7 @@ OUTPUT;
                     '--format=tap',
                     '--stop-on-failure',
                     '--ansi',
-                ]
+                ],
             )
             ->willReturn(['/path/to/phpspec', '--dummy-argument']);
 
@@ -177,7 +177,7 @@ OUTPUT;
             new ArgumentsAndOptionsBuilder(),
             new VersionParser(),
             $commandLineBuilder,
-            '7.2.0'
+            '7.2.0',
         );
 
         $initialTestRunCommandLine = $adapter->getInitialTestRunCommandLine('--ansi', ['-d', 'memory_limit=-1'], true);
@@ -187,7 +187,7 @@ OUTPUT;
                 '/path/to/phpspec',
                 '--dummy-argument',
             ],
-            $initialTestRunCommandLine
+            $initialTestRunCommandLine,
         );
     }
 
@@ -221,7 +221,7 @@ OUTPUT;
                     '--no-ansi',
                     '--format=tap',
                     '--stop-on-failure',
-                ]
+                ],
             )
             ->willReturn(['/path/to/phpspec', '--dummy-argument']);
 
@@ -232,7 +232,7 @@ OUTPUT;
             new ArgumentsAndOptionsBuilder(),
             new VersionParser(),
             $commandLineBuilder,
-            '7.2.0'
+            '7.2.0',
         );
 
         $initialTestRunCommandLine = $adapter->getMutantCommandLine(
@@ -240,7 +240,7 @@ OUTPUT;
             $mutatedFilePath,
             $mutationHash,
             $mutationOriginalFilePath,
-            ''
+            '',
         );
 
         $this->assertSame(
@@ -248,7 +248,7 @@ OUTPUT;
                 '/path/to/phpspec',
                 '--dummy-argument',
             ],
-            $initialTestRunCommandLine
+            $initialTestRunCommandLine,
         );
     }
 
@@ -260,7 +260,7 @@ OUTPUT;
             $this->createMock(MutationConfigBuilder::class),
             new ArgumentsAndOptionsBuilder(),
             new VersionParser(),
-            new CommandLineBuilder()
+            new CommandLineBuilder(),
         );
     }
 }

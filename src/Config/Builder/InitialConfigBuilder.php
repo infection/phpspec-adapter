@@ -45,7 +45,9 @@ use Symfony\Component\Yaml\Yaml;
 class InitialConfigBuilder
 {
     private string $tempDirectory;
+
     private string $originalYamlConfigPath;
+
     private bool $skipCoverage;
 
     public function __construct(string $tempDirectory, string $originalYamlConfigPath, bool $skipCoverage)
@@ -62,7 +64,7 @@ class InitialConfigBuilder
         $yamlConfiguration = new InitialYamlConfiguration(
             $this->tempDirectory,
             Yaml::parseFile($this->originalYamlConfigPath),
-            $this->skipCoverage
+            $this->skipCoverage,
         );
 
         file_put_contents($path, $yamlConfiguration->getYaml());

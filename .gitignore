@@ -4,6 +4,7 @@
 /.idea
 /.php-cs-fixer.cache
 /.tools/
+/composer.lock
+/var/
 /vendor/
 infection.log
-/composer.lock

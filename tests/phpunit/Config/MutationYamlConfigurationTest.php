@@ -109,7 +109,7 @@ final class MutationYamlConfigurationTest extends TestCase
         return new MutationYamlConfiguration(
             $this->tempDir,
             count($configArray) > 0 ? $configArray : $this->defaultConfig,
-            $this->customAutoloadFilePath
+            $this->customAutoloadFilePath,
         );
     }
 }

@@ -48,7 +48,7 @@ final class NoCodeCoverageException extends Exception
         return new self(sprintf(
             'No code coverage Extension detected for %s. %sWithout code coverage, running Infection is not useful.',
             $framework,
-            "\n"
+            "\n",
         ));
     }
 }
