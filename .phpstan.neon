@@ -2,7 +2,11 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
+    tmpDir: ../var/phpstan-cache
     level: max
+    paths:
+        - src
+        - tests
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
         - '#Dynamic call to static method PHPUnit\\Framework\\.*::.*#'
