@@ -37,6 +37,7 @@ namespace Infection\Tests\TestFramework\PhpSpec\Adapter;
 
 use Infection\TestFramework\PhpSpec\VersionParser;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class VersionParserTest extends TestCase
@@ -48,9 +49,7 @@ final class VersionParserTest extends TestCase
         $this->versionParser = new VersionParser();
     }
 
-    /**
-     * @dataProvider versionProvider
-     */
+    #[DataProvider('versionProvider')]
     public function test_it_parses_version_from_string(string $content, string $expectedVersion): void
     {
         $result = $this->versionParser->parse($content);
@@ -72,10 +71,7 @@ final class VersionParserTest extends TestCase
         }
     }
 
-    /**
-     * @return iterable<string, array<array-key, string>>
-     */
-    public function versionProvider(): iterable
+    public static function versionProvider(): iterable
     {
         yield 'nominal stable' => ['7.0.2', '7.0.2'];
 

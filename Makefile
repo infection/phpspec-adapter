@@ -6,11 +6,6 @@ PHP=$(shell which php)
 # Default parallelism
 JOBS=$(shell nproc)
 
-# PHPUnit
-PHPUNIT=vendor/bin/phpunit
-PHPUNIT_COVERAGE_CLOVER=--coverage-clover=build/logs/clover.xml
-PHPUNIT_ARGS=--coverage-xml=build/logs/coverage-xml --log-junit=build/logs/junit.xml $(PHPUNIT_COVERAGE_CLOVER)
-
 # PHPStan
 PHPSTAN=vendor/bin/phpstan
 PHPSTAN_ARGS=analyse src tests/phpunit -c .phpstan.neon
@@ -52,8 +47,13 @@ phpstan: vendor
 phpstan-update-baseline: vendor
 	vendor/bin/phpstan --generate-baseline
 
+.PHONY: test-unit
 test-unit:
-	$(PHPUNIT) $(PHPUNIT_ARGS)
+	vendor/bin/phpunit
+
+.PHONY: test-unit-xml-coverage
+test-unit-xml-coverage:
+	vendor/bin/phpunit --coverage-xml=var/coverage/xml --log-junit=var/coverage/junit.xml
 
 infection: $(INFECTION)
 	$(INFECTION) $(INFECTION_ARGS)
