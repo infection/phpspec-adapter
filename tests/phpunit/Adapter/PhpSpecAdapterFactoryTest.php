@@ -37,11 +37,10 @@ namespace Infection\Tests\TestFramework\PhpSpec\Adapter;
 
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapterFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group integration Requires some I/O operations
- */
+#[Group('integration')]
 final class PhpSpecAdapterFactoryTest extends TestCase
 {
     public function test_it_creates_phpspec_adapter(): void

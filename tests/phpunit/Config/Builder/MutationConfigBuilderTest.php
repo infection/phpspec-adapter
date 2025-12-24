@@ -37,11 +37,10 @@ namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
 
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
 use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
+use PHPUnit\Framework\Attributes\Group;
 use function Safe\file_get_contents;
 
-/**
- * @group integration Requires some I/O operations
- */
+#[Group('integration')]
 final class MutationConfigBuilderTest extends FileSystemTestCase
 {
     private const MUTATION_HASH = 'a1b2c3';
