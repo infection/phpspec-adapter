@@ -22,7 +22,6 @@ jobs:
     strategy:
       matrix:
         php-version: ['8.2', '8.3', '8.4', '8.5']
-        coverage-driver: [pcov]
         symfony-require:
           - '6.4.*'
           - '7.4.*'
@@ -33,7 +32,7 @@ jobs:
           - php-version: '8.3'
             symfony-require: '8.*'
 
-    name: CI with PHP ${{ matrix.php-version }}, using ${{ matrix.coverage-driver }}, with Symfony ${{ matrix.symfony-require }}
+    name: Unit tests on PHP ${{ matrix.php-version }} with Symfony ${{ matrix.symfony-require }}
 
     steps:
       - name: Checkout
@@ -43,12 +42,8 @@ jobs:
         uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # 2.36.0
         with:
           php-version: ${{ matrix.php-version }}
-          coverage: ${{ matrix.coverage-driver }}
+          coverage: pcov
           tools: composer, flex
-
-      - name: Configure Symfony version
-        run: echo "SYMFONY_REQUIRE=${{ matrix.symfony-versions }}" >> $GITHUB_ENV
-        if: matrix.symfony-versions
 
       - name: Install Composer dependencies
         uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
