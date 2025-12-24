@@ -6,3 +6,4 @@
 /.tools/
 /vendor/
 infection.log
+/composer.lock
