@@ -1,7 +1,7 @@
 suites:
-  source_suite:
-    namespace: TestFrameworks
-    psr4_prefix: TestFrameworks
+  default:
+    namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec
+    psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec
 
 extensions:
   FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
