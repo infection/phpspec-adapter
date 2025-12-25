@@ -51,6 +51,31 @@ jobs:
       - name: Run tests and generate coverage
         run: make test-unit
 
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.2', '8.3', '8.4', '8.5']
+
+    name: Unit tests on PHP ${{ matrix.php-version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # 2.36.0
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: pcov
+          tools: composer
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
+
+      - name: Run tests and generate coverage
+        run: make e2e
+
   # This is a meta job to avoid to have to constantly change the protection rules
   # whenever we touch the matrix.
   tests-status:

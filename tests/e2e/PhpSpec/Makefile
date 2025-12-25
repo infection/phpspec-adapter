@@ -9,7 +9,8 @@ help:
 	@printf "\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n\n"
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//' | awk 'BEGIN {FS = ":"}; {printf "\033[33m%s:\033[0m%s\n", $$1, $$2}'
 
-INFECTION=var/tools/infection.phar
+INFECTION_PARENT_PHAR=var/tools/infection.phar
+INFECTION=../../../$(INFECTION_PARENT_PHAR)
 MIN_MSI=68
 MIN_COVERED_MSI=97
 
@@ -36,11 +37,15 @@ composer-validate: vendor/autoload.php
 
 .PHONY: test
 test:	 ## Executes the tests
-test: test-unit infection
+test: phpunit phpspec infection
 
-.PHONY: test-unit
-test-unit: vendor/autoload.php
+.PHONY: phpunit
+phpunit: vendor/autoload.php
 	vendor/bin/phpunit
+
+.PHONY: phpspec
+phpspec: vendor/autoload.php
+	vendor/bin/phpspec run
 
 .PHONY: infection
 infection: $(INFECTION) vendor/autoload.php
@@ -62,9 +67,5 @@ composer.lock: composer.json
 	composer update
 	touch -c $@
 
-$(INFECTION): .tools/infection-version
-	mkdir -p $(shell dirname $(INFECTION))
-	wget --quiet "https://github.com/infection/infection/releases/download/$(shell cat .tools/infection-version)/infection.phar" --output-document=$(INFECTION)
-	chmod a+x $@
-	$(INFECTION) --version
-	touch -c $@
+$(INFECTION):
+	cd ../../../; $(MAKE) --file Makefile $(INFECTION_PARENT_PHAR)

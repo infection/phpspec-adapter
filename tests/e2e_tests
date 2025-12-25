@@ -1,47 +1,41 @@
 #!/usr/bin/env bash
 
+log_file=../../var/log/error.log
 cd tests/e2e
 
 failure="false"
 
-if [ -f error.log ]
+if [ -f $log_file ]
 then
-    :> error.log
+    :> $log_file
 fi
 
-touch error.log
+mkdir -p $(dirname $log_file)
+touch $log_file
 
-for dir in  */
+for e2e_dir in  */
 do
-    cd "$dir"
-    echo -e "\n$dir\n";
+    cd "$e2e_dir"
+    echo -e "\n$e2e_dir\n";
 
-    if [ -f composer.json ] || [ -f composer.lock ]
-    then
-        composer install > /dev/null 2>&1
-    fi
-
-    if [ -f "run_tests.bash" ]
-    then
-        output="$(bash run_tests.bash)"
-    else
-        output="$(bash ../standard_script.bash ${1:-vendor/bin/infection})"
-    fi
+    make vendor/autoload.php > /dev/null 2>&1
+    output="$(make test)"
 
     if [ $? != 0 ]
     then
         failure="true"
-        echo "$dir" >> ../error.log
-        echo "$output" >> ../error.log
-        echo "" >> ../error.log
+        echo "$e2e_dir" >> ../$log_file
+        echo "$output" >> ../$log_file
+        echo "" >> ../$log_file
     fi
+
     cd ..
 done
 
 if [ $failure = "true" ]
 then
     echo "One of the e2e tests failed, check the logs";
-    cat error.log
+    cat $log_file
     exit 1
 fi
 
