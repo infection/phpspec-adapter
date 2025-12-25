@@ -44,8 +44,11 @@ use Symfony\Component\Yaml\Yaml;
  */
 class InitialConfigBuilder
 {
-    public function __construct(private readonly string $tempDirectory, private readonly string $originalYamlConfigPath, private readonly bool $skipCoverage)
-    {
+    public function __construct(
+        private readonly string $tempDirectory,
+        private readonly string $originalYamlConfigPath,
+        private readonly bool $skipCoverage,
+    ) {
     }
 
     public function build(string $version): string

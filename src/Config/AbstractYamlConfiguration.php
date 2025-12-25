@@ -46,8 +46,10 @@ abstract class AbstractYamlConfiguration
     /**
      * @param array<string, mixed> $parsedYaml
      */
-    public function __construct(protected string $tempDirectory, protected array $parsedYaml)
-    {
+    public function __construct(
+        protected string $tempDirectory,
+        protected array $parsedYaml,
+    ) {
     }
 
     abstract public function getYaml(): string;
