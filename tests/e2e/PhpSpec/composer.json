@@ -5,13 +5,17 @@
     },
     "autoload": {
         "psr-4": {
-            "TestFrameworks\\": "src"
-        }
+            "Infection\\PhpSpecAdapter\\E2ETests\\PhpSpec\\": "src"
+        },
+        "files": [
+            "src/Covered/functions.php",
+            "src/Uncovered/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "spec\\": "spec",
-            "TestFrameworks\\Test\\": "tests"
+            "spec\\Infection\\PhpSpecAdapter\\E2ETests\\PhpSpec\\": "spec",
+            "Infection\\PhpSpecAdapter\\E2ETests\\PhpSpec\\Test\\": "tests"
         }
     },
     "require": {
