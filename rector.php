@@ -36,7 +36,6 @@ declare(strict_types=1);
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
 use Rector\CodeQuality\Rector\ClassConstFetch\VariableConstFetchToClassConstFetchRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
-use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\CodeQuality\Rector\Include_\AbsolutizeRequireAndIncludePathRector;
@@ -122,6 +121,5 @@ return RectorConfig::configure()
         SimplifyIfElseToTernaryRector::class,
         VariableConstFetchToClassConstFetchRector::class,
         // To remove
-        SimplifyRegexPatternRector::class,
         StrEndsWithRector::class,
     ]);

@@ -21,7 +21,7 @@ check: cs cs-lint test
 
 .PHONY: cs
 cs:	 ## Apply CS fixes
-cs: gitignore composer-validate php-cs-fixer
+cs: gitignore composer-validate rector php-cs-fixer
 
 .PHONY: cs-lint
 cs-lint: ## Run CS checks
