@@ -55,9 +55,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.2', '8.3', '8.4', '8.5']
+        php-version:
+          - '8.2'
+          - '8.3'
+          # TODO: https://github.com/phpspec/phpspec/pull/1503
+          #- '8.4'
+          # TODO: https://github.com/phpspec/phpspec/pull/1500
+          # - '8.5'
 
-    name: Unit tests on PHP ${{ matrix.php-version }}
+    name: End-to-end on PHP ${{ matrix.php-version }}
 
     steps:
       - name: Checkout
@@ -72,6 +78,11 @@ jobs:
 
       - name: Install Composer dependencies
         uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
+
+      - name: Install the e2e scenario Composer dependencies
+        uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
+        with:
+          working-directory: tests/e2e/PhpSpec
 
       - name: Run tests and generate coverage
         run: make e2e

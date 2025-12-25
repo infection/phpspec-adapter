@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class SourceClassTest extends TestCase
 {
-
     public function test_it_adds()
     {
         $source = new SourceClass();

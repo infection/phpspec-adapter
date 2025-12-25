@@ -33,7 +33,7 @@ gitignore:
 
 .PHONY: composer-validate
 composer-validate: vendor/autoload.php
-	composer validate --strict
+	composer validate --strict --no-check-publish
 
 .PHONY: test
 test:	 ## Executes the tests
@@ -41,11 +41,11 @@ test: phpunit phpspec infection
 
 .PHONY: phpunit
 phpunit: vendor/autoload.php
-	vendor/bin/phpunit
+	XDEBUG_MODE=coverage vendor/bin/phpunit
 
 .PHONY: phpspec
 phpspec: vendor/autoload.php
-	vendor/bin/phpspec run
+	XDEBUG_MODE=coverage vendor/bin/phpspec run
 
 .PHONY: infection
 infection: $(INFECTION) vendor/autoload.php
@@ -53,7 +53,8 @@ infection: $(INFECTION) vendor/autoload.php
 		--min-msi=$(MIN_MSI) \
 		--min-covered-msi=$(MIN_COVERED_MSI) \
 		--threads=max \
-		--show-mutations
+		--show-mutations \
+		--test-framework="phpspec"
 
 # Do install if there's no 'vendor'
 vendor/autoload.php:

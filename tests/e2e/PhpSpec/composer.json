@@ -1,23 +1,25 @@
 {
+    "license": "proprietary",
     "config": {
-        "platform": {
-            "php": "7.2.9"
-        }
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
-            "TestFrameworks\\": "src/"
+            "TestFrameworks\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "spec\\": "spec/",
-            "TestFrameworks\\Test\\": "tests/"
+            "spec\\": "spec",
+            "TestFrameworks\\Test\\": "tests"
         }
     },
+    "require": {
+        "php": "^8.2"
+    },
     "require-dev": {
-        "phpspec/phpspec": "^4.3 || ^5.1 || ^6.1",
-        "leanphp/phpspec-code-coverage": "^4.0",
-        "phpunit/phpunit": "^6.5"
+        "phpspec/phpspec": "^7.6 || ^8.0",
+        "friends-of-phpspec/phpspec-code-coverage": "*",
+        "phpunit/phpunit": "^11.5"
     }
 }
