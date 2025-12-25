@@ -49,6 +49,7 @@ phpstan: vendor
 
 .PHONY: phpstan-update-baseline
 phpstan-update-baseline: vendor
+	@rm -f phpstan-baseline.neon
 	vendor/bin/phpstan --generate-baseline
 
 .PHONY: test-unit
