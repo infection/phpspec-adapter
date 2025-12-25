@@ -51,6 +51,7 @@ infection: $(INFECTION) vendor/autoload.php
 		--threads=max \
 		--show-mutations \
 		--test-framework="phpspec"
+	diff --ignore-all-space expected-output.txt var/infection.log
 
 # Do install if there's no 'vendor'
 vendor/autoload.php:
