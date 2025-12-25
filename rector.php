@@ -97,14 +97,14 @@ return RectorConfig::configure()
         PrivatizeFinalClassPropertyRector::class,
         TypedPropertyFromAssignsRector::class,
     ])
-//    ->withConfiguredRule(
-//        ClassPropertyAssignToConstructorPromotionRector::class,
-//        [
-//            'inline_public' => false,
-//            'rename_property' => true,
-//            'allow_model_based_classes' => true,
-//        ],
-//    )
+    ->withConfiguredRule(
+        ClassPropertyAssignToConstructorPromotionRector::class,
+        [
+            'inline_public' => false,
+            'rename_property' => true,
+            'allow_model_based_classes' => true,
+        ],
+    )
     ->withSkip([
         AbsolutizeRequireAndIncludePathRector::class,
         AddArrowFunctionReturnTypeRector::class,

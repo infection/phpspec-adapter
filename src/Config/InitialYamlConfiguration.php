@@ -43,16 +43,12 @@ use Symfony\Component\Yaml\Yaml;
  */
 final class InitialYamlConfiguration extends AbstractYamlConfiguration
 {
-    private bool $skipCoverage;
-
     /**
      * @param array<string, mixed> $parsedYaml
      */
-    public function __construct(string $tmpDir, array $parsedYaml, bool $skipCoverage)
+    public function __construct(string $tmpDir, array $parsedYaml, private bool $skipCoverage)
     {
         parent::__construct($tmpDir, $parsedYaml);
-
-        $this->skipCoverage = $skipCoverage;
     }
 
     public function getYaml(): string
