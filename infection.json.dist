@@ -1,11 +1,12 @@
 {
+    "$schema": "var/tools/infection.phar/ressources/schema.json",
     "source": {
         "directories": [
             "src"
         ]
     },
     "logs": {
-        "text": "infection.log"
+        "text": "var/infection.log"
     },
     "mutators": {
         "@default": true

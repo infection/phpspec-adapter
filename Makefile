@@ -25,7 +25,7 @@ cs: gitignore composer-validate php-cs-fixer
 
 .PHONY: cs-lint
 cs-lint: ## Run CS checks
-cs-lint: composer-validate php-cs-fixer-lint
+cs-lint: composer-validate php-cs-fixer-lint rector-lint
 
 gitignore:
 	LC_ALL=C sort -u .gitignore -o .gitignore
@@ -41,6 +41,15 @@ php-cs-fixer: vendor/autoload.php
 .PHONY: php-cs-fixer-lint
 php-cs-fixer-lint: vendor/autoload.php
 	vendor/bin/php-cs-fixer fix --verbose --diff --dry-run
+	composer validate --strict
+
+.PHONY: rector
+rector: vendor/autoload.php
+	vendor/bin/rector
+
+.PHONY: rector-lint
+rector-lint: vendor/autoload.php
+	vendor/bin/rector --dry-run
 
 .PHONY: phpstan
 phpstan: vendor/autoload.php
