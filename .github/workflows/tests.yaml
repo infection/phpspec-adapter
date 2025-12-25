@@ -57,7 +57,7 @@ jobs:
       matrix:
         php-version: ['8.2', '8.3', '8.4', '8.5']
 
-    name: Unit tests on PHP ${{ matrix.php-version }}
+    name: End-to-end on PHP ${{ matrix.php-version }}
 
     steps:
       - name: Checkout
