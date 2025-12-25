@@ -46,8 +46,11 @@ final class InitialYamlConfiguration extends AbstractYamlConfiguration
     /**
      * @param array<string, mixed> $parsedYaml
      */
-    public function __construct(string $tmpDir, array $parsedYaml, private bool $skipCoverage)
-    {
+    public function __construct(
+        string $tmpDir,
+        array $parsedYaml,
+        private readonly bool $skipCoverage,
+    ) {
         parent::__construct($tmpDir, $parsedYaml);
     }
 

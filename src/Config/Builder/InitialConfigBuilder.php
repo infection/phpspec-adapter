@@ -44,7 +44,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class InitialConfigBuilder
 {
-    public function __construct(private string $tempDirectory, private string $originalYamlConfigPath, private bool $skipCoverage)
+    public function __construct(private readonly string $tempDirectory, private readonly string $originalYamlConfigPath, private readonly bool $skipCoverage)
     {
     }
 
