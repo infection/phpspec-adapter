@@ -4,4 +4,8 @@ suites:
     psr4_prefix: TestFrameworks
 
 extensions:
-  FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension: ~
+  FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
+    format:
+      - xml
+    output:
+      xml: var/phpspec-coverage
