@@ -24,9 +24,11 @@ jobs:
         php-version: ['8.2']
         check:
           - makefile-target: 'cs-lint'
-            name: 'PHP-CS-Fixer lint'
+            name: 'PHP-CS-Fixer'
           - makefile-target: 'phpstan'
-            name: 'PHPStan lint'
+            name: 'PHPStan'
+          - makefile-target: 'rector-lint'
+            name: 'Rector'
 
     name: ${{ matrix.check.name }} on PHP ${{ matrix.php-version }}
 
