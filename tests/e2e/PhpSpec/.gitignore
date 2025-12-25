@@ -1,5 +1,4 @@
-vendor/
-infection.log
-infection-cache/
-composer.lock
-error.log
+!/var/.gitkeep
+/composer.lock
+/var/
+/vendor/
