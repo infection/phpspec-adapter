@@ -40,7 +40,7 @@ use function array_merge;
 use function is_executable;
 use const PHP_SAPI;
 use function shell_exec;
-use function substr;
+use function str_ends_with;
 use Symfony\Component\Process\PhpExecutableFinder;
 
 /**
@@ -124,6 +124,6 @@ class CommandLineBuilder
 
     private function isBatchFile(string $path): bool
     {
-        return substr($path, -4) === '.bat';
+        return str_ends_with($path, '.bat');
     }
 }

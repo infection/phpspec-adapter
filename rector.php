@@ -36,14 +36,12 @@ declare(strict_types=1);
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
 use Rector\CodeQuality\Rector\ClassConstFetch\VariableConstFetchToClassConstFetchRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
-use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\CodeQuality\Rector\Include_\AbsolutizeRequireAndIncludePathRector;
 use Rector\Config\RectorConfig;
 use Rector\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
-use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\DataProviderArrayItemsNewLinedRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertCompareOnCountableWithMethodToAssertCountRector;
@@ -73,7 +71,7 @@ return RectorConfig::configure()
         __DIR__ . '/src',
         __DIR__ . '/tests/phpunit',
     ])
-    ->withPhpSets(php74: true)
+    ->withPhpSets(php82: true)
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
@@ -99,14 +97,14 @@ return RectorConfig::configure()
         PrivatizeFinalClassPropertyRector::class,
         TypedPropertyFromAssignsRector::class,
     ])
-//    ->withConfiguredRule(
-//        ClassPropertyAssignToConstructorPromotionRector::class,
-//        [
-//            'inline_public' => false,
-//            'rename_property' => true,
-//            'allow_model_based_classes' => true,
-//        ],
-//    )
+    ->withConfiguredRule(
+        ClassPropertyAssignToConstructorPromotionRector::class,
+        [
+            'inline_public' => false,
+            'rename_property' => true,
+            'allow_model_based_classes' => true,
+        ],
+    )
     ->withSkip([
         AbsolutizeRequireAndIncludePathRector::class,
         AddArrowFunctionReturnTypeRector::class,
@@ -121,7 +119,4 @@ return RectorConfig::configure()
         SimplifyDeMorganBinaryRector::class,
         SimplifyIfElseToTernaryRector::class,
         VariableConstFetchToClassConstFetchRector::class,
-        // To remove
-        SimplifyRegexPatternRector::class,
-        StrEndsWithRector::class,
     ]);

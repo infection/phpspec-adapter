@@ -54,17 +54,11 @@ use Symfony\Component\Yaml\Yaml;
  */
 class MutationConfigBuilder
 {
-    private string $tempDirectory;
-
-    private string $originalYamlConfigPath;
-
-    private string $projectDir;
-
-    public function __construct(string $tempDirectory, string $originalYamlConfigPath, string $projectDir)
-    {
-        $this->tempDirectory = $tempDirectory;
-        $this->originalYamlConfigPath = $originalYamlConfigPath;
-        $this->projectDir = $projectDir;
+    public function __construct(
+        private readonly string $tempDirectory,
+        private readonly string $originalYamlConfigPath,
+        private readonly string $projectDir,
+    ) {
     }
 
     /**
@@ -104,8 +98,11 @@ class MutationConfigBuilder
     /**
      * @param array<string, mixed> $parsedYaml
      */
-    private function createCustomAutoloadWithInterceptor(string $originalFilePath, string $mutantFilePath, array $parsedYaml): string
-    {
+    private function createCustomAutoloadWithInterceptor(
+        string $originalFilePath,
+        string $mutantFilePath,
+        array $parsedYaml,
+    ): string {
         $originalBootstrap = $this->getOriginalBootstrapFilePath($parsedYaml);
         $autoloadPlaceholder = $originalBootstrap !== null ? "require_once '{$originalBootstrap}';" : '';
         /** @var string $interceptorPath */
@@ -145,8 +142,11 @@ class MutationConfigBuilder
         return sprintf('%s/%s', $this->projectDir, $parsedYaml['bootstrap']);
     }
 
-    private function getInterceptorFileContent(string $interceptorPath, string $originalFilePath, string $mutantFilePath): string
-    {
+    private function getInterceptorFileContent(
+        string $interceptorPath,
+        string $originalFilePath,
+        string $mutantFilePath,
+    ): string {
         $infectionPhar = '';
 
         if (str_starts_with(__FILE__, 'phar:')) {

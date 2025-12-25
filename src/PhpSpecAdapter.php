@@ -55,36 +55,15 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         '/Fatal error happened/i',
     ];
 
-    private string $testFrameworkExecutable;
-
-    private ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder;
-
-    private InitialConfigBuilder $initialConfigBuilder;
-
-    private MutationConfigBuilder $mutationConfigBuilder;
-
-    private VersionParser $versionParser;
-
-    private CommandLineBuilder $commandLineBuilder;
-
-    private ?string $version;
-
     public function __construct(
-        string $testFrameworkExecutable,
-        InitialConfigBuilder $initialConfigBuilder,
-        MutationConfigBuilder $mutationConfigBuilder,
-        ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder,
-        VersionParser $versionParser,
-        CommandLineBuilder $commandLineBuilder,
-        ?string $version = null,
+        private readonly string $testFrameworkExecutable,
+        private readonly InitialConfigBuilder $initialConfigBuilder,
+        private readonly MutationConfigBuilder $mutationConfigBuilder,
+        private readonly ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder,
+        private readonly VersionParser $versionParser,
+        private readonly CommandLineBuilder $commandLineBuilder,
+        private ?string $version = null,
     ) {
-        $this->testFrameworkExecutable = $testFrameworkExecutable;
-        $this->initialConfigBuilder = $initialConfigBuilder;
-        $this->mutationConfigBuilder = $mutationConfigBuilder;
-        $this->argumentsAndOptionsBuilder = $argumentsAndOptionsBuilder;
-        $this->versionParser = $versionParser;
-        $this->commandLineBuilder = $commandLineBuilder;
-        $this->version = $version;
     }
 
     public function hasJUnitReport(): bool
@@ -165,7 +144,10 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
 
     public function getInitialTestsFailRecommendations(string $commandLine): string
     {
-        return sprintf('Check the executed command to identify the problem: %s', $commandLine);
+        return sprintf(
+            'Check the executed command to identify the problem: %s',
+            $commandLine,
+        );
     }
 
     private function buildInitialConfigFile(): string
@@ -202,7 +184,11 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     ): array {
         $frameworkArgs = $this->argumentsAndOptionsBuilder->build($configPath, $extraOptions);
 
-        return $this->commandLineBuilder->build($this->testFrameworkExecutable, $phpExtraArgs, $frameworkArgs);
+        return $this->commandLineBuilder->build(
+            $this->testFrameworkExecutable,
+            $phpExtraArgs,
+            $frameworkArgs,
+        );
     }
 
     private function retrieveVersion(): string

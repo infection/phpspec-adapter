@@ -43,20 +43,13 @@ use function str_contains;
  */
 abstract class AbstractYamlConfiguration
 {
-    protected string $tempDirectory;
-
-    /**
-     * @var array<string, mixed>
-     */
-    protected array $parsedYaml;
-
     /**
      * @param array<string, mixed> $parsedYaml
      */
-    public function __construct(string $tmpDir, array $parsedYaml)
-    {
-        $this->tempDirectory = $tmpDir;
-        $this->parsedYaml = $parsedYaml;
+    public function __construct(
+        protected string $tempDirectory,
+        protected array $parsedYaml,
+    ) {
     }
 
     abstract public function getYaml(): string;
