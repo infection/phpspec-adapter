@@ -61,7 +61,7 @@ test-unit: vendor/autoload.php
 
 .PHONY: e2e
 e2e:
-	bash -x ./tests/e2e_tests
+	./tests/e2e_tests
 
 .PHONY: infection
 infection: $(INFECTION) vendor/autoload.php
