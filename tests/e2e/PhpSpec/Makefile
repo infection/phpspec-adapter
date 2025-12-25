@@ -37,11 +37,7 @@ composer-validate: vendor/autoload.php
 
 .PHONY: test
 test:	 ## Executes the tests
-test: phpunit phpspec infection
-
-.PHONY: phpunit
-phpunit: vendor/autoload.php
-	XDEBUG_MODE=coverage vendor/bin/phpunit
+test: phpspec infection
 
 .PHONY: phpspec
 phpspec: vendor/autoload.php

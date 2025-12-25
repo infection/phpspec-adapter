@@ -3,11 +3,9 @@ suites:
     namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec
     psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec
 
-formatter.name: pretty
-
-#extensions:
-#  FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
-#    format:
-#      - xml
-#    output:
-#      xml: var/phpspec-coverage
+extensions:
+  FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
+    format:
+      - xml
+    output:
+      xml: var/phpspec-coverage
