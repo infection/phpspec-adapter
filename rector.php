@@ -42,7 +42,6 @@ use Rector\CodeQuality\Rector\Include_\AbsolutizeRequireAndIncludePathRector;
 use Rector\Config\RectorConfig;
 use Rector\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
-use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\DataProviderArrayItemsNewLinedRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertCompareOnCountableWithMethodToAssertCountRector;
@@ -120,6 +119,4 @@ return RectorConfig::configure()
         SimplifyDeMorganBinaryRector::class,
         SimplifyIfElseToTernaryRector::class,
         VariableConstFetchToClassConstFetchRector::class,
-        // To remove
-        StrEndsWithRector::class,
     ]);
