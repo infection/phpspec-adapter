@@ -13,12 +13,12 @@ PHPSTAN_ARGS=analyse src tests/phpunit -c .phpstan.neon
 # Composer
 COMPOSER=$(PHP) $(shell which composer)
 
+COVERAGE_DIR=var/coverage
+
 # Infection
-INFECTION=./.tools/infection.phar
-INFECTION_URL="https://github.com/infection/infection/releases/download/0.25.3/infection.phar"
+INFECTION=var/tools/infection.phar
 MIN_MSI=68
 MIN_COVERED_MSI=97
-INFECTION_ARGS=--min-msi=$(MIN_MSI) --min-covered-msi=$(MIN_COVERED_MSI) --threads=$(JOBS) --log-verbosity=none --no-interaction --no-progress --show-mutations
 
 all: test
 
@@ -57,10 +57,16 @@ test-unit:
 
 .PHONY: test-unit-xml-coverage
 test-unit-xml-coverage:
-	vendor/bin/phpunit --coverage-xml=var/coverage/xml --log-junit=var/coverage/junit.xml
+	@rm -rf $(COVERAGE_DIR) || true
+	XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-xml=$(COVERAGE_DIR)/xml --log-junit=$(COVERAGE_DIR)/junit.xml
 
+.PHONY: infection
 infection: $(INFECTION)
-	$(INFECTION) $(INFECTION_ARGS)
+	$(INFECTION) \
+		--min-msi=$(MIN_MSI) \
+		--min-covered-msi=$(MIN_COVERED_MSI) \
+		--threads=max \
+		--show-mutations
 
 ##############################################################
 # Development Workflow                                       #
@@ -108,10 +114,12 @@ composer.lock: composer.json
 build/cache:
 	mkdir -p build/cache
 
-$(INFECTION): Makefile
-	wget -q $(INFECTION_URL) --output-document=$(INFECTION)
-	chmod a+x $(INFECTION)
-	touch $@
+$(INFECTION): .tools/infection-version
+	mkdir -p $(shell dirname $(INFECTION))
+	wget --quiet "https://github.com/infection/infection/releases/download/$(shell cat .tools/infection-version)/infection.phar" --output-document=$(INFECTION)
+	chmod a+x $@
+	$(INFECTION) --version
+	touch -c $@
 
 $(PHP_CS_FIXER): Makefile
 	wget -q $(PHP_CS_FIXER_URL) --output-document=$(PHP_CS_FIXER)
