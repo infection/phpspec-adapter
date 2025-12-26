@@ -33,58 +33,17 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of the box project.
- *
- * (c) Kevin Herrera <kevin@herrera.io>
- *     Théo Fidry <theo.fidry@gmail.com>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
-namespace Infection\Tests\TestFramework\PhpSpec\FileSystem;
-
-use Infection\Tests\TestFramework\PhpSpec\TestingUtility\FS;
-use PHPUnit\Framework\TestCase;
-use function Safe\getcwd;
-use function Safe\realpath;
-use Symfony\Component\Filesystem\Filesystem;
-use function str_replace;
+namespace Infection\TestFramework\PhpSpec;
 
 /**
- * Copy/pasted from infection/infection
+ * Very simple trait which only purpose it make it a bit more explicit why the constructor is
+ * private.
+ *
+ * @internal
  */
-abstract class FileSystemTestCase extends TestCase
+trait CannotBeInstantiated
 {
-    protected string $cwd = '';
-
-    protected string $tmp = '';
-
-    protected function setUp(): void
+    private function __construct()
     {
-        $this->cwd = getcwd();
-        $this->tmp = realpath(
-            FS::tmpDir(
-                $this->getTmpDirPrefix(),
-            ),
-        );
-
-        chdir($this->tmp);
-    }
-
-    protected function tearDown(): void
-    {
-        chdir($this->cwd);
-
-        (new Filesystem())->remove($this->tmp);
-    }
-
-    /**
-     * If the test case is `App\Tests\MyFilesystemServiceTestCase`, the default prefix will be "App\Tests\MyFilesystemServiceTestCase".
-     */
-    protected function getTmpDirPrefix(): string
-    {
-        return str_replace('\\', '', static::class);
     }
 }
