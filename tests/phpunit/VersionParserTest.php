@@ -35,11 +35,16 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec;
 
+use Exception;
+use Infection\TestFramework\PhpSpec\Throwable\UnrecognisablePhpSpecVersion;
 use Infection\TestFramework\PhpSpec\VersionParser;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(VersionParser::class)]
+#[CoversClass(UnrecognisablePhpSpecVersion::class)]
 final class VersionParserTest extends TestCase
 {
     private VersionParser $versionParser;
@@ -50,24 +55,19 @@ final class VersionParserTest extends TestCase
     }
 
     #[DataProvider('versionProvider')]
-    public function test_it_parses_version_from_string(string $content, string $expectedVersion): void
+    public function test_it_parses_version_from_string(
+        string $value,
+        string|Exception $expected,
+    ): void
     {
-        $result = $this->versionParser->parse($content);
+        if ($expected instanceof Exception) {
+            $this->expectExceptionObject($expected);
+        }
 
-        $this->assertSame($expectedVersion, $result);
-    }
+        $result = $this->versionParser->parse($value);
 
-    public function test_it_throws_exception_when_content_has_no_version_substring(): void
-    {
-        try {
-            $this->versionParser->parse('abc');
-
-            $this->fail();
-        } catch (InvalidArgumentException $exception) {
-            $this->assertSame(
-                'Parameter does not contain a valid SemVer (sub)string.',
-                $exception->getMessage(),
-            );
+        if (!($expected instanceof Exception)) {
+            $this->assertSame($expected, $result);
         }
     }
 
@@ -99,8 +99,18 @@ final class VersionParserTest extends TestCase
 
         yield 'Hoa' => ['3.17.05.02', '3.17.05'];
 
+        yield 'dev main' => ['dev-main', 'dev-main'];
+
+        // TODO: this is incorrect
+        yield 'dev branch' => ['2.5.x-dev', '2.5.'];
+
         yield 'phpspec stable' => ['phpspec 7.1.0', '7.1.0'];
 
         yield 'phpspec RC' => ['phpspec version 5.0.0-rc1', '5.0.0-rc1'];
+
+        yield 'invalid version' => [
+            'abc',
+            new UnrecognisablePhpSpecVersion('The value "abc" is not a valid SemVer (sub)string.'),
+        ];
     }
 }

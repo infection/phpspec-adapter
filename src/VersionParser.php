@@ -35,23 +35,29 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec;
 
+use Infection\TestFramework\PhpSpec\Throwable\UnrecognisablePhpSpecVersion;
 use InvalidArgumentException;
 use function preg_match;
 
 /**
  * @internal
  */
-class VersionParser
+final readonly class VersionParser
 {
     private const VERSION_REGEX = '/(?<version>\d+\.\d+\.?\d*)(?<prerelease>-[\d\p{L}.]+)?(?<build>\+[\d\p{L}.]+)?/';
 
-    public function parse(string $content): string
+    /**
+     * @throws UnrecognisablePhpSpecVersion
+     *
+     * @return non-empty-string
+     */
+    public function parse(string $value): string
     {
         $matches = [];
-        $matched = preg_match(self::VERSION_REGEX, $content, $matches) > 0;
+        $matched = preg_match(self::VERSION_REGEX, $value, $matches) > 0;
 
         if (!$matched) {
-            throw new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.');
+            throw UnrecognisablePhpSpecVersion::create($value);
         }
 
         return $matches[0];
