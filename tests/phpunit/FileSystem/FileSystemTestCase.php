@@ -45,53 +45,46 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec\FileSystem;
 
-use function Infection\Tests\TestFramework\PhpSpec\make_tmp_dir;
-use function Infection\Tests\TestFramework\PhpSpec\normalizePath;
+use Infection\Tests\TestFramework\PhpSpec\TestingUtility\FS;
 use PHPUnit\Framework\TestCase;
 use function Safe\getcwd;
 use function Safe\realpath;
 use Symfony\Component\Filesystem\Filesystem;
-use function sys_get_temp_dir;
+use function str_replace;
 
 /**
- * @private
+ * Copy/pasted from infection/infection
  */
 abstract class FileSystemTestCase extends TestCase
 {
-    private const TMP_DIR_NAME = 'infection-test';
+    protected string $cwd = '';
 
-    protected string $cwd;
-
-    protected string $tmp;
-
-    public static function tearDownAfterClass(): void
-    {
-        // Cleans up whatever was there before. Indeed upon failure PHPUnit fails to trigger the
-        // `tearDown()` method and as a result some temporary files may still remain.
-        self::removeTmpDir();
-    }
+    protected string $tmp = '';
 
     protected function setUp(): void
     {
-        // Cleans up whatever was there before. Indeed upon failure PHPUnit fails to trigger the
-        // `tearDown()` method and as a result some temporary files may still remain.
-        self::removeTmpDir();
-
         $this->cwd = getcwd();
-        $this->tmp = make_tmp_dir(self::TMP_DIR_NAME, self::class);
+        $this->tmp = realpath(
+            FS::tmpDir(
+                $this->getTmpDirPrefix(),
+            ),
+        );
+
+        chdir($this->tmp);
     }
 
     protected function tearDown(): void
     {
+        chdir($this->cwd);
+
         (new Filesystem())->remove($this->tmp);
     }
 
-    final protected static function removeTmpDir(): void
+    /**
+     * If the test case is `App\Tests\MyFilesystemServiceTestCase`, the default prefix will be "App\Tests\MyFilesystemServiceTestCase".
+     */
+    protected function getTmpDirPrefix(): string
     {
-        (new Filesystem())->remove(
-            normalizePath(
-                realpath(sys_get_temp_dir()) . '/' . self::TMP_DIR_NAME,
-            ),
-        );
+        return str_replace('\\', '', static::class);
     }
 }

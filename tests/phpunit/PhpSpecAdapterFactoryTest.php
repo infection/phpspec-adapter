@@ -35,62 +35,37 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec;
 
-use const DIRECTORY_SEPARATOR;
-use function random_int;
-use function realpath;
-use function str_replace;
-use function strrpos;
-use function substr;
-use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Filesystem;
-use function sys_get_temp_dir;
+use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
+use Infection\TestFramework\PhpSpec\PhpSpecAdapterFactory;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Normalizes path. Replaces backslashes with forward ones
- */
-function normalizePath(string $value): string
+#[Group('integration')]
+final class PhpSpecAdapterFactoryTest extends TestCase
 {
-    return str_replace(DIRECTORY_SEPARATOR, '/', $value);
-}
+    public function test_it_creates_phpspec_adapter(): void
+    {
+        $adapter = PhpSpecAdapterFactory::create(
+            '/path/to/phpspec',
+            '/tmp',
+            __DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml',
+            null,
+            '/path/to/junit.xml',
+            '/path/to/project',
+            [],
+            true,
+        );
 
-/**
- * Creates a temporary directory.
- *
- * @param string $namespace the directory path in the system's temporary directory
- * @param string $className the name of the test class
- *
- * @return string The path to the created directory
- */
-function make_tmp_dir(string $namespace, string $className): string
-{
-    if (($pos = strrpos($className, '\\')) !== false) {
-        $shortClass = substr($className, $pos + 1);
-    } else {
-        $shortClass = $className;
+        $this->assertInstanceOf(PhpSpecAdapter::class, $adapter);
     }
 
-    // Usage of realpath() is important if the temporary directory is a
-    // symlink to another directory (e.g. /var => /private/var on some Macs)
-    // We want to know the real path to avoid comparison failures with
-    // code that uses real paths only
-    $systemTempDir = str_replace('\\', '/', (string) realpath(sys_get_temp_dir()));
-    $basePath = $systemTempDir . '/' . $namespace . '/' . $shortClass;
+    public function test_it_returns_right_adapter_name(): void
+    {
+        $this->assertSame('phpspec', PhpSpecAdapterFactory::getAdapterName());
+    }
 
-    $result = false;
-    $attempts = 0;
-    $filesystem = new Filesystem();
-
-    do {
-        $tmpDir = normalizePath($basePath . random_int(10000, 99999));
-
-        try {
-            $filesystem->mkdir($tmpDir, 0777);
-
-            $result = true;
-        } catch (IOException) {
-            ++$attempts;
-        }
-    } while ($result === false && $attempts <= 10);
-
-    return $tmpDir;
+    public function test_it_returns_right_executable_name(): void
+    {
+        $this->assertSame('phpspec', PhpSpecAdapterFactory::getExecutableName());
+    }
 }

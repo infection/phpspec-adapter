@@ -33,14 +33,14 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Config;
+namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 
-use function count;
 use Infection\TestFramework\PhpSpec\Config\InitialYamlConfiguration;
 use Infection\TestFramework\PhpSpec\Config\NoCodeCoverageException;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
+use function count;
 
 final class InitialYamlConfigurationTest extends TestCase
 {

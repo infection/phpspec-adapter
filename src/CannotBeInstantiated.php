@@ -33,39 +33,17 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Adapter;
+namespace Infection\TestFramework\PhpSpec;
 
-use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
-use Infection\TestFramework\PhpSpec\PhpSpecAdapterFactory;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
-
-#[Group('integration')]
-final class PhpSpecAdapterFactoryTest extends TestCase
+/**
+ * Very simple trait which only purpose it make it a bit more explicit why the constructor is
+ * private.
+ *
+ * @internal
+ */
+trait CannotBeInstantiated
 {
-    public function test_it_creates_phpspec_adapter(): void
+    private function __construct()
     {
-        $adapter = PhpSpecAdapterFactory::create(
-            '/path/to/phpspec',
-            '/tmp',
-            __DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml',
-            null,
-            '/path/to/junit.xml',
-            '/path/to/project',
-            [],
-            true,
-        );
-
-        $this->assertInstanceOf(PhpSpecAdapter::class, $adapter);
-    }
-
-    public function test_it_returns_right_adapter_name(): void
-    {
-        $this->assertSame('phpspec', PhpSpecAdapterFactory::getAdapterName());
-    }
-
-    public function test_it_returns_right_executable_name(): void
-    {
-        $this->assertSame('phpspec', PhpSpecAdapterFactory::getExecutableName());
     }
 }
