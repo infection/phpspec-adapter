@@ -33,24 +33,64 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
+namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
+use Infection\TestFramework\PhpSpec\Config\InitialYamlConfiguration;
 use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
-#[Group('integration')]
-final class InitialConfigBuilderTest extends FileSystemTestCase
+#[CoversClass(InitialConfigBuilder::class)]
+#[CoversClass(InitialYamlConfiguration::class)]
+final class InitialConfigBuilderTest extends TestCase
 {
-    public function test_it_builds_path_to_initial_config_file(): void
+    private const FIXTURES_DIR = __DIR__.'/Fixtures';
+
+    #[DataProvider('originalConfigProvider')]
+    public function test_it_builds_path_to_initial_config_file(
+        string $originalYamlConfigPath,
+        bool $skipCoverage,
+        string $version,
+        string $expectedContents,
+    ): void
     {
-        $originalYamlConfigPath = __DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml';
+        $fileSystemMock = $this->createMock(Filesystem::class);
 
-        $builder = new InitialConfigBuilder($this->tmp, $originalYamlConfigPath, false);
+        $expectedPath = '/path/to/tmp/phpspecConfiguration.initial.infection.yml';
 
-        $actualPath = $builder->build('2.0');
+        $fileSystemMock
+            ->expects($this->once())
+            ->method('dumpFile')
+            ->with($expectedPath, $expectedContents);
 
-        $this->assertFileExists($actualPath);
-        $this->assertSame($this->tmp . '/phpspecConfiguration.initial.infection.yml', $actualPath);
+        $builder = new InitialConfigBuilder(
+            $fileSystemMock,
+            '/path/to/tmp',
+            $originalYamlConfigPath,
+            $skipCoverage,
+        );
+
+        $actualPath = $builder->build($version);
+
+        $this->assertSame($expectedPath, $actualPath);
+    }
+
+    public static function originalConfigProvider(): iterable
+    {
+        yield 'basic' => [
+            self::FIXTURES_DIR.'/phpspec.yml',
+            false,
+            '2.0',
+            <<<'YAML'
+            extensions:
+                CodeCoverageExtension: { format: [xml], output: { xml: /path/to/tmp/phpspec-coverage-xml } }
+                TestExtension: { options: 123 }
+            
+            YAML,
+        ];
     }
 }

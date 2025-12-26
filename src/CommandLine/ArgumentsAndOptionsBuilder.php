@@ -42,9 +42,11 @@ use function explode;
 /**
  * @internal
  */
-final class ArgumentsAndOptionsBuilder
+final readonly class ArgumentsAndOptionsBuilder
 {
     /**
+     * @param non-empty-string $configPath
+     *
      * @return string[]
      */
     public function build(string $configPath, string $extraOptions): array

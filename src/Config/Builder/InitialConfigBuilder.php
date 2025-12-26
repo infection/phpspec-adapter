@@ -35,6 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
+use Symfony\Component\Filesystem\Filesystem;
 use function file_put_contents;
 use Infection\TestFramework\PhpSpec\Config\InitialYamlConfiguration;
 use Symfony\Component\Yaml\Yaml;
@@ -42,32 +43,36 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * @internal
  */
-class InitialConfigBuilder
+final readonly class InitialConfigBuilder
 {
     public function __construct(
-        private readonly string $tempDirectory,
-        private readonly string $originalYamlConfigPath,
-        private readonly bool $skipCoverage,
+        private Filesystem $filesystem,
+        private string $tmpDirectory,
+        private string $originalYamlConfigPath,
+        private bool   $skipCoverage,
     ) {
     }
 
     public function build(string $version): string
     {
-        $path = $this->buildPath();
+        $path = $this->createPath();
 
         $yamlConfiguration = new InitialYamlConfiguration(
-            $this->tempDirectory,
+            $this->tmpDirectory,
             Yaml::parseFile($this->originalYamlConfigPath),
             $this->skipCoverage,
         );
 
-        file_put_contents($path, $yamlConfiguration->getYaml());
+        $this->filesystem->dumpFile(
+            $path,
+            $yamlConfiguration->getYaml(),
+        );
 
         return $path;
     }
 
-    private function buildPath(): string
+    private function createPath(): string
     {
-        return $this->tempDirectory . '/phpspecConfiguration.initial.infection.yml';
+        return $this->tmpDirectory . '/phpspecConfiguration.initial.infection.yml';
     }
 }
