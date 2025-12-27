@@ -33,14 +33,16 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Adapter;
+namespace Infection\Tests\TestFramework\PhpSpec;
 
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapterFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 #[Group('integration')]
+#[CoversClass(PhpSpecAdapterFactory::class)]
 final class PhpSpecAdapterFactoryTest extends TestCase
 {
     public function test_it_creates_phpspec_adapter(): void

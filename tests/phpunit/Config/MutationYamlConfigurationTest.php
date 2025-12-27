@@ -36,10 +36,14 @@ declare(strict_types=1);
 namespace Infection\Tests\TestFramework\PhpSpec\Config;
 
 use function count;
+use Infection\TestFramework\PhpSpec\Config\AbstractYamlConfiguration;
 use Infection\TestFramework\PhpSpec\Config\MutationYamlConfiguration;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
+#[CoversClass(AbstractYamlConfiguration::class)]
+#[CoversClass(MutationYamlConfiguration::class)]
 final class MutationYamlConfigurationTest extends TestCase
 {
     private string $tempDir = '/path/to/tmp';

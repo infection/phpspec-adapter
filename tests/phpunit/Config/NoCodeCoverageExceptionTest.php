@@ -36,8 +36,10 @@ declare(strict_types=1);
 namespace Infection\Tests\TestFramework\PhpSpec\Config;
 
 use Infection\TestFramework\PhpSpec\Config\NoCodeCoverageException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(NoCodeCoverageException::class)]
 final class NoCodeCoverageExceptionTest extends TestCase
 {
     public function test_from_test_framework(): void

@@ -33,11 +33,13 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Adapter;
+namespace Infection\Tests\TestFramework\PhpSpec;
 
 use Infection\TestFramework\PhpSpec\FinderException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(FinderException::class)]
 final class FinderExceptionTest extends TestCase
 {
     public function test_php_executable_not_found(): void
