@@ -1,0 +1,73 @@
+# yamllint disable rule:line-length
+# yamllint disable rule:braces
+
+name: Update Infection Version
+
+on:
+  schedule:
+    # Run daily at 03:00 UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-infection-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get latest Infection release
+        id: latest-release
+        run: |
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/infection/infection/releases/latest | jq -r '.tag_name')
+          echo "version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          echo "Latest Infection version: $LATEST_VERSION"
+
+      - name: Get current version
+        id: current-version
+        run: |
+          CURRENT_VERSION=$(cat .tools/infection-version)
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $CURRENT_VERSION"
+
+      - name: Compare versions
+        id: compare
+        run: |
+          LATEST="${{ steps.latest-release.outputs.version }}"
+          CURRENT="${{ steps.current-version.outputs.version }}"
+
+          if [ "$LATEST" != "$CURRENT" ]; then
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+            echo "Version mismatch detected: $CURRENT -> $LATEST"
+          else
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+            echo "Version is up to date: $CURRENT"
+          fi
+
+      - name: Update infection-version file
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          echo "${{ steps.latest-release.outputs.version }}" > .tools/infection-version
+          echo "Updated .tools/infection-version to ${{ steps.latest-release.outputs.version }}"
+
+      - name: Create Pull Request
+        if: steps.compare.outputs.needs_update == 'true'
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/update-infection-${{ steps.latest-release.outputs.version }}
+          delete-branch: true
+          commit-message: |
+            chore: Update Infection to ${{ steps.latest-release.outputs.version }}
+
+            Automated update of Infection version from ${{ steps.current-version.outputs.version }} to ${{ steps.latest-release.outputs.version }}.
+          title: "chore: Update Infection to ${{ steps.latest-release.outputs.version }}"
+          body: |
+            This PR updates the Infection version from **${{ steps.current-version.outputs.version }}** to **${{ steps.latest-release.outputs.version }}**.
+
+            ---
+
+            This PR was automatically created by the [Update Infection Version workflow](.github/workflows/update.yaml).
