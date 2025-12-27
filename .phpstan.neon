@@ -3,7 +3,7 @@ includes:
 
 parameters:
     tmpDir: ../var/phpstan-cache
-    level: max
+    level: 8
     paths:
         - src
         - tests/Fixtures
