@@ -104,6 +104,9 @@ final class VersionParserTest extends TestCase
         }
     }
 
+    /**
+     * @return iterable<string|array{string, string|Exception}>
+     */
     private static function validSemanticVersionProvider(): iterable
     {
         // Source: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
@@ -170,6 +173,9 @@ final class VersionParserTest extends TestCase
         yield '1.0.0-0A.is.legal';
     }
 
+    /**
+     * @return iterable<string|array{string, string|Exception}>
+     */
     private static function invalidSemanticVersionProvider(): iterable
     {
         // https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
@@ -306,6 +312,9 @@ final class VersionParserTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string|array{string, string|Exception}>
+     */
     private static function phpSpecVersionProvider(): iterable
     {
         // https://packagist.org/packages/phpspec/phpspec
