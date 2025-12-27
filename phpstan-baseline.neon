@@ -109,12 +109,6 @@ parameters:
 			path: src/PhpSpecAdapterFactory.php
 
 		-
-			message: '#^Method Infection\\Tests\\TestFramework\\PhpSpec\\Adapter\\VersionParserTest\:\:versionProvider\(\) return type has no value type specified in iterable type iterable\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/phpunit/Adapter/VersionParserTest.php
-
-		-
 			message: '#^Cannot access offset ''PhpSpecCodeCoverageExtension'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 3
@@ -173,3 +167,9 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: tests/phpunit/Config/MutationYamlConfigurationTest.php
+
+		-
+			message: '#^Method Infection\\Tests\\TestFramework\\PhpSpec\\VersionParserTest\:\:versionProvider\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/phpunit/VersionParserTest.php

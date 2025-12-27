@@ -33,13 +33,15 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Adapter;
+namespace Infection\Tests\TestFramework\PhpSpec;
 
 use Infection\TestFramework\PhpSpec\VersionParser;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(VersionParser::class)]
 final class VersionParserTest extends TestCase
 {
     private VersionParser $versionParser;

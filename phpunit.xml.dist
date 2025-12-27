@@ -6,6 +6,7 @@
          executionOrder="random"
          cacheDirectory="var/phpunit-cache"
          displayDetailsOnSkippedTests="true"
+         requireCoverageMetadata="true"
          displayDetailsOnTestsThatTriggerDeprecations="true"
          displayDetailsOnPhpunitDeprecations="true"
          displayDetailsOnTestsThatTriggerNotices="true"

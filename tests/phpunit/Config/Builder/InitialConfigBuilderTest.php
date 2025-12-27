@@ -37,9 +37,11 @@ namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
 
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 
 #[Group('integration')]
+#[CoversClass(InitialConfigBuilder::class)]
 final class InitialConfigBuilderTest extends FileSystemTestCase
 {
     public function test_it_builds_path_to_initial_config_file(): void
