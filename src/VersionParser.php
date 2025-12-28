@@ -41,7 +41,7 @@ use function preg_match;
 /**
  * @internal
  */
-class VersionParser
+final readonly class VersionParser
 {
     private const VERSION_REGEX = '/(?<version>\d+\.\d+\.?\d*)(?<prerelease>-[\d\p{L}.]+)?(?<build>\+[\d\p{L}.]+)?/';
 
