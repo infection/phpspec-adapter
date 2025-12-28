@@ -35,10 +35,10 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec\Throwable;
 
-use RuntimeException;
 use function sprintf;
+use UnexpectedValueException;
 
-final class UnrecognisableTestFrameworkVersion extends RuntimeException
+final class UnrecognisableTestFrameworkVersion extends UnexpectedValueException
 {
     public static function create(string $testFrameworkName, string $version): self
     {
