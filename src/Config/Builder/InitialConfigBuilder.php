@@ -36,7 +36,7 @@ declare(strict_types=1);
 namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
 use function file_put_contents;
-use Infection\TestFramework\PhpSpec\Config\InitialYamlConfiguration;
+use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -55,13 +55,19 @@ class InitialConfigBuilder
     {
         $path = $this->buildPath();
 
-        $yamlConfiguration = new InitialYamlConfiguration(
+        // TODO: could be injected instead
+        $configuration = new PhpSpecConfigurationBuilder(
             $this->tempDirectory,
             Yaml::parseFile($this->originalYamlConfigPath),
-            $this->skipCoverage,
         );
 
-        file_put_contents($path, $yamlConfiguration->getYaml());
+        if ($this->skipCoverage) {
+            $configuration->removeCoverageExtension();
+        } else {
+            $configuration->configureXmlCoverageReportIfNecessary();
+        }
+
+        file_put_contents($path, $configuration->getYaml());
 
         return $path;
     }
