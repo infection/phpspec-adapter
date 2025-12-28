@@ -71,7 +71,7 @@ final class VersionParserTest extends TestCase
 
     public static function versionProvider(): iterable
     {
-        yield 'Hoa version' => ['3.17.05.02', '3.17.05'];
+        yield 'Hoa version' => ['3.17.05.02', '3.17.05.02'];
 
         yield 'common RC notation 1' => ['5.0.0-rc1', '5.0.0-rc1'];
 
@@ -120,7 +120,7 @@ final class VersionParserTest extends TestCase
 
         yield '1.1.2+meta';
 
-        yield ['1.1.2+meta-valid', '1.1.2+meta'];    // TODO: this is incorrect
+        yield '1.1.2+meta-valid';
 
         yield '1.0.0-alpha';
 
@@ -134,9 +134,9 @@ final class VersionParserTest extends TestCase
 
         yield '1.0.0-alpha0.valid';
 
-        yield '1.0.0-alpha.0valid';
+        yield ['1.0.0-alpha.0valid', '1.0.0-alpha.0'];
 
-        yield ['1.0.0-alpha-a.b-c-somethinglong+build.1-aef.1-its-okay', '1.0.0-alpha'];    // TODO: this is incorrect
+        yield '1.0.0-alpha-a.b-c-somethinglong+build.1-aef.1-its-okay';
 
         yield '1.0.0-rc.1+build.1';
 
@@ -144,9 +144,9 @@ final class VersionParserTest extends TestCase
 
         yield '1.2.3-beta';
 
-        yield ['10.2.3-DEV-SNAPSHOT', '10.2.3-DEV'];    // TODO: this is incorrect
+        yield '10.2.3-DEV-SNAPSHOT';
 
-        yield ['1.2.3-SNAPSHOT-123', '1.2.3-SNAPSHOT'];    // TODO: this is incorrect
+        yield '1.2.3-SNAPSHOT-123';
 
         yield '1.0.0';
 
@@ -160,17 +160,17 @@ final class VersionParserTest extends TestCase
 
         yield '1.0.0-alpha+beta';
 
-        yield ['1.2.3----RC-SNAPSHOT.12.9.1--.12+788', '1.2.3'];    // TODO: this is incorrect
+        yield ['1.2.3----RC-SNAPSHOT.12.9.1--.12+788', '1.2.3----RC-SNAPSHOT.12.9.1'];
 
-        yield ['1.2.3----R-S.12.9.1--.12+meta', '1.2.3'];    // TODO: this is incorrect
+        yield ['1.2.3----R-S.12.9.1--.12+meta', '1.2.3----R-S.12.9.1'];
 
-        yield ['1.2.3----RC-SNAPSHOT.12.9.1--.12', '1.2.3'];
+        yield ['1.2.3----RC-SNAPSHOT.12.9.1--.12', '1.2.3----RC-SNAPSHOT.12.9.1'];
 
-        yield ['1.0.0+0.build.1-rc.10000aaa-kk-0.1', '1.0.0+0.build.1'];    // TODO: this is incorrect
+        yield '1.0.0+0.build.1-rc.10000aaa-kk-0.1';
 
         yield '99999999999999999999999.999999999999999999.99999999999999999';
 
-        yield '1.0.0-0A.is.legal';
+        yield ['1.0.0-0A.is.legal', '1.0.0-0'];
     }
 
     /**
@@ -184,13 +184,22 @@ final class VersionParserTest extends TestCase
             UnrecognisableTestFrameworkVersion::create('PhpSpec', '1'),
         ];
 
-        yield '1.2';
+        yield [
+            '1.2',
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1.2'),
+        ];
 
-        yield '1.2.3-0123';
+        yield [
+            '1.2.3-0123',
+            '1.2.3-0',
+        ];
 
-        yield '1.2.3-0123.0123';
+        yield [
+            '1.2.3-0123.0123',
+            '1.2.3-0',
+        ];
 
-        yield '1.1.2+.123';
+        yield ['1.1.2+.123', '1.1.2'];
 
         yield [
             '+invalid',
@@ -264,35 +273,65 @@ final class VersionParserTest extends TestCase
             UnrecognisableTestFrameworkVersion::create('PhpSpec', '-alpha.'),
         ];
 
-        yield '1.0.0-alpha..';
+        yield [
+            '1.0.0-alpha..',
+            '1.0.0-alpha',
+        ];
 
-        yield '1.0.0-alpha..1';
+        yield [
+            '1.0.0-alpha..1',
+            '1.0.0-alpha',
+        ];
 
-        yield '1.0.0-alpha...1';
+        yield [
+            '1.0.0-alpha...1',
+            '1.0.0-alpha',
+        ];
 
-        yield '1.0.0-alpha....1';
+        yield [
+            '1.0.0-alpha....1',
+            '1.0.0-alpha',
+        ];
 
-        yield '1.0.0-alpha.....1';
+        yield [
+            '1.0.0-alpha.....1',
+            '1.0.0-alpha',
+        ];
 
-        yield '1.0.0-alpha......1';
+        yield [
+            '1.0.0-alpha......1',
+            '1.0.0-alpha',
+        ];
 
-        yield '1.0.0-alpha.......1';
+        yield [
+            '1.0.0-alpha.......1',
+            '1.0.0-alpha',
+        ];
 
-        yield '01.1.1';
+        yield ['01.1.1', '1.1.1'];
 
         yield '1.01.1';
 
         yield '1.1.01';
 
-        yield '1.2';
+        yield [
+            '1.2',
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1.2'),
+        ];
 
         yield ['1.2.3.DEV', '1.2.3'];  // TODO: this is incorrect
 
-        yield '1.2-SNAPSHOT';
+        yield [
+            '1.2-SNAPSHOT',
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1.2-SNAPSHOT'),
+        ];
 
-        yield ['1.2.31.2.3----RC-SNAPSHOT.12.09.1--..12+788', '1.2.31'];  // TODO: this is incorrect
+        yield ['1.2.31.2.3----RC-SNAPSHOT.12.09.1--..12+788', '1.2.31.2'];  // TODO: this is incorrect
 
-        yield ['1.2-RC-SNAPSHOT', '1.2-RC'];  // TODO: this is incorrect
+        yield [
+            '1.2-RC-SNAPSHOT',
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1.2-RC-SNAPSHOT'),
+        ];
 
         yield ['-1.0.3-gamma+b7718', '1.0.3-gamma+b7718'];  // TODO: this is incorrect
 
@@ -305,10 +344,9 @@ final class VersionParserTest extends TestCase
 
         yield ['9.8.7-whatever+meta+meta', '9.8.7-whatever+meta'];  // TODO: this is incorrect
 
-        // TODO: this is incorrect
         yield [
             '99999999999999999999999.999999999999999999.99999999999999999----RC-SNAPSHOT.12.09.1--------------------------------..12',
-            '99999999999999999999999.999999999999999999.99999999999999999',
+            '99999999999999999999999.999999999999999999.99999999999999999----RC-SNAPSHOT.12.0',
         ];
     }
 
@@ -326,7 +364,10 @@ final class VersionParserTest extends TestCase
 
         yield '2.2.0-BETA';
 
-        yield ['2.5.x-dev', '2.5.'];    // TODO: this is incorrect
+        yield [
+            '2.5.x-dev',
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '2.5.x-dev'),
+        ];    // TODO: this is incorrect
 
         yield [
             'dev-main',

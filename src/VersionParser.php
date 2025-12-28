@@ -43,7 +43,15 @@ use function preg_match;
  */
 final readonly class VersionParser
 {
-    private const VERSION_REGEX = '/(?<version>\d+\.\d+\.?\d*)(?<prerelease>-[\d\p{L}.]+)?(?<build>\+[\d\p{L}.]+)?/';
+    // Adapted from: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+    // It required a few adjustments for:
+    // - Accounting the fact that the value may not be strictly the version, but a string containing the version.
+    // - Supporting the HOA like versions `x.YY.mm.dd`
+    //   - x: Master Compatibility Number
+    //   - YY: year since 2000 ("Rush Epoch")
+    //   - mm = month
+    //   - dd = day
+    private const VERSION_REGEX = '/(?:.+ [vV]?)?(?<version>(?P<major>0|[1-9]\d*)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:\.\d+)?(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?: .+)?/';
 
     /**
      * Parses a string value to try to extract the exact version out of it. The input can
@@ -66,6 +74,6 @@ final readonly class VersionParser
             );
         }
 
-        return $matches[0];
+        return $matches['version'];
     }
 }
