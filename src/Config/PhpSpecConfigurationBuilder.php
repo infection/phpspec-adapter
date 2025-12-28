@@ -123,13 +123,12 @@ final class PhpSpecConfigurationBuilder
     private static function assertIsSupportedExtensionsFormat(array $parsedYaml): void
     {
         if (!array_key_exists('extensions', $parsedYaml)
-        || $parsedYaml['extensions'] === null
+            || $parsedYaml['extensions'] === null
         ) {
             return;
         }
 
-        if (
-            !is_array($parsedYaml['extensions'])
+        if (!is_array($parsedYaml['extensions'])
             || array_is_list($parsedYaml['extensions'])
         ) {
             throw UnrecognisableConfiguration::fromInvalidExtensionsType();
