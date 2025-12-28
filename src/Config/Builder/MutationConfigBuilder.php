@@ -40,7 +40,7 @@ use function assert;
 use function file_put_contents;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\StreamWrapper\IncludeInterceptor;
-use Infection\TestFramework\PhpSpec\Config\MutationYamlConfiguration;
+use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
 use function is_string;
 use Phar;
 use function sprintf;
@@ -80,13 +80,14 @@ class MutationConfigBuilder
 
         file_put_contents($customAutoloadFilePath, $this->createCustomAutoloadWithInterceptor($mutationOriginalFilePath, $mutantFilePath, $parsedYaml));
 
-        $yamlConfiguration = new MutationYamlConfiguration(
+        $configuration = new PhpSpecConfigurationBuilder(
             $this->tempDirectory,
             $parsedYaml,
-            $customAutoloadFilePath,
         );
+        $configuration->setCustomAutoLoaderPath($customAutoloadFilePath);
+        $configuration->removeCoverageExtension();
 
-        $newYaml = $yamlConfiguration->getYaml();
+        $newYaml = $configuration->getYaml();
 
         $path = $this->buildPath($mutationHash);
 
