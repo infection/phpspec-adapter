@@ -36,8 +36,8 @@ declare(strict_types=1);
 namespace Infection\Tests\TestFramework\PhpSpec;
 
 use Exception;
+use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableTestFrameworkVersion;
 use Infection\TestFramework\PhpSpec\VersionParser;
-use InvalidArgumentException;
 use function is_array;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -181,7 +181,7 @@ final class VersionParserTest extends TestCase
         // https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
         yield [
             '1',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1'),
         ];
 
         yield '1.2';
@@ -194,74 +194,74 @@ final class VersionParserTest extends TestCase
 
         yield [
             '+invalid',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '+invalid'),
         ];
 
         yield [
             '-invalid',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '-invalid'),
         ];
 
         yield [
             '-invalid+invalid',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '-invalid+invalid'),
         ];
 
         yield [
             '-invalid.01',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '-invalid.01'),
         ];
 
         yield [
             'alpha',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha'),
         ];
 
         yield [
             'alpha.beta',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha.beta'),
         ];
 
         yield [
             'alpha.beta.1',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha.beta.1'),
         ];
 
         yield [
             'alpha.1',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha.1'),
         ];
 
         yield [
             'alpha+beta',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha+beta'),
         ];
 
         yield [
             'alpha_beta',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha_beta'),
         ];
 
         yield [
             'alpha.',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha.'),
         ];
 
         yield [
             'alpha..',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha..'),
         ];
 
         yield [
             'beta',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'beta'),
         ];
 
         yield ['1.0.0-alpha_beta', '1.0.0-alpha'];    // TODO: this is incorrect
 
         yield [
             '-alpha.',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '-alpha.'),
         ];
 
         yield '1.0.0-alpha..';
@@ -298,7 +298,7 @@ final class VersionParserTest extends TestCase
 
         yield [
             '+justmeta',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', '+justmeta'),
         ];
 
         yield ['9.8.7+meta+meta', '9.8.7+meta'];  // TODO: this is incorrect
@@ -330,7 +330,7 @@ final class VersionParserTest extends TestCase
 
         yield [
             'dev-main',
-            new InvalidArgumentException('Parameter does not contain a valid SemVer (sub)string.'),
+            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'dev-main'),
         ];    // TODO: this is incorrect
     }
 }
