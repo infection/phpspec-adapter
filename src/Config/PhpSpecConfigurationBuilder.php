@@ -35,8 +35,11 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec\Config;
 
+use function array_is_list;
 use function array_key_exists;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
+use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
+use function is_array;
 use function str_contains;
 use Symfony\Component\Yaml\Yaml;
 
@@ -46,12 +49,26 @@ use Symfony\Component\Yaml\Yaml;
 final class PhpSpecConfigurationBuilder
 {
     /**
-     * @param array<string, mixed> $parsedYaml
+     * @param array{extensions?: array<string, mixed>|null}&array<string, mixed> $parsedYaml
      */
     public function __construct(
         private readonly string $tmpDirectory,
         private array $parsedYaml,
     ) {
+    }
+
+    /**
+     * @param array<string, mixed> $parsedYaml
+     *
+     * @throws UnrecognisableConfiguration
+     */
+    public static function create(
+        string $tmpDirectory,
+        array $parsedYaml,
+    ): self {
+        self::assertIsSupportedExtensionsFormat($parsedYaml);
+
+        return new self($tmpDirectory, $parsedYaml);
     }
 
     public function removeCoverageExtension(): void
@@ -96,6 +113,26 @@ final class PhpSpecConfigurationBuilder
     public function getYaml(): string
     {
         return Yaml::dump($this->parsedYaml);
+    }
+
+    /**
+     * @param array<string, mixed> $parsedYaml
+     *
+     * @phpstan-assert array{extensions?: null|array<string, mixed>}&array<string, mixed> $parsedYaml
+     */
+    private static function assertIsSupportedExtensionsFormat(array $parsedYaml): void
+    {
+        if (!array_key_exists('extensions', $parsedYaml)
+            || $parsedYaml['extensions'] === null
+        ) {
+            return;
+        }
+
+        if (!is_array($parsedYaml['extensions'])
+            || array_is_list($parsedYaml['extensions'])
+        ) {
+            throw UnrecognisableConfiguration::fromInvalidExtensionsType();
+        }
     }
 
     /**

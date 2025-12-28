@@ -33,51 +33,30 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec\Config\Builder;
+namespace Infection\TestFramework\PhpSpec\Throwable;
 
-use function file_put_contents;
-use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
-use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
-use Symfony\Component\Yaml\Yaml;
+use function sprintf;
+use UnexpectedValueException;
 
-/**
- * @internal
- */
-class InitialConfigBuilder
+final class UnrecognisableConfiguration extends UnexpectedValueException
 {
-    public function __construct(
-        private readonly string $tempDirectory,
-        private readonly string $originalYamlConfigPath,
-        private readonly bool $skipCoverage,
-    ) {
+    public static function fromInvalidExtensionsType(): self
+    {
+        return new self(
+            'The "extensions" configuration key must be null or an associative array.',
+        );
     }
 
-    public function build(string $version): string
+    public function enrichWithVersion(string $version): self
     {
-        $path = $this->buildPath();
-
-        try {
-            $configuration = PhpSpecConfigurationBuilder::create(
-                $this->tempDirectory,
-                Yaml::parseFile($this->originalYamlConfigPath),
-            );
-        } catch (UnrecognisableConfiguration $exception) {
-            throw $exception->enrichWithVersion($version);
-        }
-
-        if ($this->skipCoverage) {
-            $configuration->removeCoverageExtension();
-        } else {
-            $configuration->configureXmlCoverageReportIfNecessary();
-        }
-
-        file_put_contents($path, $configuration->getYaml());
-
-        return $path;
-    }
-
-    private function buildPath(): string
-    {
-        return $this->tempDirectory . '/phpspecConfiguration.initial.infection.yml';
+        return new self(
+            sprintf(
+                'Could not recognise the current configuration format for the version "%s": %s',
+                $version,
+                $this->getMessage(),
+            ),
+            $this->getCode(),
+            $this,
+        );
     }
 }
