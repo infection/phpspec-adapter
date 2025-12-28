@@ -55,7 +55,6 @@ class InitialConfigBuilder
     {
         $path = $this->buildPath();
 
-        // TODO: could be injected instead
         $configuration = new PhpSpecConfigurationBuilder(
             $this->tempDirectory,
             Yaml::parseFile($this->originalYamlConfigPath),
