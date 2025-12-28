@@ -33,58 +33,48 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
+namespace Infection\Tests\TestFramework\PhpSpec\Throwable;
 
-use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
+use Exception;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
-use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use function Safe\file_put_contents;
+use PHPUnit\Framework\TestCase;
+use Throwable;
 
-#[Group('integration')]
-#[CoversClass(InitialConfigBuilder::class)]
-final class InitialConfigBuilderTest extends FileSystemTestCase
+#[CoversClass(UnrecognisableConfiguration::class)]
+final class UnrecognisableConfigurationTest extends TestCase
 {
-    public function test_it_builds_path_to_initial_config_file(): void
+    public function test_it_can_enrich_an_existing_instance_with_the_version(): void
     {
-        $originalYamlConfigPath = __DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml';
+        $original = new UnrecognisableConfiguration(
+            'Original message.',
+            10,
+        );
 
-        $builder = new InitialConfigBuilder($this->tmp, $originalYamlConfigPath, false);
+        $newException = $original->enrichWithVersion('2.0.0');
 
-        $actualPath = $builder->build('2.0');
-
-        $this->assertFileExists($actualPath);
-        $this->assertSame($this->tmp . '/phpspecConfiguration.initial.infection.yml', $actualPath);
+        $this->assertExceptionStateIs(
+            $original,
+            'Original message.',
+            10,
+            null,
+        );
+        $this->assertExceptionStateIs(
+            $newException,
+            'Could not recognise the current configuration format for the version "2.0.0": Original message.',
+            10,
+            $original,
+        );
     }
 
-    public function test_it_provides_a_friendly_error_if_the_configuration_is_invalud(): void
-    {
-        $originalYamlConfigPath = $this->tmp . '/phpspec.yml';
-        file_put_contents(
-            $originalYamlConfigPath,
-            <<<'YAML'
-                suites: ~
-                extensions:
-                    - Acme\Extension\FirstExampleExtension
-                    - Acme\Extension\CodeCoverageExtension
-                    - Acme\Extension\SecondExampleExtension
-
-                YAML,
-        );
-
-        $builder = new InitialConfigBuilder(
-            $this->tmp,
-            $originalYamlConfigPath,
-            false,
-        );
-
-        $this->expectExceptionObject(
-            new UnrecognisableConfiguration(
-                'Could not recognise the current configuration format for the version "2.0": The "extensions" configuration key must be null or an associative array.',
-            ),
-        );
-
-        $builder->build('2.0');
+    private function assertExceptionStateIs(
+        Exception $exception,
+        string $expectedMessage,
+        int $expectedCode,
+        ?Throwable $expectedPrevious,
+    ): void {
+        $this->assertSame($expectedMessage, $exception->getMessage());
+        $this->assertSame($expectedCode, $exception->getCode());
+        $this->assertSame($expectedPrevious, $exception->getPrevious());
     }
 }

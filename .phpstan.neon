@@ -11,3 +11,15 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
         - '#Dynamic call to static method PHPUnit\\Framework\\.*::.*#'
+
+        # ::configureXmlCoverageReportIfNecessary() false-positives
+        # This is happening because `::assertHasCoverageExtension()` cannot easily narrow down the
+        # parsedYaml type...
+        -
+            message: '#Argument of an invalid type array<string, mixed>\|null supplied for foreach, only iterables are supported\.#'
+            path: src/Config/PhpSpecConfigurationBuilder.php
+            identifier: foreach.nonIterable
+        -
+            message: "#Offset 'extensions' might not exist on array\\{extensions\\?: array<string, mixed>\\|null\\}\\.#"
+            path: src/Config/PhpSpecConfigurationBuilder.php
+            identifier: offsetAccess.notFound

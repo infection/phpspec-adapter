@@ -41,6 +41,7 @@ use function file_put_contents;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\StreamWrapper\IncludeInterceptor;
 use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
+use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use function is_string;
 use Phar;
 use function sprintf;
@@ -69,6 +70,7 @@ class MutationConfigBuilder
         string $mutantFilePath,
         string $mutationHash,
         string $mutationOriginalFilePath,
+        string $version,
     ): string {
         $customAutoloadFilePath = sprintf(
             '%s/interceptor.phpspec.autoload.%s.infection.php',
@@ -80,10 +82,15 @@ class MutationConfigBuilder
 
         file_put_contents($customAutoloadFilePath, $this->createCustomAutoloadWithInterceptor($mutationOriginalFilePath, $mutantFilePath, $parsedYaml));
 
-        $configuration = new PhpSpecConfigurationBuilder(
-            $this->tempDirectory,
-            $parsedYaml,
-        );
+        try {
+            $configuration = PhpSpecConfigurationBuilder::create(
+                $this->tempDirectory,
+                $parsedYaml,
+            );
+        } catch (UnrecognisableConfiguration $exception) {
+            throw $exception->enrichWithVersion($version);
+        }
+
         $configuration->setBootstrap($customAutoloadFilePath);
         $configuration->removeCoverageExtension();
 
