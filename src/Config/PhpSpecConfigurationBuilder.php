@@ -35,71 +35,96 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec\Config;
 
+use function array_key_exists;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
+use function str_contains;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * @internal
  */
-final class InitialYamlConfiguration extends AbstractYamlConfiguration
+final class PhpSpecConfigurationBuilder
 {
     /**
      * @param array<string, mixed> $parsedYaml
      */
     public function __construct(
-        string $tmpDir,
-        array $parsedYaml,
-        private readonly bool $skipCoverage,
+        private readonly string $tmpDirectory,
+        private array $parsedYaml,
     ) {
-        parent::__construct($tmpDir, $parsedYaml);
     }
 
-    public function getYaml(): string
+    public function removeCoverageExtension(): void
     {
-        if ($this->skipCoverage) {
-            $this->removeCoverageExtension($this->parsedYaml);
-        } else {
-            if (!$this->hasCodeCoverageExtension($this->parsedYaml)) {
-                throw NoCodeCoverageException::fromTestFramework('PhpSpec');
+        foreach ($this->parsedYaml['extensions'] as $extensionName => $options) {
+            if (self::isCodeCoverageExtension($extensionName)) {
+                unset($this->parsedYaml['extensions'][$extensionName]);
             }
-
-            $this->updateCodeCoveragePath($this->parsedYaml);
         }
-
-        return Yaml::dump($this->parsedYaml);
     }
 
     /**
-     * @param array<string, mixed> $parsedYaml
+     * @throws NoCodeCoverageException
      */
-    private function updateCodeCoveragePath(array &$parsedYaml): void
+    public function updateCodeCoveragePath(): void
     {
-        foreach ($parsedYaml['extensions'] as $extensionName => &$options) {
-            if (!$this->isCodeCoverageExtension($extensionName)) {
+        $this->assertHasCoverageExtension();
+
+        foreach ($this->parsedYaml['extensions'] as $extensionName => &$options) {
+            if (!self::isCodeCoverageExtension($extensionName)) {
                 continue;
             }
 
             $options['format'] = ['xml'];
             $options['output'] = [
-                'xml' => $this->tempDirectory . '/' . PhpSpecAdapter::COVERAGE_DIR,
+                'xml' => $this->tmpDirectory . '/' . PhpSpecAdapter::COVERAGE_DIR,
             ];
         }
         unset($options);
     }
 
     /**
-     * @param array<string, mixed> $parsedYaml
+     * @param non-empty-string $mutantAutoloadPathname
      */
-    private function removeCoverageExtension(array &$parsedYaml): void
+    public function setCustomAutoLoaderPath(string $mutantAutoloadPathname): void
     {
-        foreach ($parsedYaml['extensions'] as $extensionName => &$options) {
-            if (!$this->isCodeCoverageExtension($extensionName)) {
-                continue;
-            }
+        // bootstrap must be before other keys because of PhpSpec bug with populating container under
+        // some circumstances
+        $this->parsedYaml = ['bootstrap' => $mutantAutoloadPathname] + $this->parsedYaml;
+    }
 
-            unset($parsedYaml['extensions'][$extensionName]);
+    public function getYaml(): string
+    {
+        return Yaml::dump($this->parsedYaml);
+    }
+
+    /**
+     * @throws NoCodeCoverageException
+     */
+    private function assertHasCoverageExtension(): void
+    {
+        if (!$this->hasCodeCoverageExtension()) {
+            throw NoCodeCoverageException::fromTestFramework('PhpSpec');
+        }
+    }
+
+    private static function isCodeCoverageExtension(string $extensionName): bool
+    {
+        return str_contains($extensionName, 'CodeCoverage');
+    }
+
+    private function hasCodeCoverageExtension(): bool
+    {
+        if (!array_key_exists('extensions', $this->parsedYaml)) {
+            return false;
         }
 
-        unset($options);
+        foreach ($this->parsedYaml['extensions'] as $extensionName => $options) {
+            if (self::isCodeCoverageExtension($extensionName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
