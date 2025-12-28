@@ -33,33 +33,21 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec;
+namespace Infection\TestFramework\PhpSpec\Throwable;
 
-use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableTestFrameworkVersion;
-use function preg_match;
+use RuntimeException;
+use function sprintf;
 
-/**
- * @internal
- */
-class VersionParser
+final class UnrecognisableTestFrameworkVersion extends RuntimeException
 {
-    private const VERSION_REGEX = '/(?<version>\d+\.\d+\.?\d*)(?<prerelease>-[\d\p{L}.]+)?(?<build>\+[\d\p{L}.]+)?/';
-
-    /**
-     * @throws UnrecognisableTestFrameworkVersion
-     */
-    public function parse(string $value): string
+    public static function create(string $testFrameworkName, string $version): self
     {
-        $matches = [];
-        $matched = preg_match(self::VERSION_REGEX, $value, $matches) > 0;
-
-        if (!$matched) {
-            throw UnrecognisableTestFrameworkVersion::create(
-                'PhpSpec',
-                $value,
-            );
-        }
-
-        return $matches[0];
+        return new self(
+            sprintf(
+                'Could not recognise the test framework version for %s for the value "%s".',
+                $testFrameworkName,
+                $version,
+            ),
+        );
     }
 }

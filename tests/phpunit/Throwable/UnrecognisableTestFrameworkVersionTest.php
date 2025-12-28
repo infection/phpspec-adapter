@@ -33,33 +33,25 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec;
+namespace Infection\Tests\TestFramework\PhpSpec\Throwable;
 
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableTestFrameworkVersion;
-use function preg_match;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
 
-/**
- * @internal
- */
-class VersionParser
+#[CoversClass(UnrecognisableTestFrameworkVersion::class)]
+final class UnrecognisableTestFrameworkVersionTest extends TestCase
 {
-    private const VERSION_REGEX = '/(?<version>\d+\.\d+\.?\d*)(?<prerelease>-[\d\p{L}.]+)?(?<build>\+[\d\p{L}.]+)?/';
-
-    /**
-     * @throws UnrecognisableTestFrameworkVersion
-     */
-    public function parse(string $value): string
+    public function test_it_can_create_an_exception(): void
     {
-        $matches = [];
-        $matched = preg_match(self::VERSION_REGEX, $value, $matches) > 0;
+        $exception = UnrecognisableTestFrameworkVersion::create(
+            'PhpSpec',
+            'dev-main',
+        );
 
-        if (!$matched) {
-            throw UnrecognisableTestFrameworkVersion::create(
-                'PhpSpec',
-                $value,
-            );
-        }
-
-        return $matches[0];
+        $this->assertSame(
+            'Could not recognise the test framework version for PhpSpec for the value "dev-main".',
+            $exception->getMessage(),
+        );
     }
 }
