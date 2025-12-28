@@ -212,7 +212,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
             $this->expectException($expected);
         }
 
-        $builder->updateCodeCoveragePath();
+        $builder->configureXmlCoverageReportIfNecessary();
 
         if (!$expectsException) {
             $actual = $builder->getYaml();
@@ -370,7 +370,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
             Yaml::parse($original) ?? [],
         );
 
-        $builder->setCustomAutoLoaderPath($bootstrap);
+        $builder->setBootstrap($bootstrap);
 
         $actual = $builder->getYaml();
 
