@@ -36,11 +36,8 @@ declare(strict_types=1);
 namespace Infection\TestFramework\PhpSpec\Config;
 
 use function array_key_exists;
-use function array_keys;
-use function array_values;
 use function in_array;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
-use function is_int;
 use function str_contains;
 use Symfony\Component\Yaml\Yaml;
 
@@ -60,28 +57,11 @@ final class PhpSpecConfigurationBuilder
 
     public function removeCoverageExtension(): void
     {
-        $oldFormatDetected = false;
-
-        foreach (($this->parsedYaml['extensions'] ?? []) as $extensionName => $options) {
-            $index = $extensionName;
-
-            // This is the old format where the extensions were a list
-            if (is_int($extensionName)) {
-                $oldFormatDetected = true;
-                $extensionName = $options;
-                unset($options);
-            }
-
+        foreach ($this->parsedYaml['extensions'] as $extensionName => $options) {
             if (self::isCodeCoverageExtension($extensionName)) {
-                unset($this->parsedYaml['extensions'][$index]);
+                unset($this->parsedYaml['extensions'][$extensionName]);
             }
         }
-
-        if ($oldFormatDetected) {
-            $this->parsedYaml['extensions'] = array_values($this->parsedYaml['extensions']);
-        }
-
-        unset($this->parsedYaml['code_coverage']);
     }
 
     /**
@@ -91,26 +71,14 @@ final class PhpSpecConfigurationBuilder
     {
         $this->assertHasCoverageExtension();
 
-        $oldFormatDetected = false;
-
         foreach ($this->parsedYaml['extensions'] as $extensionName => &$options) {
-            // This is the old format where the extensions were a list
-            if (is_int($extensionName)) {
-                $oldFormatDetected = true;
-
-                break;
-            }
-
             if (!self::isCodeCoverageExtension($extensionName)) {
                 continue;
             }
 
             self::configureXmlCoverageReport($options, $this->tmpDirectory);
         }
-
-        if ($oldFormatDetected) {
-            self::configureXmlCoverageReport($this->parsedYaml['code_coverage'], $this->tmpDirectory);
-        }
+        unset($options);
     }
 
     /**
@@ -138,6 +106,26 @@ final class PhpSpecConfigurationBuilder
         }
     }
 
+    private static function isCodeCoverageExtension(string $extensionName): bool
+    {
+        return str_contains($extensionName, 'CodeCoverage');
+    }
+
+    private function hasCodeCoverageExtension(): bool
+    {
+        if (!array_key_exists('extensions', $this->parsedYaml)) {
+            return false;
+        }
+
+        foreach ($this->parsedYaml['extensions'] as $extensionName => $options) {
+            if (self::isCodeCoverageExtension($extensionName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @param mixed[]|null $config
      * @param-out mixed[] $config
@@ -157,30 +145,5 @@ final class PhpSpecConfigurationBuilder
         }
 
         $config['output']['xml'] = $tmpDirectory . '/' . PhpSpecAdapter::COVERAGE_DIR;
-    }
-
-    private static function isCodeCoverageExtension(string $extensionName): bool
-    {
-        return str_contains($extensionName, 'CodeCoverage');
-    }
-
-    private function hasCodeCoverageExtension(): bool
-    {
-        if (!array_key_exists('extensions', $this->parsedYaml)) {
-            return false;
-        }
-
-        foreach (array_keys($this->parsedYaml['extensions'] ?? []) as $extensionName) {
-            // This is the old format where the extensions were a list
-            if (is_int($extensionName)) {
-                $extensionName = $this->parsedYaml['extensions'][$extensionName];
-            }
-
-            if (self::isCodeCoverageExtension($extensionName)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
