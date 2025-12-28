@@ -66,6 +66,9 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @return iterable<array{string, string}>
+     */
     public static function removeCoverageExtensionProvider(): iterable
     {
         yield 'nothing configured' => [
@@ -416,6 +419,9 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         }
     }
 
+    /**
+     * @return iterable<array{string, string|class-string<Exception>}>
+     */
     public static function updateCodeCoveragePathProvider(): iterable
     {
         yield 'nothing configured' => [
@@ -787,6 +793,9 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         ];
     }
 
+    /**
+     * @param non-empty-string $bootstrap
+     */
     #[DataProvider('bootstrapProvider')]
     public function test_it_can_configure_the_bootstrap(
         string $original,
@@ -805,6 +814,9 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @return iterable<array{string, non-empty-string, string}>
+     */
     public static function bootstrapProvider(): iterable
     {
         yield 'nothing configured' => [

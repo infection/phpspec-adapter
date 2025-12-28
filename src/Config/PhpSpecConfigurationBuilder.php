@@ -138,6 +138,10 @@ final class PhpSpecConfigurationBuilder
         }
     }
 
+    /**
+     * @param mixed[]|null $config
+     * @param-out mixed[] $config
+     */
     private static function configureXmlCoverageReport(
         ?array &$config,
         string $tmpDirectory,
