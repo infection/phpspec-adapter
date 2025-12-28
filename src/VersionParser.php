@@ -46,7 +46,13 @@ final readonly class VersionParser
     private const VERSION_REGEX = '/(?<version>\d+\.\d+\.?\d*)(?<prerelease>-[\d\p{L}.]+)?(?<build>\+[\d\p{L}.]+)?/';
 
     /**
+     * Parses a string value to try to extract the exact version out of it. The input can
+     * typically be the output of `$ tool --version`, which usually may include information
+     * about the tool name and authors besides the version itself.
+     *
      * @throws UnrecognisableTestFrameworkVersion
+     *
+     * @return non-empty-string
      */
     public function parse(string $value): string
     {
