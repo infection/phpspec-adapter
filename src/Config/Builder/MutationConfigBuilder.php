@@ -84,7 +84,7 @@ class MutationConfigBuilder
             $this->tempDirectory,
             $parsedYaml,
         );
-        $configuration->setCustomAutoLoaderPath($customAutoloadFilePath);
+        $configuration->setBootstrap($customAutoloadFilePath);
         $configuration->removeCoverageExtension();
 
         $newYaml = $configuration->getYaml();

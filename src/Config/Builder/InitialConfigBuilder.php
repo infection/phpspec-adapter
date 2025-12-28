@@ -63,7 +63,7 @@ class InitialConfigBuilder
         if ($this->skipCoverage) {
             $configuration->removeCoverageExtension();
         } else {
-            $configuration->updateCodeCoveragePath();
+            $configuration->configureXmlCoverageReportIfNecessary();
         }
 
         file_put_contents($path, $configuration->getYaml());

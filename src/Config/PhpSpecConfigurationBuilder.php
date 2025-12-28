@@ -66,7 +66,7 @@ final class PhpSpecConfigurationBuilder
     /**
      * @throws NoCodeCoverageException
      */
-    public function updateCodeCoveragePath(): void
+    public function configureXmlCoverageReportIfNecessary(): void
     {
         $this->assertHasCoverageExtension();
 
@@ -86,7 +86,7 @@ final class PhpSpecConfigurationBuilder
     /**
      * @param non-empty-string $mutantAutoloadPathname
      */
-    public function setCustomAutoLoaderPath(string $mutantAutoloadPathname): void
+    public function setBootstrap(string $mutantAutoloadPathname): void
     {
         // bootstrap must be before other keys because of PhpSpec bug with populating container under
         // some circumstances
