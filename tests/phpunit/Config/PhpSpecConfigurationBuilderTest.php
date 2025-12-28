@@ -36,6 +36,7 @@ declare(strict_types=1);
 namespace Infection\Tests\TestFramework\PhpSpec\Config;
 
 use Exception;
+use Infection\TestFramework\PhpSpec\Config\NoCodeCoverageException;
 use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
 use function is_a;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -70,6 +71,28 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
      */
     public static function removeCoverageExtensionProvider(): iterable
     {
+        yield 'nothing configured' => [
+            <<<'YAML'
+
+                YAML,
+            <<<'YAML'
+                {  }
+                YAML,
+        ];
+
+        yield 'nothing configured (explicitly)' => [
+            <<<'YAML'
+                suites: ~
+                extensions: ~
+
+                YAML,
+            <<<'YAML'
+                suites: null
+                extensions: null
+
+                YAML,
+        ];
+
         yield 'unknown code coverage extension with configuration' => [
             <<<'YAML'
                 suites: ~
@@ -226,6 +249,22 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
      */
     public static function updateCodeCoveragePathProvider(): iterable
     {
+        yield 'nothing configured' => [
+            <<<'YAML'
+
+                YAML,
+            NoCodeCoverageException::class,
+        ];
+
+        yield 'nothing configured (explicitly)' => [
+            <<<'YAML'
+                suites: ~
+                extensions: ~
+
+                YAML,
+            NoCodeCoverageException::class,
+        ];
+
         yield 'unknown code coverage extension with configuration' => [
             <<<'YAML'
                 suites: ~

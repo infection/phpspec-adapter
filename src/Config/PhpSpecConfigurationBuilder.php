@@ -56,7 +56,7 @@ final class PhpSpecConfigurationBuilder
 
     public function removeCoverageExtension(): void
     {
-        foreach ($this->parsedYaml['extensions'] as $extensionName => $options) {
+        foreach (($this->parsedYaml['extensions'] ?? []) as $extensionName => $options) {
             if (self::isCodeCoverageExtension($extensionName)) {
                 unset($this->parsedYaml['extensions'][$extensionName]);
             }
@@ -119,7 +119,7 @@ final class PhpSpecConfigurationBuilder
             return false;
         }
 
-        foreach ($this->parsedYaml['extensions'] as $extensionName => $options) {
+        foreach (($this->parsedYaml['extensions'] ?? []) as $extensionName => $options) {
             if (self::isCodeCoverageExtension($extensionName)) {
                 return true;
             }
