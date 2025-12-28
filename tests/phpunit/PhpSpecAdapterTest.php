@@ -33,7 +33,7 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Adapter;
+namespace Infection\Tests\TestFramework\PhpSpec;
 
 use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
@@ -42,9 +42,11 @@ use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
 use Infection\TestFramework\PhpSpec\VersionParser;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use function sprintf;
 
+#[CoversClass(PhpSpecAdapter::class)]
 final class PhpSpecAdapterTest extends TestCase
 {
     public function test_it_has_a_name(): void

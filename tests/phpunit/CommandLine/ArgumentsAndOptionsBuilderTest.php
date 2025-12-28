@@ -36,8 +36,10 @@ declare(strict_types=1);
 namespace Infection\Tests\TestFramework\PhpSpec\CommandLine;
 
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(ArgumentsAndOptionsBuilder::class)]
 final class ArgumentsAndOptionsBuilderTest extends TestCase
 {
     public function test_it_builds_correct_command(): void
