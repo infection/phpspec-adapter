@@ -35,7 +35,9 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
 
+use function file_put_contents;
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
+use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -63,6 +65,7 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
             self::MUTATED_FILE_PATH,
             self::MUTATION_HASH,
             self::ORIGINAL_FILE_PATH,
+            '2.0',
         );
 
         $this->assertFileExists($actualPath);
@@ -83,6 +86,7 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
                 self::MUTATED_FILE_PATH,
                 self::MUTATION_HASH,
                 self::ORIGINAL_FILE_PATH,
+                '2.0',
             ),
         );
 
@@ -106,6 +110,7 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
                 self::MUTATED_FILE_PATH,
                 self::MUTATION_HASH,
                 self::ORIGINAL_FILE_PATH,
+                '2.0',
             ),
         );
 
@@ -113,5 +118,41 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         $content = file_get_contents($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');
 
         $this->assertStringContainsString('IncludeInterceptor.php', $content);
+    }
+
+    public function test_it_provides_a_friendly_error_if_the_configuration_is_invalud(): void
+    {
+        $originalYamlConfigPath = $this->tmp . '/phpspec.yml';
+        file_put_contents(
+            $originalYamlConfigPath,
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    - Acme\Extension\FirstExampleExtension
+                    - Acme\Extension\CodeCoverageExtension
+                    - Acme\Extension\SecondExampleExtension
+
+                YAML,
+        );
+
+        $builder = new MutationConfigBuilder(
+            $this->tmp,
+            $originalYamlConfigPath,
+            '/path/to/project',
+        );
+
+        $this->expectExceptionObject(
+            new UnrecognisableConfiguration(
+                'Could not recognise the current configuration format for the version "2.0": The "extensions" configuration key must be null or an associative array.',
+            ),
+        );
+
+        $builder->build(
+            [],
+            self::MUTATED_FILE_PATH,
+            self::MUTATION_HASH,
+            self::ORIGINAL_FILE_PATH,
+            '2.0',
+        );
     }
 }

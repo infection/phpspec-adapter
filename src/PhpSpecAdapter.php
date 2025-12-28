@@ -169,6 +169,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
             $mutantFilePath,
             $mutationHash,
             $mutationOriginalFilePath,
+            $this->getVersion(),
         );
     }
 

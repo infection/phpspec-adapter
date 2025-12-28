@@ -36,9 +36,11 @@ declare(strict_types=1);
 namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
 
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
+use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use function Safe\file_put_contents;
 
 #[Group('integration')]
 #[CoversClass(InitialConfigBuilder::class)]
@@ -54,5 +56,35 @@ final class InitialConfigBuilderTest extends FileSystemTestCase
 
         $this->assertFileExists($actualPath);
         $this->assertSame($this->tmp . '/phpspecConfiguration.initial.infection.yml', $actualPath);
+    }
+
+    public function test_it_provides_a_friendly_error_if_the_configuration_is_invalud(): void
+    {
+        $originalYamlConfigPath = $this->tmp . '/phpspec.yml';
+        file_put_contents(
+            $originalYamlConfigPath,
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    - Acme\Extension\FirstExampleExtension
+                    - Acme\Extension\CodeCoverageExtension
+                    - Acme\Extension\SecondExampleExtension
+
+                YAML,
+        );
+
+        $builder = new InitialConfigBuilder(
+            $this->tmp,
+            $originalYamlConfigPath,
+            false,
+        );
+
+        $this->expectExceptionObject(
+            new UnrecognisableConfiguration(
+                'Could not recognise the current configuration format for the version "2.0": The "extensions" configuration key must be null or an associative array.',
+            ),
+        );
+
+        $builder->build('2.0');
     }
 }

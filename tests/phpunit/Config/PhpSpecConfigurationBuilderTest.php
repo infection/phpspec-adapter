@@ -38,6 +38,7 @@ namespace Infection\Tests\TestFramework\PhpSpec\Config;
 use Exception;
 use Infection\TestFramework\PhpSpec\Config\NoCodeCoverageException;
 use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
+use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use function is_a;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -49,12 +50,94 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
 {
     private const TMP_DIRECTORY = '/path/to/project';
 
+    #[DataProvider('legacyExtensionFormat')]
+    public function test_it_cannot_be_created_with_the_legacy_phpspec_configuration_format(
+        string $original,
+        bool $expected,
+    ): void {
+        if (!$expected) {
+            $this->expectException(UnrecognisableConfiguration::class);
+        }
+
+        PhpSpecConfigurationBuilder::create(
+            self::TMP_DIRECTORY,
+            Yaml::parse($original) ?? [],
+        );
+
+        if ($expected) {
+            $this->addToAssertionCount(1);
+        }
+    }
+
+    /**
+     * @return iterable<array{string, bool}>
+     */
+    public static function legacyExtensionFormat(): iterable
+    {
+        yield 'nothing configured' => [
+            <<<'YAML'
+
+                YAML,
+            true,
+        ];
+
+        yield 'nothing configured (explicitly)' => [
+            <<<'YAML'
+                suites: ~
+                extensions: ~
+
+                YAML,
+            true,
+        ];
+
+        yield 'extensions registered' => [
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    Acme\Extension\FirstExampleExtension: ~
+                    Acme\Extension\CodeCoverageExtension: ~
+                    Acme\Extension\SecondExampleExtension: ~
+
+                YAML,
+            true,
+        ];
+
+        yield 'extensions configured' => [
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    Acme\Extension\FirstExampleExtension:
+                        key1: value1
+                    Acme\Extension\CodeCoverageExtension:
+                        key2: value2
+                    Acme\Extension\SecondExampleExtension:
+                        key3: value3
+
+                YAML,
+            true,
+        ];
+
+        // This is no longer valid since PhpSpec v3
+        // https://github.com/phpspec/phpspec/blob/main/CHANGES-v3.md#300--2016-07-16
+        yield 'legacy extensions registered' => [
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    - Acme\Extension\FirstExampleExtension
+                    - Acme\Extension\CodeCoverageExtension
+                    - Acme\Extension\SecondExampleExtension
+
+                YAML,
+            false,
+        ];
+    }
+
     #[DataProvider('removeCoverageExtensionProvider')]
     public function test_it_can_remove_the_code_coverage_extension(
         string $original,
         string $expected,
     ): void {
-        $builder = new PhpSpecConfigurationBuilder(
+        $builder = PhpSpecConfigurationBuilder::create(
             self::TMP_DIRECTORY,
             Yaml::parse($original) ?? [],
         );
@@ -224,7 +307,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         string $original,
         string $expected,
     ): void {
-        $builder = new PhpSpecConfigurationBuilder(
+        $builder = PhpSpecConfigurationBuilder::create(
             self::TMP_DIRECTORY,
             Yaml::parse($original) ?? [],
         );
@@ -404,7 +487,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         string $bootstrap,
         string $expected,
     ): void {
-        $builder = new PhpSpecConfigurationBuilder(
+        $builder = PhpSpecConfigurationBuilder::create(
             self::TMP_DIRECTORY,
             Yaml::parse($original) ?? [],
         );
