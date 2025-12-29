@@ -35,7 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec\Version;
 
-use Infection\TestFramework\PhpSpec\CommandLineBuilder;
+use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
 use Symfony\Component\Process\Process;
 
 /**

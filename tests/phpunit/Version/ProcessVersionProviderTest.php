@@ -36,7 +36,7 @@ declare(strict_types=1);
 namespace Infection\Tests\TestFramework\PhpSpec\Version;
 
 use function file_exists;
-use Infection\TestFramework\PhpSpec\CommandLineBuilder;
+use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Version\ProcessVersionProvider;
 use Infection\TestFramework\PhpSpec\Version\VersionParser;
 use PHPUnit\Framework\Attributes\CoversClass;
