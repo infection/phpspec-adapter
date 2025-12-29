@@ -678,11 +678,11 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         $builder1->setBootstrap('bootstrap.php');
         $builder1->removeCoverageExtension();
 
-        $result1 = $builder1->getYAML();
+        $result1 = $builder1->getYaml();
 
         $builder2->configureXmlCoverageReportIfNecessary();
 
-        $result2 = $builder2->getYAML();
+        $result2 = $builder2->getYaml();
 
         $this->assertSame(
             <<<'YAML'
