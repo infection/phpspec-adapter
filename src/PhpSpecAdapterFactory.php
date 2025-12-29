@@ -35,11 +35,15 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec;
 
+use function file_get_contents;
 use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\AbstractTestFramework\TestFrameworkAdapterFactory;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
+use InvalidArgumentException;
+use function method_exists;
+use function sprintf;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
@@ -58,7 +62,21 @@ final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
         bool $skipCoverage,
     ): TestFrameworkAdapter {
         $filesystem = new Filesystem();
-        $phpSpecConfigContents = $filesystem->readFile($testFrameworkConfigPath);
+
+        // TODO: remove the polyfill code once we drop support for Symfony 6.4
+        // @phpstan-ignore function.alreadyNarrowedType
+        $phpSpecConfigContents = method_exists($filesystem, 'readFile')
+            ? $filesystem->readFile($testFrameworkConfigPath)
+            : file_get_contents($testFrameworkConfigPath);
+
+        if ($phpSpecConfigContents === false) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Could not read PHPSpec configuration file "%s".',
+                    $testFrameworkConfigPath,
+                ),
+            );
+        }
 
         return new PhpSpecAdapter(
             $testFrameworkExecutable,
