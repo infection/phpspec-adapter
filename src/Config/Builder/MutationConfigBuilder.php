@@ -37,7 +37,6 @@ namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
 use function array_key_exists;
 use function assert;
-use function file_put_contents;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\StreamWrapper\IncludeInterceptor;
 use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
@@ -48,6 +47,7 @@ use function sprintf;
 use function str_replace;
 use function str_starts_with;
 use function strstr;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @phpstan-import-type DecodedPhpSpecConfig from PhpSpecConfigurationBuilder
@@ -63,6 +63,7 @@ class MutationConfigBuilder
         private readonly string $tempDirectory,
         private readonly array $originalPhpSpecConfigDecodedContents,
         private readonly string $projectDir,
+        private readonly Filesystem $filesystem,
     ) {
     }
 
@@ -84,7 +85,7 @@ class MutationConfigBuilder
             $mutationHash,
         );
 
-        file_put_contents(
+        $this->filesystem->dumpFile(
             $customAutoloadFilePath,
             $this->createCustomAutoloadWithInterceptor(
                 $mutationOriginalFilePath,
@@ -109,7 +110,7 @@ class MutationConfigBuilder
 
         $path = $this->buildPath($mutationHash);
 
-        file_put_contents($path, $newYaml);
+        $this->filesystem->dumpFile($path, $newYaml);
 
         return $path;
     }

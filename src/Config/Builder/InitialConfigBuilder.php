@@ -35,10 +35,10 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
-use function file_put_contents;
 use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\NoCodeCoverageConfigured;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @phpstan-import-type DecodedPhpSpecConfig from PhpSpecConfigurationBuilder
@@ -54,6 +54,7 @@ class InitialConfigBuilder
         private readonly string $tempDirectory,
         private readonly array $originalPhpSpecConfigDecodedContents,
         private readonly bool $skipCoverage,
+        private readonly Filesystem $filesystem,
     ) {
     }
 
@@ -80,7 +81,7 @@ class InitialConfigBuilder
             $configuration->configureXmlCoverageReportIfNecessary();
         }
 
-        file_put_contents($path, $configuration->getYaml());
+        $this->filesystem->dumpFile($path, $configuration->getYaml());
 
         return $path;
     }

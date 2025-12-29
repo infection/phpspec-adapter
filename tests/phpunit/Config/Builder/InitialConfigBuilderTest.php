@@ -37,29 +37,39 @@ namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
 
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
-use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 #[Group('integration')]
 #[CoversClass(InitialConfigBuilder::class)]
-final class InitialConfigBuilderTest extends FileSystemTestCase
+final class InitialConfigBuilderTest extends TestCase
 {
     public function test_it_builds_path_to_initial_config_file(): void
     {
         $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
+        $tmpDirectory = '/path/to/tmp';
+
+        $expectedInitialConfigFilePath = '/path/to/tmp/phpspecConfiguration.initial.infection.yml';
+
+        $fileSystemMock = $this->createMock(Filesystem::class);
+        $fileSystemMock
+            ->expects($this->once())
+            ->method('dumpFile')
+            ->with($expectedInitialConfigFilePath, $this->anything());
 
         $builder = new InitialConfigBuilder(
-            $this->tmp,
+            $tmpDirectory,
             $originalPhpSpecConfigDecodedContents,
             false,
+            $fileSystemMock,
         );
 
         $actualPath = $builder->build('2.0');
 
-        $this->assertFileExists($actualPath);
-        $this->assertSame($this->tmp . '/phpspecConfiguration.initial.infection.yml', $actualPath);
+        $this->assertSame($expectedInitialConfigFilePath, $actualPath);
     }
 
     public function test_it_provides_a_friendly_error_if_the_configuration_is_invalud(): void
@@ -75,10 +85,16 @@ final class InitialConfigBuilderTest extends FileSystemTestCase
                 YAML,
         );
 
+        $fileSystemMock = $this->createMock(Filesystem::class);
+        $fileSystemMock
+            ->expects($this->never())
+            ->method('dumpFile');
+
         $builder = new InitialConfigBuilder(
-            $this->tmp,
+            '/path/to/tmp',
             $originalPhpSpecConfigDecodedContents,
             false,
+            $fileSystemMock,
         );
 
         $this->expectExceptionObject(

@@ -37,15 +37,15 @@ namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
 
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
-use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
-use function Safe\file_get_contents;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 #[Group('integration')]
 #[CoversClass(MutationConfigBuilder::class)]
-final class MutationConfigBuilderTest extends FileSystemTestCase
+final class MutationConfigBuilderTest extends TestCase
 {
     private const MUTATION_HASH = 'a1b2c3';
 
@@ -58,10 +58,26 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         $projectDir = '/project/dir';
         $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
 
+        $expectedInterceptorPath = '/path/to/tmp/interceptor.phpspec.autoload.a1b2c3.infection.php';
+        $expectedMutationConfigPath = '/path/to/tmp/phpspecConfiguration.a1b2c3.infection.yml';
+
+        $fileSystemMock = $this->createMock(Filesystem::class);
+        $fileSystemMock
+            ->expects($this->exactly(2))
+            ->method('dumpFile')
+            ->with(
+                $this->logicalOr(
+                    $this->equalTo($expectedInterceptorPath),
+                    $this->equalTo($expectedMutationConfigPath),
+                ),
+                $this->anything(),
+            );
+
         $builder = new MutationConfigBuilder(
-            $this->tmp,
+            '/path/to/tmp',
             $originalPhpSpecConfigDecodedContents,
             $projectDir,
+            $fileSystemMock,
         );
 
         $actualPath = $builder->build(
@@ -72,8 +88,7 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
             '2.0',
         );
 
-        $this->assertFileExists($actualPath);
-        $this->assertSame($this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml', $actualPath);
+        $this->assertSame($expectedMutationConfigPath, $actualPath);
     }
 
     public function test_it_adds_original_bootstrap_file_to_custom_autoload(): void
@@ -81,27 +96,43 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         $projectDir = '/project/dir';
         $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.with.bootstrap.yml');
 
+        $dumpedFiles = [];
+
+        $fileSystemMock = $this->createMock(Filesystem::class);
+        $fileSystemMock
+            ->expects($this->exactly(2))
+            ->method('dumpFile')
+            ->with(
+                $this->anything(),
+                $this->callback(
+                    static function (string $contents) use (&$dumpedFiles) {
+                        $dumpedFiles[] = $contents;
+
+                        return true;
+                    },
+                ),
+            );
+
         $builder = new MutationConfigBuilder(
-            $this->tmp,
+            '/path/to/tmp',
             $originalPhpSpecConfigDecodedContents,
             $projectDir,
+            $fileSystemMock,
         );
 
-        $this->assertSame(
-            $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
-            $builder->build(
-                [],
-                self::MUTATED_FILE_PATH,
-                self::MUTATION_HASH,
-                self::ORIGINAL_FILE_PATH,
-                '2.0',
-            ),
+        $builder->build(
+            [],
+            self::MUTATED_FILE_PATH,
+            self::MUTATION_HASH,
+            self::ORIGINAL_FILE_PATH,
+            '2.0',
         );
 
-        $actualContent = file_get_contents($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');
+        // The interceptor is dumped first
+        $interceptorContent = $dumpedFiles[0];
 
-        $this->assertStringContainsString("require_once '/project/dir/bootstrap.php';", $actualContent);
-        $this->assertStringNotContainsString('\Phar::loadPhar("%s", "%s");', $actualContent);
+        $this->assertStringContainsString("require_once '/project/dir/bootstrap.php';", $interceptorContent);
+        $this->assertStringNotContainsString('\Phar::loadPhar("%s", "%s");', $interceptorContent);
     }
 
     public function test_interceptor_is_included(): void
@@ -109,30 +140,45 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         $projectDir = '/project/dir';
         $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
 
+        $dumpedFiles = [];
+
+        $fileSystemMock = $this->createMock(Filesystem::class);
+        $fileSystemMock
+            ->expects($this->exactly(2))
+            ->method('dumpFile')
+            ->with(
+                $this->anything(),
+                $this->callback(
+                    static function (string $contents) use (&$dumpedFiles) {
+                        $dumpedFiles[] = $contents;
+
+                        return true;
+                    },
+                ),
+            );
+
         $builder = new MutationConfigBuilder(
-            $this->tmp,
+            '/path/to/tmp',
             $originalPhpSpecConfigDecodedContents,
             $projectDir,
+            $fileSystemMock,
         );
 
-        $this->assertSame(
-            $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
-            $builder->build(
-                [],
-                self::MUTATED_FILE_PATH,
-                self::MUTATION_HASH,
-                self::ORIGINAL_FILE_PATH,
-                '2.0',
-            ),
+        $builder->build(
+            [],
+            self::MUTATED_FILE_PATH,
+            self::MUTATION_HASH,
+            self::ORIGINAL_FILE_PATH,
+            '2.0',
         );
 
-        $this->assertFileExists($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');
-        $content = file_get_contents($this->tmp . '/interceptor.phpspec.autoload.a1b2c3.infection.php');
+        // The interceptor is dumped first
+        $interceptorContent = $dumpedFiles[0];
 
-        $this->assertStringContainsString('IncludeInterceptor.php', $content);
+        $this->assertStringContainsString('IncludeInterceptor.php', $interceptorContent);
     }
 
-    public function test_it_provides_a_friendly_error_if_the_configuration_is_invalud(): void
+    public function test_it_provides_a_friendly_error_if_the_configuration_is_invalid(): void
     {
         $originalPhpSpecConfigDecodedContents = Yaml::parse(
             <<<'YAML'
@@ -145,10 +191,17 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
                 YAML,
         );
 
+        $fileSystemMock = $this->createMock(Filesystem::class);
+        $fileSystemMock
+            ->expects($this->exactly(1))
+            ->method('dumpFile')
+            ->withAnyParameters();
+
         $builder = new MutationConfigBuilder(
-            $this->tmp,
+            '/path/to/tmp',
             $originalPhpSpecConfigDecodedContents,
             '/path/to/project',
+            $fileSystemMock,
         );
 
         $this->expectExceptionObject(
