@@ -176,6 +176,24 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
         ];
 
+        yield 'unknown code coverage extension without configuration' => [
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    Acme\Extension\FirstExampleExtension: ~
+                    Acme\Extension\CodeCoverageExtension: ~
+                    Acme\Extension\SecondExampleExtension: ~
+
+                YAML,
+            <<<'YAML'
+                suites: null
+                extensions:
+                    Acme\Extension\FirstExampleExtension: null
+                    Acme\Extension\SecondExampleExtension: null
+
+                YAML,
+        ];
+
         yield 'unknown code coverage extension with configuration' => [
             <<<'YAML'
                 suites: ~
@@ -202,6 +220,26 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 suites: ~
                 extensions:
                     PhpSpecCodeCoverage\CodeCoverageExtension: ~
+
+                YAML,
+            <<<'YAML'
+                suites: null
+                extensions: {  }
+
+                YAML,
+        ];
+
+        yield 'henrikbjorn/phpspec-code-coverage v3 with configuration' => [
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    PhpSpecCodeCoverage\CodeCoverageExtension:
+                        format:
+                            - html
+                            - clover
+                        output:
+                            html: coverage
+                            clover: coverage.xml
 
                 YAML,
             <<<'YAML'
@@ -348,6 +386,25 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
             NoCodeCoverageException::class,
         ];
 
+        yield 'unknown code coverage extension without configuration' => [
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    Acme\Extension\FirstExampleExtension: ~
+                    Acme\Extension\CodeCoverageExtension: ~
+                    Acme\Extension\SecondExampleExtension: ~
+
+                YAML,
+            <<<'YAML'
+                suites: null
+                extensions:
+                    Acme\Extension\FirstExampleExtension: null
+                    Acme\Extension\CodeCoverageExtension: { format: [xml], output: { xml: /path/to/project/phpspec-coverage-xml } }
+                    Acme\Extension\SecondExampleExtension: null
+
+                YAML,
+        ];
+
         yield 'unknown code coverage extension with configuration' => [
             <<<'YAML'
                 suites: ~
@@ -375,6 +432,27 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 suites: ~
                 extensions:
                     PhpSpecCodeCoverage\CodeCoverageExtension: ~
+
+                YAML,
+            <<<'YAML'
+                suites: null
+                extensions:
+                    PhpSpecCodeCoverage\CodeCoverageExtension: { format: [xml], output: { xml: /path/to/project/phpspec-coverage-xml } }
+
+                YAML,
+        ];
+
+        yield 'henrikbjorn/phpspec-code-coverage v3 with configuration' => [
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    PhpSpecCodeCoverage\CodeCoverageExtension:
+                        format:
+                            - html
+                            - clover
+                        output:
+                            html: coverage
+                            clover: coverage.xml
 
                 YAML,
             <<<'YAML'

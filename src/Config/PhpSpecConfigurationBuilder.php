@@ -92,6 +92,8 @@ final class PhpSpecConfigurationBuilder
                 continue;
             }
 
+            // We do not want to preserve the other formats & outputs configured as they
+            // will be unused.
             $options['format'] = ['xml'];
             $options['output'] = [
                 'xml' => $this->tmpDirectory . '/' . PhpSpecAdapter::COVERAGE_DIR,
