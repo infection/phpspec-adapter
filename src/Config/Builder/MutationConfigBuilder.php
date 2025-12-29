@@ -68,6 +68,8 @@ class MutationConfigBuilder
 
     /**
      * @param TestLocation[] $tests
+     *
+     * @throws UnrecognisableConfiguration
      */
     public function build(
         array $tests,

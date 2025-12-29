@@ -37,6 +37,7 @@ namespace Infection\TestFramework\PhpSpec\Config\Builder;
 
 use function file_put_contents;
 use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
+use Infection\TestFramework\PhpSpec\Throwable\NoCodeCoverageConfigured;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 
 /**
@@ -56,6 +57,10 @@ class InitialConfigBuilder
     ) {
     }
 
+    /**
+     * @throws NoCodeCoverageConfigured
+     * @throws UnrecognisableConfiguration
+     */
     public function build(string $version): string
     {
         $path = $this->buildPath();
