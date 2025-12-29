@@ -49,7 +49,7 @@ final class InitialConfigBuilderTest extends TestCase
 {
     public function test_it_builds_path_to_initial_config_file(): void
     {
-        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
+        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../Fixtures/Files/phpspec/phpspec.yml');
         $tmpDirectory = '/path/to/tmp';
 
         $expectedInitialConfigFilePath = '/path/to/tmp/phpspecConfiguration.initial.infection.yml';

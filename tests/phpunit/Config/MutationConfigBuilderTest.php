@@ -56,7 +56,7 @@ final class MutationConfigBuilderTest extends TestCase
     public function test_it_builds_path_to_mutation_config_file(): void
     {
         $projectDir = '/project/dir';
-        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
+        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../Fixtures/Files/phpspec/phpspec.yml');
 
         $expectedInterceptorPath = '/path/to/tmp/interceptor.phpspec.autoload.a1b2c3.infection.php';
         $expectedMutationConfigPath = '/path/to/tmp/phpspecConfiguration.a1b2c3.infection.yml';
@@ -94,7 +94,7 @@ final class MutationConfigBuilderTest extends TestCase
     public function test_it_adds_original_bootstrap_file_to_custom_autoload(): void
     {
         $projectDir = '/project/dir';
-        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.with.bootstrap.yml');
+        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../Fixtures/Files/phpspec/phpspec.with.bootstrap.yml');
 
         $dumpedFiles = [];
 
@@ -138,7 +138,7 @@ final class MutationConfigBuilderTest extends TestCase
     public function test_interceptor_is_included(): void
     {
         $projectDir = '/project/dir';
-        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
+        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../Fixtures/Files/phpspec/phpspec.yml');
 
         $dumpedFiles = [];
 
