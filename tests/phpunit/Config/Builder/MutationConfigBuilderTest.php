@@ -58,7 +58,11 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         $projectDir = '/project/dir';
         $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
 
-        $builder = new MutationConfigBuilder($this->tmp, $originalPhpSpecConfigDecodedContents, $projectDir);
+        $builder = new MutationConfigBuilder(
+            $this->tmp,
+            $originalPhpSpecConfigDecodedContents,
+            $projectDir,
+        );
 
         $actualPath = $builder->build(
             [],
@@ -77,7 +81,11 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         $projectDir = '/project/dir';
         $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.with.bootstrap.yml');
 
-        $builder = new MutationConfigBuilder($this->tmp, $originalPhpSpecConfigDecodedContents, $projectDir);
+        $builder = new MutationConfigBuilder(
+            $this->tmp,
+            $originalPhpSpecConfigDecodedContents,
+            $projectDir,
+        );
 
         $this->assertSame(
             $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
@@ -101,7 +109,11 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
         $projectDir = '/project/dir';
         $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
 
-        $builder = new MutationConfigBuilder($this->tmp, $originalPhpSpecConfigDecodedContents, $projectDir);
+        $builder = new MutationConfigBuilder(
+            $this->tmp,
+            $originalPhpSpecConfigDecodedContents,
+            $projectDir,
+        );
 
         $this->assertSame(
             $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',

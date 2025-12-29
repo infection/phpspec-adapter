@@ -50,7 +50,11 @@ final class InitialConfigBuilderTest extends FileSystemTestCase
     {
         $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
 
-        $builder = new InitialConfigBuilder($this->tmp, $originalPhpSpecConfigDecodedContents, false);
+        $builder = new InitialConfigBuilder(
+            $this->tmp,
+            $originalPhpSpecConfigDecodedContents,
+            false,
+        );
 
         $actualPath = $builder->build('2.0');
 
