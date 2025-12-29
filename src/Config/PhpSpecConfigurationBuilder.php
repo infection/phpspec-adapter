@@ -102,7 +102,6 @@ final class PhpSpecConfigurationBuilder
                 'xml' => $this->tmpDirectory . '/' . PhpSpecAdapter::COVERAGE_DIR,
             ];
         }
-        unset($options);
     }
 
     /**
@@ -159,10 +158,6 @@ final class PhpSpecConfigurationBuilder
 
     private function hasCodeCoverageExtension(): bool
     {
-        if (!array_key_exists('extensions', $this->parsedYaml)) {
-            return false;
-        }
-
         foreach (($this->parsedYaml['extensions'] ?? []) as $extensionName => $options) {
             if (self::isCodeCoverageExtension($extensionName)) {
                 return true;
