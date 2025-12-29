@@ -36,8 +36,10 @@ declare(strict_types=1);
 namespace Infection\TestFramework\PhpSpec;
 
 use function explode;
+use function ltrim;
 use const PHP_EOL;
 use function preg_match;
+use function str_starts_with;
 
 /**
  * Minimal implementation that can tell if the tests passed or not from a TAP output.
@@ -65,6 +67,10 @@ readonly class TapTestChecker
             if (preg_match('%not ok \\d+ - %', $line) > 0
                 && preg_match('%# TODO%', $line) === 0
             ) {
+                return false;
+            }
+
+            if (str_starts_with(ltrim($line), 'Bail out!')) {
                 return false;
             }
         }
