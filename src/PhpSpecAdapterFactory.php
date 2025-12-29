@@ -87,6 +87,7 @@ final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
                 $tmpDir,
                 $phpSpecConfigDecodedContents,
                 $skipCoverage,
+                $filesystem,
             ),
             new MutationConfigBuilder(
                 $tmpDir,
