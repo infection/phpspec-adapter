@@ -35,13 +35,13 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec\Version;
 
-use PHPUnit\Framework\Attributes\RequiresPhp;
 use function file_exists;
 use Infection\TestFramework\PhpSpec\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Version\ProcessVersionProvider;
 use Infection\TestFramework\PhpSpec\Version\VersionParser;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
 use function Safe\file_get_contents;
 
