@@ -45,8 +45,9 @@ use function preg_match;
  * @see https://testanything.org/
  *
  * @internal
+ * @final
  */
-final readonly class TapTestChecker
+readonly class TapTestChecker
 {
     private const ERROR_REGEXPS = [
         '/Fatal error\:/',
