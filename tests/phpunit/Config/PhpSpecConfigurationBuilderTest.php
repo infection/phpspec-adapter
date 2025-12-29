@@ -36,8 +36,8 @@ declare(strict_types=1);
 namespace Infection\Tests\TestFramework\PhpSpec\Config;
 
 use Exception;
-use Infection\TestFramework\PhpSpec\Config\NoCodeCoverageException;
 use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
+use Infection\TestFramework\PhpSpec\Throwable\NoCodeCoverageConfigured;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use function is_a;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -374,7 +374,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
             <<<'YAML'
 
                 YAML,
-            NoCodeCoverageException::class,
+            NoCodeCoverageConfigured::class,
         ];
 
         yield 'nothing configured (explicitly)' => [
@@ -383,7 +383,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 extensions: ~
 
                 YAML,
-            NoCodeCoverageException::class,
+            NoCodeCoverageConfigured::class,
         ];
 
         yield 'unknown code coverage extension without configuration' => [

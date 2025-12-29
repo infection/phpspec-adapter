@@ -38,6 +38,7 @@ namespace Infection\TestFramework\PhpSpec\Config;
 use function array_is_list;
 use function array_key_exists;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
+use Infection\TestFramework\PhpSpec\Throwable\NoCodeCoverageConfigured;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use function is_array;
 use function str_contains;
@@ -83,7 +84,7 @@ final class PhpSpecConfigurationBuilder
     }
 
     /**
-     * @throws NoCodeCoverageException
+     * @throws NoCodeCoverageConfigured
      */
     public function configureXmlCoverageReportIfNecessary(): void
     {
@@ -140,12 +141,14 @@ final class PhpSpecConfigurationBuilder
     }
 
     /**
-     * @throws NoCodeCoverageException
+     * @throws NoCodeCoverageConfigured
      */
     private function assertHasCoverageExtension(): void
     {
         if (!$this->hasCodeCoverageExtension()) {
-            throw NoCodeCoverageException::fromTestFramework('PhpSpec');
+            throw new NoCodeCoverageConfigured(
+                'No code coverage PhpSpec extension configured. Infection requires one.',
+            );
         }
     }
 
