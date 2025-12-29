@@ -138,7 +138,11 @@ class MutationConfigBuilder
         return sprintf(
             $customAutoload,
             $autoloadPlaceholder,
-            $this->getInterceptorFileContent($interceptorPath, $originalFilePath, $mutantFilePath),
+            $this->getInterceptorFileContent(
+                $interceptorPath,
+                $originalFilePath,
+                $mutantFilePath,
+            ),
         );
     }
 
@@ -171,7 +175,11 @@ class MutationConfigBuilder
         if (str_starts_with(__FILE__, 'phar:')) {
             $infectionPhar = sprintf(
                 '\Phar::loadPhar("%s", "%s");',
-                str_replace('phar://', '', Phar::running(true)),
+                str_replace(
+                    'phar://',
+                    '',
+                    Phar::running(true),
+                ),
                 'infection.phar',
             );
         }
