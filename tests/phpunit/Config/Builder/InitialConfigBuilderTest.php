@@ -40,7 +40,7 @@ use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
-use function Safe\file_put_contents;
+use function Safe\file_get_contents;
 
 #[Group('integration')]
 #[CoversClass(InitialConfigBuilder::class)]
@@ -48,9 +48,9 @@ final class InitialConfigBuilderTest extends FileSystemTestCase
 {
     public function test_it_builds_path_to_initial_config_file(): void
     {
-        $originalYamlConfigPath = __DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml';
+        $originalPhpSpecConfigContents = file_get_contents(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
 
-        $builder = new InitialConfigBuilder($this->tmp, $originalYamlConfigPath, false);
+        $builder = new InitialConfigBuilder($this->tmp, $originalPhpSpecConfigContents, false);
 
         $actualPath = $builder->build('2.0');
 
@@ -60,22 +60,18 @@ final class InitialConfigBuilderTest extends FileSystemTestCase
 
     public function test_it_provides_a_friendly_error_if_the_configuration_is_invalud(): void
     {
-        $originalYamlConfigPath = $this->tmp . '/phpspec.yml';
-        file_put_contents(
-            $originalYamlConfigPath,
-            <<<'YAML'
-                suites: ~
-                extensions:
-                    - Acme\Extension\FirstExampleExtension
-                    - Acme\Extension\CodeCoverageExtension
-                    - Acme\Extension\SecondExampleExtension
+        $originalPhpSpecConfigContents = <<<'YAML'
+            suites: ~
+            extensions:
+                - Acme\Extension\FirstExampleExtension
+                - Acme\Extension\CodeCoverageExtension
+                - Acme\Extension\SecondExampleExtension
 
-                YAML,
-        );
+            YAML;
 
         $builder = new InitialConfigBuilder(
             $this->tmp,
-            $originalYamlConfigPath,
+            $originalPhpSpecConfigContents,
             false,
         );
 

@@ -50,7 +50,7 @@ final class PhpSpecAdapterFactoryTest extends TestCase
         $adapter = PhpSpecAdapterFactory::create(
             '/path/to/phpspec',
             '/tmp',
-            __DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml',
+            __DIR__ . '/../Fixtures/Files/phpspec/phpspec.yml',
             null,
             '/path/to/junit.xml',
             '/path/to/project',
