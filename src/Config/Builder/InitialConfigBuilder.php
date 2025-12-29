@@ -38,16 +38,20 @@ namespace Infection\TestFramework\PhpSpec\Config\Builder;
 use function file_put_contents;
 use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
-use Symfony\Component\Yaml\Yaml;
 
 /**
+ * @phpstan-import-type DecodedPhpSpecConfig from PhpSpecConfigurationBuilder
+ *
  * @internal
  */
 class InitialConfigBuilder
 {
+    /**
+     * @param DecodedPhpSpecConfig $originalPhpSpecConfigDecodedContents
+     */
     public function __construct(
         private readonly string $tempDirectory,
-        private readonly string $originalPhpSpecConfigContents,
+        private readonly array $originalPhpSpecConfigDecodedContents,
         private readonly bool $skipCoverage,
     ) {
     }
@@ -59,7 +63,7 @@ class InitialConfigBuilder
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
                 $this->tempDirectory,
-                Yaml::parse($this->originalPhpSpecConfigContents),
+                $this->originalPhpSpecConfigDecodedContents,
             );
         } catch (UnrecognisableConfiguration $exception) {
             throw $exception->enrichWithVersion($version);

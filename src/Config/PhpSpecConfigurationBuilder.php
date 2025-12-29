@@ -44,12 +44,14 @@ use function str_contains;
 use Symfony\Component\Yaml\Yaml;
 
 /**
+ * @phpstan-type DecodedPhpSpecConfig = array{extensions?: array<string, mixed>|null}&mixed[]
+ *
  * @internal
  */
 final class PhpSpecConfigurationBuilder
 {
     /**
-     * @param array{extensions?: array<string, mixed>|null}&array<string, mixed> $parsedYaml
+     * @param DecodedPhpSpecConfig $parsedYaml
      */
     public function __construct(
         private readonly string $tmpDirectory,
@@ -58,7 +60,7 @@ final class PhpSpecConfigurationBuilder
     }
 
     /**
-     * @param array<string, mixed> $parsedYaml
+     * @param mixed[] $parsedYaml
      *
      * @throws UnrecognisableConfiguration
      */
@@ -120,7 +122,7 @@ final class PhpSpecConfigurationBuilder
     /**
      * @param array<string, mixed> $parsedYaml
      *
-     * @phpstan-assert array{extensions?: null|array<string, mixed>}&array<string, mixed> $parsedYaml
+     * @phpstan-assert DecodedPhpSpecConfig $parsedYaml
      */
     private static function assertIsSupportedExtensionsFormat(array $parsedYaml): void
     {

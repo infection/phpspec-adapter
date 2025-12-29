@@ -642,4 +642,72 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
         ];
     }
+
+    public function test_multiple_instances_from_the_same_decoded_yaml_do_not_mutate_the_original_value(): void
+    {
+        $original = <<<'YAML'
+            suites:
+                default:
+                    namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec
+                    psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec
+
+            extensions:
+                Acme\Extension\FirstExampleExtension: { key1: value1 }
+                Acme\Extension\SecondExampleExtension: { key3: value3 }
+                FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
+                    format:
+                        - xml
+                        - clover
+                        - html
+                    output:
+                        xml: var/phpspec-coverage
+                        html: var/phpspec-html
+
+            YAML;
+        $originalDecoded = Yaml::parse($original) ?? [];
+
+        $builder1 = PhpSpecConfigurationBuilder::create(
+            '/path/to/tmp',
+            $originalDecoded,
+        );
+        $builder2 = PhpSpecConfigurationBuilder::create(
+            '/path/to/tmp',
+            $originalDecoded,
+        );
+
+        $builder1->setBootstrap('bootstrap.php');
+        $builder1->removeCoverageExtension();
+
+        $result1 = $builder1->getYAML();
+
+        $builder2->configureXmlCoverageReportIfNecessary();
+
+        $result2 = $builder2->getYAML();
+
+        $this->assertSame(
+            <<<'YAML'
+                bootstrap: bootstrap.php
+                suites:
+                    default: { namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec, psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec }
+                extensions:
+                    Acme\Extension\FirstExampleExtension: { key1: value1 }
+                    Acme\Extension\SecondExampleExtension: { key3: value3 }
+
+                YAML,
+            $result1,
+        );
+
+        $this->assertSame(
+            <<<'YAML'
+                suites:
+                    default: { namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec, psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec }
+                extensions:
+                    Acme\Extension\FirstExampleExtension: { key1: value1 }
+                    Acme\Extension\SecondExampleExtension: { key3: value3 }
+                    FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension: { format: [xml], output: { xml: /path/to/tmp/phpspec-coverage-xml } }
+
+                YAML,
+            $result2,
+        );
+    }
 }
