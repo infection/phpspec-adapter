@@ -116,7 +116,7 @@ readonly class MutationConfigBuilder
     }
 
     /**
-     * @param array<string, mixed> $parsedYaml
+     * @param DecodedPhpSpecConfig $parsedYaml
      */
     private function createCustomAutoloadWithInterceptor(
         string $originalFilePath,
@@ -124,7 +124,9 @@ readonly class MutationConfigBuilder
         array $parsedYaml,
     ): string {
         $originalBootstrap = $this->getOriginalBootstrapFilePath($parsedYaml);
-        $autoloadPlaceholder = $originalBootstrap !== null ? "require_once '{$originalBootstrap}';" : '';
+        $autoloadPlaceholder = $originalBootstrap !== null
+            ? "require_once '{$originalBootstrap}';"
+            : '';
         /** @var string $interceptorPath */
         $interceptorPath = IncludeInterceptor::LOCATION;
 
