@@ -104,7 +104,11 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         array $phpExtraArgs,
         bool $skipCoverage,
     ): array {
-        return $this->getCommandLine($this->buildInitialConfigFile(), $extraOptions, $phpExtraArgs);
+        return $this->getCommandLine(
+            $this->buildInitialConfigFile(),
+            $extraOptions,
+            $phpExtraArgs,
+        );
     }
 
     public function getMutantCommandLine(
@@ -178,7 +182,10 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         string $extraOptions,
         array $phpExtraArgs,
     ): array {
-        $frameworkArgs = $this->argumentsAndOptionsBuilder->build($configPath, $extraOptions);
+        $frameworkArgs = $this->argumentsAndOptionsBuilder->build(
+            $configPath,
+            $extraOptions,
+        );
 
         return $this->commandLineBuilder->build(
             $this->testFrameworkExecutable,
