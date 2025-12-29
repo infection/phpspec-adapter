@@ -93,6 +93,7 @@ final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
                 $tmpDir,
                 $phpSpecConfigDecodedContents,
                 $projectDir,
+                $filesystem,
             ),
             new ArgumentsAndOptionsBuilder(),
             new VersionParser(),
