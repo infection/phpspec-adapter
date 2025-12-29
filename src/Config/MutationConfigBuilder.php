@@ -33,13 +33,12 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec\Config\Builder;
+namespace Infection\TestFramework\PhpSpec\Config;
 
 use function array_key_exists;
 use function assert;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\StreamWrapper\IncludeInterceptor;
-use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use function is_string;
 use Phar;

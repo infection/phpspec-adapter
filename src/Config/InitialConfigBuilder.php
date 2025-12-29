@@ -33,9 +33,8 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec\Config\Builder;
+namespace Infection\TestFramework\PhpSpec\Config;
 
-use Infection\TestFramework\PhpSpec\Config\PhpSpecConfigurationBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\NoCodeCoverageConfigured;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use Symfony\Component\Filesystem\Filesystem;

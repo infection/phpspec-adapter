@@ -33,9 +33,9 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
+namespace Infection\Tests\TestFramework\PhpSpec\Config;
 
-use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
+use Infection\TestFramework\PhpSpec\Config\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
