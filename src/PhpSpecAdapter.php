@@ -37,6 +37,7 @@ namespace Infection\TestFramework\PhpSpec;
 
 use function explode;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
+use Infection\AbstractTestFramework\InvalidVersion;
 use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
@@ -192,6 +193,9 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         );
     }
 
+    /**
+     * @throws InvalidVersion
+     */
     private function retrieveVersion(): string
     {
         $testFrameworkVersionExecutable = $this->commandLineBuilder->build(

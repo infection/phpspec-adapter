@@ -33,21 +33,25 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec\Throwable;
+namespace Infection\Tests\TestFramework\PhpSpec\Throwable;
 
-use function sprintf;
-use UnexpectedValueException;
+use Infection\TestFramework\PhpSpec\Throwable\InvalidVersionFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
 
-final class UnrecognisableTestFrameworkVersion extends UnexpectedValueException
+#[CoversClass(InvalidVersionFactory::class)]
+final class InvalidVersionFactoryTest extends TestCase
 {
-    public static function create(string $testFrameworkName, string $version): self
+    public function test_it_can_create_an_exception(): void
     {
-        return new self(
-            sprintf(
-                'Could not recognise the test framework version for %s for the value "%s".',
-                $testFrameworkName,
-                $version,
-            ),
+        $exception = InvalidVersionFactory::create(
+            'PhpSpec',
+            'dev-main',
+        );
+
+        $this->assertSame(
+            'Could not recognise the test framework version for PhpSpec for the value "dev-main".',
+            $exception->getMessage(),
         );
     }
 }

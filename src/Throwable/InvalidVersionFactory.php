@@ -33,25 +33,25 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec\Throwable;
+namespace Infection\TestFramework\PhpSpec\Throwable;
 
-use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableTestFrameworkVersion;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use Infection\AbstractTestFramework\InvalidVersion;
+use function sprintf;
 
-#[CoversClass(UnrecognisableTestFrameworkVersion::class)]
-final class UnrecognisableTestFrameworkVersionTest extends TestCase
+final class InvalidVersionFactory
 {
-    public function test_it_can_create_an_exception(): void
+    private function __construct()
     {
-        $exception = UnrecognisableTestFrameworkVersion::create(
-            'PhpSpec',
-            'dev-main',
-        );
+    }
 
-        $this->assertSame(
-            'Could not recognise the test framework version for PhpSpec for the value "dev-main".',
-            $exception->getMessage(),
+    public static function create(string $testFrameworkName, string $version): InvalidVersion
+    {
+        return new InvalidVersion(
+            sprintf(
+                'Could not recognise the test framework version for %s for the value "%s".',
+                $testFrameworkName,
+                $version,
+            ),
         );
     }
 }

@@ -36,7 +36,7 @@ declare(strict_types=1);
 namespace Infection\Tests\TestFramework\PhpSpec;
 
 use Exception;
-use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableTestFrameworkVersion;
+use Infection\TestFramework\PhpSpec\Throwable\InvalidVersionFactory;
 use Infection\TestFramework\PhpSpec\VersionParser;
 use function is_array;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -181,12 +181,12 @@ final class VersionParserTest extends TestCase
         // https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
         yield [
             '1',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1'),
+            InvalidVersionFactory::create('PhpSpec', '1'),
         ];
 
         yield [
             '1.2',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1.2'),
+            InvalidVersionFactory::create('PhpSpec', '1.2'),
         ];
 
         yield [
@@ -203,74 +203,74 @@ final class VersionParserTest extends TestCase
 
         yield [
             '+invalid',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '+invalid'),
+            InvalidVersionFactory::create('PhpSpec', '+invalid'),
         ];
 
         yield [
             '-invalid',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '-invalid'),
+            InvalidVersionFactory::create('PhpSpec', '-invalid'),
         ];
 
         yield [
             '-invalid+invalid',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '-invalid+invalid'),
+            InvalidVersionFactory::create('PhpSpec', '-invalid+invalid'),
         ];
 
         yield [
             '-invalid.01',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '-invalid.01'),
+            InvalidVersionFactory::create('PhpSpec', '-invalid.01'),
         ];
 
         yield [
             'alpha',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha'),
+            InvalidVersionFactory::create('PhpSpec', 'alpha'),
         ];
 
         yield [
             'alpha.beta',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha.beta'),
+            InvalidVersionFactory::create('PhpSpec', 'alpha.beta'),
         ];
 
         yield [
             'alpha.beta.1',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha.beta.1'),
+            InvalidVersionFactory::create('PhpSpec', 'alpha.beta.1'),
         ];
 
         yield [
             'alpha.1',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha.1'),
+            InvalidVersionFactory::create('PhpSpec', 'alpha.1'),
         ];
 
         yield [
             'alpha+beta',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha+beta'),
+            InvalidVersionFactory::create('PhpSpec', 'alpha+beta'),
         ];
 
         yield [
             'alpha_beta',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha_beta'),
+            InvalidVersionFactory::create('PhpSpec', 'alpha_beta'),
         ];
 
         yield [
             'alpha.',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha.'),
+            InvalidVersionFactory::create('PhpSpec', 'alpha.'),
         ];
 
         yield [
             'alpha..',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'alpha..'),
+            InvalidVersionFactory::create('PhpSpec', 'alpha..'),
         ];
 
         yield [
             'beta',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'beta'),
+            InvalidVersionFactory::create('PhpSpec', 'beta'),
         ];
 
         yield ['1.0.0-alpha_beta', '1.0.0-alpha'];    // TODO: this is incorrect
 
         yield [
             '-alpha.',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '-alpha.'),
+            InvalidVersionFactory::create('PhpSpec', '-alpha.'),
         ];
 
         yield [
@@ -316,28 +316,28 @@ final class VersionParserTest extends TestCase
 
         yield [
             '1.2',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1.2'),
+            InvalidVersionFactory::create('PhpSpec', '1.2'),
         ];
 
         yield ['1.2.3.DEV', '1.2.3'];  // TODO: this is incorrect
 
         yield [
             '1.2-SNAPSHOT',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1.2-SNAPSHOT'),
+            InvalidVersionFactory::create('PhpSpec', '1.2-SNAPSHOT'),
         ];
 
         yield ['1.2.31.2.3----RC-SNAPSHOT.12.09.1--..12+788', '1.2.31.2'];  // TODO: this is incorrect
 
         yield [
             '1.2-RC-SNAPSHOT',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '1.2-RC-SNAPSHOT'),
+            InvalidVersionFactory::create('PhpSpec', '1.2-RC-SNAPSHOT'),
         ];
 
         yield ['-1.0.3-gamma+b7718', '1.0.3-gamma+b7718'];  // TODO: this is incorrect
 
         yield [
             '+justmeta',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '+justmeta'),
+            InvalidVersionFactory::create('PhpSpec', '+justmeta'),
         ];
 
         yield ['9.8.7+meta+meta', '9.8.7+meta'];  // TODO: this is incorrect
@@ -366,12 +366,12 @@ final class VersionParserTest extends TestCase
 
         yield [
             '2.5.x-dev',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', '2.5.x-dev'),
+            InvalidVersionFactory::create('PhpSpec', '2.5.x-dev'),
         ];    // TODO: this is incorrect
 
         yield [
             'dev-main',
-            UnrecognisableTestFrameworkVersion::create('PhpSpec', 'dev-main'),
+            InvalidVersionFactory::create('PhpSpec', 'dev-main'),
         ];    // TODO: this is incorrect
     }
 }

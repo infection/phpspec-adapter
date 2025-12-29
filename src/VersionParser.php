@@ -35,7 +35,8 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec;
 
-use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableTestFrameworkVersion;
+use Infection\AbstractTestFramework\InvalidVersion;
+use Infection\TestFramework\PhpSpec\Throwable\InvalidVersionFactory;
 use function preg_match;
 
 /**
@@ -58,7 +59,7 @@ final readonly class VersionParser
      * typically be the output of `$ tool --version`, which usually may include information
      * about the tool name and authors besides the version itself.
      *
-     * @throws UnrecognisableTestFrameworkVersion
+     * @throws InvalidVersion
      *
      * @return non-empty-string
      */
@@ -68,7 +69,7 @@ final readonly class VersionParser
         $matched = preg_match(self::VERSION_REGEX, $value, $matches) > 0;
 
         if (!$matched) {
-            throw UnrecognisableTestFrameworkVersion::create(
+            throw InvalidVersionFactory::create(
                 'PhpSpec',
                 $value,
             );
