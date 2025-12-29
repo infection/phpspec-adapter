@@ -42,6 +42,8 @@ use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
+use Infection\TestFramework\PhpSpec\Throwable\NoCodeCoverageConfigured;
+use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use const PHP_EOL;
 use function preg_match;
 use function sprintf;
@@ -97,13 +99,6 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         return 'PhpSpec';
     }
 
-    /**
-     * Returns array of arguments to pass them into the Initial Run Symfony Process
-     *
-     * @param string[] $phpExtraArgs
-     *
-     * @return string[]
-     */
     public function getInitialTestRunCommandLine(
         string $extraOptions,
         array $phpExtraArgs,
@@ -112,13 +107,6 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         return $this->getCommandLine($this->buildInitialConfigFile(), $extraOptions, $phpExtraArgs);
     }
 
-    /**
-     * Returns array of arguments to pass them into the Mutant Symfony Process
-     *
-     * @param TestLocation[] $coverageTests
-     *
-     * @return string[]
-     */
     public function getMutantCommandLine(
         array $coverageTests,
         string $mutatedFilePath,
@@ -151,6 +139,10 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
         );
     }
 
+    /**
+     * @throws NoCodeCoverageConfigured
+     * @throws UnrecognisableConfiguration
+     */
     private function buildInitialConfigFile(): string
     {
         return $this->initialConfigBuilder->build($this->getVersion());
@@ -158,6 +150,8 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
 
     /**
      * @param TestLocation[] $tests
+     *
+     * @throws UnrecognisableConfiguration
      */
     private function buildMutationConfigFile(
         array $tests,
