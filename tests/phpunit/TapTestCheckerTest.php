@@ -109,7 +109,12 @@ final class TapTestCheckerTest extends TestCase
 
         yield 'TAP result type: bailout' => [
             'Bail out!  We ran out of tokens!',
-            true,   // TODO: this should return false!
+            false,
+        ];
+
+        yield 'TAP result type: bailout with indent' => [
+            '  Bail out!  We ran out of tokens!',
+            false,
         ];
 
         yield 'TAP result type: unknown' => [
