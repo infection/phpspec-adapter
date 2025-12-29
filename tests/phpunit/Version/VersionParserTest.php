@@ -33,11 +33,11 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec;
+namespace Infection\Tests\TestFramework\PhpSpec\Version;
 
 use Exception;
 use Infection\TestFramework\PhpSpec\Throwable\InvalidVersionFactory;
-use Infection\TestFramework\PhpSpec\VersionParser;
+use Infection\TestFramework\PhpSpec\Version\VersionParser;
 use function is_array;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -69,6 +69,9 @@ final class VersionParserTest extends TestCase
         }
     }
 
+    /**
+     * @return iterable<array{string, string|Exception}>
+     */
     public static function versionProvider(): iterable
     {
         yield 'Hoa version' => ['3.17.05.02', '3.17.05.02'];

@@ -33,22 +33,51 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec;
+namespace Infection\Tests\TestFramework\PhpSpec\Version;
 
-use Infection\TestFramework\PhpSpec\FinderException;
+use function file_exists;
+use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
+use Infection\TestFramework\PhpSpec\Version\ProcessVersionProvider;
+use Infection\TestFramework\PhpSpec\Version\VersionParser;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
+use function Safe\file_get_contents;
 
-#[CoversClass(FinderException::class)]
-final class FinderExceptionTest extends TestCase
+#[Group('integration')]
+#[CoversClass(ProcessVersionProvider::class)]
+final class ProcessVersionProviderTest extends TestCase
 {
-    public function test_php_executable_not_found(): void
-    {
-        $exception = FinderException::phpExecutableNotFound();
+    // This is prepared and downloaded by the Makefile.
+    private const PHPSPEC_PHAR = __DIR__ . '/../../../var/tools/phpspec.phar';
 
-        $this->assertSame(
-            'Unable to locate the PHP executable on the local system. Please report this issue, and include details about your setup.',
-            $exception->getMessage(),
+    private const PHPSPEC_VERSION = __DIR__ . '/../../../.tools/phpspec-version';
+
+    #[RequiresPhp('<8.5')]
+    public function test_it_can_get_the_version(): void
+    {
+        $this->ensurePharExists();
+
+        $expected = file_get_contents(self::PHPSPEC_VERSION);
+
+        $provider = new ProcessVersionProvider(
+            self::PHPSPEC_PHAR,
+            new CommandLineBuilder(),
+            new VersionParser(),
         );
+
+        $actual = $provider->get();
+
+        $this->assertSame($expected, $actual);
+    }
+
+    private function ensurePharExists(): void
+    {
+        if (!file_exists(self::PHPSPEC_PHAR)) {
+            $this->markTestSkipped(
+                'The PhpSpec PHAR could not be found. It will be automatically downloaded when executing `make test-unit`.',
+            );
+        }
     }
 }

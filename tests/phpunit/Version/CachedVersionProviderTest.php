@@ -33,48 +33,32 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec;
+namespace Infection\Tests\TestFramework\PhpSpec\Version;
 
-use Infection\AbstractTestFramework\InvalidVersion;
-use Infection\TestFramework\PhpSpec\Throwable\InvalidVersionFactory;
-use function preg_match;
+use Infection\TestFramework\PhpSpec\Version\CachedVersionProvider;
+use Infection\TestFramework\PhpSpec\Version\VersionProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
 
-/**
- * @internal
- */
-final readonly class VersionParser
+#[CoversClass(CachedVersionProvider::class)]
+final class CachedVersionProviderTest extends TestCase
 {
-    // Adapted from: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-    // It required a few adjustments for:
-    // - Accounting the fact that the value may not be strictly the version, but a string containing the version.
-    // - Supporting the HOA like versions `x.YY.mm.dd`
-    //   - x: Master Compatibility Number
-    //   - YY: year since 2000 ("Rush Epoch")
-    //   - mm = month
-    //   - dd = day
-    private const VERSION_REGEX = '/(?:.+ [vV]?)?(?<version>(?P<major>0|[1-9]\d*)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:\.\d+)?(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?: .+)?/';
-
-    /**
-     * Parses a string value to try to extract the exact version out of it. The input can
-     * typically be the output of `$ tool --version`, which usually may include information
-     * about the tool name and authors besides the version itself.
-     *
-     * @throws InvalidVersion
-     *
-     * @return non-empty-string
-     */
-    public function parse(string $value): string
+    public function test_it_calls_the_decorated_version_provider_once_and_only_once(): void
     {
-        $matches = [];
-        $matched = preg_match(self::VERSION_REGEX, $value, $matches) > 0;
+        $expected = '7.2.0';
 
-        if (!$matched) {
-            throw InvalidVersionFactory::create(
-                'PhpSpec',
-                $value,
-            );
-        }
+        $decoratedProviderMock = $this->createMock(VersionProvider::class);
+        $decoratedProviderMock
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn($expected);
 
-        return $matches['version'];
+        $provider = new CachedVersionProvider($decoratedProviderMock);
+
+        $actual1 = $provider->get();
+        $actual2 = $provider->get();
+
+        $this->assertSame($expected, $actual1);
+        $this->assertSame($expected, $actual2);
     }
 }

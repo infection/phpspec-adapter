@@ -33,19 +33,34 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec;
+namespace Infection\TestFramework\PhpSpec\Version;
 
-use RuntimeException;
+use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
+use Symfony\Component\Process\Process;
 
 /**
  * @internal
  */
-final class FinderException extends RuntimeException
+final readonly class ProcessVersionProvider implements VersionProvider
 {
-    public static function phpExecutableNotFound(): self
+    public function __construct(
+        private string $testFrameworkExecutable,
+        private CommandLineBuilder $commandLineBuilder,
+        private VersionParser $versionParser,
+    ) {
+    }
+
+    public function get(): string
     {
-        return new self(
-            'Unable to locate the PHP executable on the local system. Please report this issue, and include details about your setup.',
+        $testFrameworkVersionExecutable = $this->commandLineBuilder->build(
+            $this->testFrameworkExecutable,
+            [],
+            ['--version'],
         );
+
+        $process = new Process($testFrameworkVersionExecutable);
+        $process->mustRun();
+
+        return $this->versionParser->parse($process->getOutput());
     }
 }

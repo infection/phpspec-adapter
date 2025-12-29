@@ -37,19 +37,19 @@ namespace Infection\TestFramework\PhpSpec;
 
 use function explode;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
-use Infection\AbstractTestFramework\InvalidVersion;
 use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
+use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Config\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\NoCodeCoverageConfigured;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
+use Infection\TestFramework\PhpSpec\Version\VersionProvider;
 use const PHP_EOL;
 use function preg_match;
 use function sprintf;
-use Symfony\Component\Process\Process;
 
-final class PhpSpecAdapter implements TestFrameworkAdapter
+final readonly class PhpSpecAdapter implements TestFrameworkAdapter
 {
     public const COVERAGE_DIR = 'phpspec-coverage-xml';
 
@@ -59,13 +59,12 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
     ];
 
     public function __construct(
-        private readonly string $testFrameworkExecutable,
-        private readonly InitialConfigBuilder $initialConfigBuilder,
-        private readonly MutationConfigBuilder $mutationConfigBuilder,
-        private readonly ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder,
-        private readonly VersionParser $versionParser,
-        private readonly CommandLineBuilder $commandLineBuilder,
-        private ?string $version = null,
+        private string $testFrameworkExecutable,
+        private InitialConfigBuilder $initialConfigBuilder,
+        private MutationConfigBuilder $mutationConfigBuilder,
+        private ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder,
+        private VersionProvider $versionProvider,
+        private CommandLineBuilder $commandLineBuilder,
     ) {
     }
 
@@ -132,7 +131,7 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
 
     public function getVersion(): string
     {
-        return $this->version ?? $this->version = $this->retrieveVersion();
+        return $this->versionProvider->get();
     }
 
     public function getInitialTestsFailRecommendations(string $commandLine): string
@@ -192,22 +191,5 @@ final class PhpSpecAdapter implements TestFrameworkAdapter
             $phpExtraArgs,
             $frameworkArgs,
         );
-    }
-
-    /**
-     * @throws InvalidVersion
-     */
-    private function retrieveVersion(): string
-    {
-        $testFrameworkVersionExecutable = $this->commandLineBuilder->build(
-            $this->testFrameworkExecutable,
-            [],
-            ['--version'],
-        );
-
-        $process = new Process($testFrameworkVersionExecutable);
-        $process->mustRun();
-
-        return $this->versionParser->parse($process->getOutput());
     }
 }
