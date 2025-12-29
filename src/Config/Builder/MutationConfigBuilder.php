@@ -48,16 +48,20 @@ use function sprintf;
 use function str_replace;
 use function str_starts_with;
 use function strstr;
-use Symfony\Component\Yaml\Yaml;
 
 /**
+ * @phpstan-import-type DecodedPhpSpecConfig from PhpSpecConfigurationBuilder
+ *
  * @internal
  */
 class MutationConfigBuilder
 {
+    /**
+     * @param DecodedPhpSpecConfig $originalPhpSpecConfigDecodedContents
+     */
     public function __construct(
         private readonly string $tempDirectory,
-        private readonly string $originalPhpSpecConfigContents,
+        private readonly array $originalPhpSpecConfigDecodedContents,
         private readonly string $projectDir,
     ) {
     }
@@ -78,14 +82,19 @@ class MutationConfigBuilder
             $mutationHash,
         );
 
-        $parsedYaml = Yaml::parse($this->originalPhpSpecConfigContents);
-
-        file_put_contents($customAutoloadFilePath, $this->createCustomAutoloadWithInterceptor($mutationOriginalFilePath, $mutantFilePath, $parsedYaml));
+        file_put_contents(
+            $customAutoloadFilePath,
+            $this->createCustomAutoloadWithInterceptor(
+                $mutationOriginalFilePath,
+                $mutantFilePath,
+                $this->originalPhpSpecConfigDecodedContents,
+            ),
+        );
 
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
                 $this->tempDirectory,
-                $parsedYaml,
+                $this->originalPhpSpecConfigDecodedContents,
             );
         } catch (UnrecognisableConfiguration $exception) {
             throw $exception->enrichWithVersion($version);

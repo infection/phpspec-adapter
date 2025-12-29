@@ -40,7 +40,7 @@ use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
-use function Safe\file_get_contents;
+use Symfony\Component\Yaml\Yaml;
 
 #[Group('integration')]
 #[CoversClass(InitialConfigBuilder::class)]
@@ -48,9 +48,9 @@ final class InitialConfigBuilderTest extends FileSystemTestCase
 {
     public function test_it_builds_path_to_initial_config_file(): void
     {
-        $originalPhpSpecConfigContents = file_get_contents(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
+        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
 
-        $builder = new InitialConfigBuilder($this->tmp, $originalPhpSpecConfigContents, false);
+        $builder = new InitialConfigBuilder($this->tmp, $originalPhpSpecConfigDecodedContents, false);
 
         $actualPath = $builder->build('2.0');
 
@@ -60,18 +60,20 @@ final class InitialConfigBuilderTest extends FileSystemTestCase
 
     public function test_it_provides_a_friendly_error_if_the_configuration_is_invalud(): void
     {
-        $originalPhpSpecConfigContents = <<<'YAML'
-            suites: ~
-            extensions:
-                - Acme\Extension\FirstExampleExtension
-                - Acme\Extension\CodeCoverageExtension
-                - Acme\Extension\SecondExampleExtension
+        $originalPhpSpecConfigDecodedContents = Yaml::parse(
+            <<<'YAML'
+                suites: ~
+                extensions:
+                    - Acme\Extension\FirstExampleExtension
+                    - Acme\Extension\CodeCoverageExtension
+                    - Acme\Extension\SecondExampleExtension
 
-            YAML;
+                YAML,
+        );
 
         $builder = new InitialConfigBuilder(
             $this->tmp,
-            $originalPhpSpecConfigContents,
+            $originalPhpSpecConfigDecodedContents,
             false,
         );
 

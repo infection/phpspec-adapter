@@ -45,6 +45,7 @@ use InvalidArgumentException;
 use function method_exists;
 use function sprintf;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Yaml\Yaml;
 
 final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
 {
@@ -78,10 +79,12 @@ final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
             );
         }
 
+        $phpSpecConfigDecodedContents = Yaml::parse($phpSpecConfigContents);
+
         return new PhpSpecAdapter(
             $testFrameworkExecutable,
-            new InitialConfigBuilder($tmpDir, $phpSpecConfigContents, $skipCoverage),
-            new MutationConfigBuilder($tmpDir, $phpSpecConfigContents, $projectDir),
+            new InitialConfigBuilder($tmpDir, $phpSpecConfigDecodedContents, $skipCoverage),
+            new MutationConfigBuilder($tmpDir, $phpSpecConfigDecodedContents, $projectDir),
             new ArgumentsAndOptionsBuilder(),
             new VersionParser(),
             new CommandLineBuilder(),
