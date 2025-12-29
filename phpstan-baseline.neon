@@ -10,7 +10,7 @@ parameters:
 			message: '#^Call to function array_filter\(\) requires parameter \#2 to be passed to avoid loose comparison semantics\.$#'
 			identifier: arrayFilter.strict
 			count: 2
-			path: src/CommandLineBuilder.php
+			path: src/CommandLine/CommandLineBuilder.php
 
 		-
 			message: '#^PHPDoc tag @var with type string is not subtype of native type literal\-string&non\-falsy\-string\.$#'

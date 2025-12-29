@@ -37,7 +37,7 @@ namespace Infection\Tests\TestFramework\PhpSpec;
 
 use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
-use Infection\TestFramework\PhpSpec\CommandLineBuilder;
+use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Config\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;

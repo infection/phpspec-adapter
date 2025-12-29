@@ -33,7 +33,7 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec;
+namespace Infection\TestFramework\PhpSpec\CommandLine;
 
 use RuntimeException;
 
