@@ -105,5 +105,5 @@ $(PHPSPEC): .tools/phpspec-version
 	mkdir -p $(shell dirname $(PHPSPEC))
 	wget --quiet "https://github.com/phpspec/phpspec/releases/download/$(shell cat .tools/phpspec-version)/phpspec.phar" --output-document=$(PHPSPEC)
 	chmod a+x $@
-	$(PHPSPEC) --version
+	BOX_REQUIREMENT_CHECKER=0 $(PHPSPEC) --version
 	touch -c $@
