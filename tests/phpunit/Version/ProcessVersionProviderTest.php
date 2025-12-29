@@ -35,6 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec\Version;
 
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use function file_exists;
 use Infection\TestFramework\PhpSpec\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Version\ProcessVersionProvider;
@@ -53,6 +54,7 @@ final class ProcessVersionProviderTest extends TestCase
 
     private const PHPSPEC_VERSION = __DIR__ . '/../../../.tools/phpspec-version';
 
+    #[RequiresPhp('<8.5')]
     public function test_it_can_get_the_version(): void
     {
         $this->ensurePharExists();
