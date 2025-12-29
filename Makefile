@@ -10,8 +10,8 @@ help:
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//' | awk 'BEGIN {FS = ":"}; {printf "\033[33m%s:\033[0m%s\n", $$1, $$2}'
 
 INFECTION=var/tools/infection.phar
-MIN_MSI=68
-MIN_COVERED_MSI=97
+MIN_MSI=100
+MIN_COVERED_MSI=100
 
 PHPSPEC=var/tools/phpspec.phar
 

@@ -56,10 +56,35 @@ final class MutationConfigBuilderTest extends TestCase
     public function test_it_builds_path_to_mutation_config_file(): void
     {
         $projectDir = '/project/dir';
-        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../Fixtures/Files/phpspec/phpspec.yml');
+        $originalPhpSpecConfigDecodedContents = Yaml::parse(
+            <<<'YAML'
+                suites:
+                    default:
+                        namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec
+                        psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec
+
+                extensions:
+                    FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
+                        format:
+                            - xml
+                        output:
+                            xml: var/phpspec-coverage
+
+                YAML,
+        );
+
+        $expectedMutationConfig = <<<'YAML'
+            bootstrap: /path/to/tmp/interceptor.phpspec.autoload.a1b2c3.infection.php
+            suites:
+                default: { namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec, psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec }
+            extensions: {  }
+
+            YAML;
 
         $expectedInterceptorPath = '/path/to/tmp/interceptor.phpspec.autoload.a1b2c3.infection.php';
         $expectedMutationConfigPath = '/path/to/tmp/phpspecConfiguration.a1b2c3.infection.yml';
+
+        $dumpedFiles = [];
 
         $fileSystemMock = $this->createMock(Filesystem::class);
         $fileSystemMock
@@ -70,7 +95,13 @@ final class MutationConfigBuilderTest extends TestCase
                     $this->equalTo($expectedInterceptorPath),
                     $this->equalTo($expectedMutationConfigPath),
                 ),
-                $this->anything(),
+                $this->callback(
+                    static function (string $contents) use (&$dumpedFiles) {
+                        $dumpedFiles[] = $contents;
+
+                        return true;
+                    },
+                ),
             );
 
         $builder = new MutationConfigBuilder(
@@ -87,8 +118,11 @@ final class MutationConfigBuilderTest extends TestCase
             self::ORIGINAL_FILE_PATH,
             '2.0',
         );
+        // This is because we first dump the interceptor.
+        $actualMutationConfig = $dumpedFiles[1];
 
         $this->assertSame($expectedMutationConfigPath, $actualPath);
+        $this->assertSame($expectedMutationConfig, $actualMutationConfig);
     }
 
     public function test_it_adds_original_bootstrap_file_to_custom_autoload(): void

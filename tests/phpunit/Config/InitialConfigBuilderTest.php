@@ -49,16 +49,39 @@ final class InitialConfigBuilderTest extends TestCase
 {
     public function test_it_builds_path_to_initial_config_file(): void
     {
-        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../Fixtures/Files/phpspec/phpspec.yml');
+        $originalPhpSpecConfigDecodedContents = Yaml::parse(
+            <<<'YAML'
+                suites:
+                    default:
+                        namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec
+                        psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec
+
+                extensions:
+                    FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
+                        format:
+                            - xml
+                        output:
+                            xml: var/phpspec-coverage
+
+                YAML,
+        );
         $tmpDirectory = '/path/to/tmp';
 
         $expectedInitialConfigFilePath = '/path/to/tmp/phpspecConfiguration.initial.infection.yml';
+
+        $expectedMutationConfig = <<<'YAML'
+            suites:
+                default: { namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec, psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec }
+            extensions:
+                FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension: { format: [xml], output: { xml: /path/to/tmp/phpspec-coverage-xml } }
+
+            YAML;
 
         $fileSystemMock = $this->createMock(Filesystem::class);
         $fileSystemMock
             ->expects($this->once())
             ->method('dumpFile')
-            ->with($expectedInitialConfigFilePath, $this->anything());
+            ->with($expectedInitialConfigFilePath, $expectedMutationConfig);
 
         $builder = new InitialConfigBuilder(
             $tmpDirectory,
