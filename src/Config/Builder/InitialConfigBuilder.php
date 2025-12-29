@@ -44,17 +44,18 @@ use Symfony\Component\Filesystem\Filesystem;
  * @phpstan-import-type DecodedPhpSpecConfig from PhpSpecConfigurationBuilder
  *
  * @internal
+ * @final
  */
-class InitialConfigBuilder
+readonly class InitialConfigBuilder
 {
     /**
      * @param DecodedPhpSpecConfig $originalPhpSpecConfigDecodedContents
      */
     public function __construct(
-        private readonly string $tempDirectory,
-        private readonly array $originalPhpSpecConfigDecodedContents,
-        private readonly bool $skipCoverage,
-        private readonly Filesystem $filesystem,
+        private string $tempDirectory,
+        private array $originalPhpSpecConfigDecodedContents,
+        private bool $skipCoverage,
+        private Filesystem $filesystem,
     ) {
     }
 

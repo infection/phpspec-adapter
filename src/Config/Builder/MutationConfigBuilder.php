@@ -53,17 +53,18 @@ use Symfony\Component\Filesystem\Filesystem;
  * @phpstan-import-type DecodedPhpSpecConfig from PhpSpecConfigurationBuilder
  *
  * @internal
+ * @final
  */
-class MutationConfigBuilder
+readonly class MutationConfigBuilder
 {
     /**
      * @param DecodedPhpSpecConfig $originalPhpSpecConfigDecodedContents
      */
     public function __construct(
-        private readonly string $tempDirectory,
-        private readonly array $originalPhpSpecConfigDecodedContents,
-        private readonly string $projectDir,
-        private readonly Filesystem $filesystem,
+        private string $tempDirectory,
+        private array $originalPhpSpecConfigDecodedContents,
+        private string $projectDir,
+        private Filesystem $filesystem,
     ) {
     }
 

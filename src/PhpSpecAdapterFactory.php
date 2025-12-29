@@ -47,7 +47,7 @@ use function sprintf;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
-final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
+final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
 {
     /**
      * @param string[] $sourceDirectories
