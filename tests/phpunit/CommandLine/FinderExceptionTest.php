@@ -33,9 +33,9 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec;
+namespace Infection\Tests\TestFramework\PhpSpec\CommandLine;
 
-use Infection\TestFramework\PhpSpec\FinderException;
+use Infection\TestFramework\PhpSpec\CommandLine\FinderException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

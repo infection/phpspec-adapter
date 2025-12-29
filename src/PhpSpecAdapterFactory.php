@@ -39,6 +39,7 @@ use function file_get_contents;
 use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\AbstractTestFramework\TestFrameworkAdapterFactory;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
+use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Config\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use InvalidArgumentException;
