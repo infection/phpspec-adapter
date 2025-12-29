@@ -40,6 +40,7 @@ use Infection\AbstractTestFramework\TestFrameworkAdapterFactory;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
 {
@@ -56,10 +57,13 @@ final class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
         array $sourceDirectories,
         bool $skipCoverage,
     ): TestFrameworkAdapter {
+        $filesystem = new Filesystem();
+        $phpSpecConfigContents = $filesystem->readFile($testFrameworkConfigPath);
+
         return new PhpSpecAdapter(
             $testFrameworkExecutable,
-            new InitialConfigBuilder($tmpDir, $testFrameworkConfigPath, $skipCoverage),
-            new MutationConfigBuilder($tmpDir, $testFrameworkConfigPath, $projectDir),
+            new InitialConfigBuilder($tmpDir, $phpSpecConfigContents, $skipCoverage),
+            new MutationConfigBuilder($tmpDir, $phpSpecConfigContents, $projectDir),
             new ArgumentsAndOptionsBuilder(),
             new VersionParser(),
             new CommandLineBuilder(),

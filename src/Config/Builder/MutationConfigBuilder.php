@@ -57,7 +57,7 @@ class MutationConfigBuilder
 {
     public function __construct(
         private readonly string $tempDirectory,
-        private readonly string $originalYamlConfigPath,
+        private readonly string $originalPhpSpecConfigContents,
         private readonly string $projectDir,
     ) {
     }
@@ -78,7 +78,7 @@ class MutationConfigBuilder
             $mutationHash,
         );
 
-        $parsedYaml = Yaml::parseFile($this->originalYamlConfigPath);
+        $parsedYaml = Yaml::parse($this->originalPhpSpecConfigContents);
 
         file_put_contents($customAutoloadFilePath, $this->createCustomAutoloadWithInterceptor($mutationOriginalFilePath, $mutantFilePath, $parsedYaml));
 

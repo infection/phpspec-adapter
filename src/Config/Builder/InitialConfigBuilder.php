@@ -47,7 +47,7 @@ class InitialConfigBuilder
 {
     public function __construct(
         private readonly string $tempDirectory,
-        private readonly string $originalYamlConfigPath,
+        private readonly string $originalPhpSpecConfigContents,
         private readonly bool $skipCoverage,
     ) {
     }
@@ -59,7 +59,7 @@ class InitialConfigBuilder
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
                 $this->tempDirectory,
-                Yaml::parseFile($this->originalYamlConfigPath),
+                Yaml::parse($this->originalPhpSpecConfigContents),
             );
         } catch (UnrecognisableConfiguration $exception) {
             throw $exception->enrichWithVersion($version);

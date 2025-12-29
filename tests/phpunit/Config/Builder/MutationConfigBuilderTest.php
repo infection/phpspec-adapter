@@ -35,7 +35,6 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec\Config\Builder;
 
-use function file_put_contents;
 use Infection\TestFramework\PhpSpec\Config\Builder\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use Infection\Tests\TestFramework\PhpSpec\FileSystem\FileSystemTestCase;
@@ -56,9 +55,9 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
     public function test_it_builds_path_to_mutation_config_file(): void
     {
         $projectDir = '/project/dir';
-        $originalYamlConfigPath = __DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml';
+        $originalPhpSpecConfigContents = file_get_contents(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
 
-        $builder = new MutationConfigBuilder($this->tmp, $originalYamlConfigPath, $projectDir);
+        $builder = new MutationConfigBuilder($this->tmp, $originalPhpSpecConfigContents, $projectDir);
 
         $actualPath = $builder->build(
             [],
@@ -75,9 +74,9 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
     public function test_it_adds_original_bootstrap_file_to_custom_autoload(): void
     {
         $projectDir = '/project/dir';
-        $originalYamlConfigPath = __DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.with.bootstrap.yml';
+        $originalPhpSpecConfigContents = file_get_contents(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.with.bootstrap.yml');
 
-        $builder = new MutationConfigBuilder($this->tmp, $originalYamlConfigPath, $projectDir);
+        $builder = new MutationConfigBuilder($this->tmp, $originalPhpSpecConfigContents, $projectDir);
 
         $this->assertSame(
             $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
@@ -99,9 +98,9 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
     public function test_interceptor_is_included(): void
     {
         $projectDir = '/project/dir';
-        $originalYamlConfigPath = __DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml';
+        $originalPhpSpecConfigContents = file_get_contents(__DIR__ . '/../../../Fixtures/Files/phpspec/phpspec.yml');
 
-        $builder = new MutationConfigBuilder($this->tmp, $originalYamlConfigPath, $projectDir);
+        $builder = new MutationConfigBuilder($this->tmp, $originalPhpSpecConfigContents, $projectDir);
 
         $this->assertSame(
             $this->tmp . '/phpspecConfiguration.a1b2c3.infection.yml',
@@ -122,22 +121,18 @@ final class MutationConfigBuilderTest extends FileSystemTestCase
 
     public function test_it_provides_a_friendly_error_if_the_configuration_is_invalud(): void
     {
-        $originalYamlConfigPath = $this->tmp . '/phpspec.yml';
-        file_put_contents(
-            $originalYamlConfigPath,
-            <<<'YAML'
-                suites: ~
-                extensions:
-                    - Acme\Extension\FirstExampleExtension
-                    - Acme\Extension\CodeCoverageExtension
-                    - Acme\Extension\SecondExampleExtension
+        $originalPhpSpecConfigContents = <<<'YAML'
+            suites: ~
+            extensions:
+                - Acme\Extension\FirstExampleExtension
+                - Acme\Extension\CodeCoverageExtension
+                - Acme\Extension\SecondExampleExtension
 
-                YAML,
-        );
+            YAML;
 
         $builder = new MutationConfigBuilder(
             $this->tmp,
-            $originalYamlConfigPath,
+            $originalPhpSpecConfigContents,
             '/path/to/project',
         );
 
