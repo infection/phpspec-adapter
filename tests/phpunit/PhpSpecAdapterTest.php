@@ -57,25 +57,6 @@ final class PhpSpecAdapterTest extends TestCase
         $this->assertSame('PhpSpec', $adapter->getName());
     }
 
-    public function test_it_determines_when_tests_do_not_pass(): void
-    {
-        $output = <<<OUTPUT
-            TAP version 13
-            not ok 1 - Error: Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-            ok 1 - Infection\Application\Handler\AddViolationHandler: should add violation
-            ok 2 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should add goal
-            ok 3 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should remove existing one
-            ok 4 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-            not ok 103 - Error: Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-            1..103
-
-            OUTPUT;
-
-        $adapter = $this->getAdapter();
-
-        $this->assertFalse($adapter->testsPass($output));
-    }
-
     public function test_it_determines_when_tests_pass(): void
     {
         $output = <<<OUTPUT

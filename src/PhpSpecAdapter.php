@@ -35,7 +35,6 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec;
 
-use function explode;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
 use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
@@ -45,18 +44,11 @@ use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\NoCodeCoverageConfigured;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use Infection\TestFramework\PhpSpec\Version\VersionProvider;
-use const PHP_EOL;
-use function preg_match;
 use function sprintf;
 
 final readonly class PhpSpecAdapter implements TestFrameworkAdapter
 {
     public const COVERAGE_DIR = 'phpspec-coverage-xml';
-
-    private const ERROR_REGEXPS = [
-        '/Fatal error\:/',
-        '/Fatal error happened/i',
-    ];
 
     public function __construct(
         private string $testFrameworkExecutable,
@@ -65,6 +57,7 @@ final readonly class PhpSpecAdapter implements TestFrameworkAdapter
         private ArgumentsAndOptionsBuilder $argumentsAndOptionsBuilder,
         private VersionProvider $versionProvider,
         private CommandLineBuilder $commandLineBuilder,
+        private TapTestChecker $testChecker,
     ) {
     }
 
@@ -75,22 +68,7 @@ final readonly class PhpSpecAdapter implements TestFrameworkAdapter
 
     public function testsPass(string $output): bool
     {
-        $lines = explode(PHP_EOL, $output);
-
-        foreach ($lines as $line) {
-            if (preg_match('%not ok \\d+ - %', $line) > 0
-                && preg_match('%# TODO%', $line) === 0) {
-                return false;
-            }
-        }
-
-        foreach (self::ERROR_REGEXPS as $regExp) {
-            if (preg_match($regExp, $output) > 0) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->testChecker->testsPass($output);
     }
 
     public function getName(): string

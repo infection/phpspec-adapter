@@ -110,6 +110,7 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
                 ),
             ),
             $commandLineBuilder,
+            new TapTestChecker(),
         );
     }
 
