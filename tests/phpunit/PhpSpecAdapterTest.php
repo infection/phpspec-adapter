@@ -41,6 +41,7 @@ use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Config\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
+use Infection\TestFramework\PhpSpec\TapTestChecker;
 use Infection\TestFramework\PhpSpec\Version\FixedVersionProvider;
 use Infection\TestFramework\PhpSpec\Version\VersionProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -55,25 +56,6 @@ final class PhpSpecAdapterTest extends TestCase
         $adapter = $this->getAdapter();
 
         $this->assertSame('PhpSpec', $adapter->getName());
-    }
-
-    public function test_it_determines_when_tests_do_not_pass(): void
-    {
-        $output = <<<OUTPUT
-            TAP version 13
-            not ok 1 - Error: Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-            ok 1 - Infection\Application\Handler\AddViolationHandler: should add violation
-            ok 2 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should add goal
-            ok 3 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should remove existing one
-            ok 4 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-            not ok 103 - Error: Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-            1..103
-
-            OUTPUT;
-
-        $adapter = $this->getAdapter();
-
-        $this->assertFalse($adapter->testsPass($output));
     }
 
     public function test_it_determines_when_tests_pass(): void
@@ -91,40 +73,6 @@ final class PhpSpecAdapterTest extends TestCase
         $adapter = $this->getAdapter();
 
         $this->assertTrue($adapter->testsPass($output));
-    }
-
-    public function test_it_catches_fatal_errors(): void
-    {
-        $output = <<<OUTPUT
-            TAP version 13
-            ok 1 - Infection\Application\Handler\AddViolationHandler: should add violation
-            ok 2 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should add goal
-            ok 3 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should remove existing one
-            ok 4 - Infection\Infrastructure\Domain\Model\Goal\InMemoryGoalRepository: should find by user id
-            Fatal error happened .....
-            1..5
-
-            OUTPUT;
-
-        $adapter = $this->getAdapter();
-
-        $this->assertFalse($adapter->testsPass($output));
-    }
-
-    public function test_it_catches_fatal_errors_from_start(): void
-    {
-        $output = <<<OUTPUT
-            TAP version 13
-
-            Fatal error: Access level to Foo\Bar\Foobar::foobar() must be public (as in class Foo\Bar\FoobarInterface) in...
-
-            Call Stack:
-
-            OUTPUT;
-
-        $adapter = $this->getAdapter();
-
-        $this->assertFalse($adapter->testsPass($output));
     }
 
     public function test_has_junit_report_returns_false(): void
@@ -185,6 +133,7 @@ final class PhpSpecAdapterTest extends TestCase
             new ArgumentsAndOptionsBuilder(),
             new FixedVersionProvider('7.2.0'),
             $commandLineBuilderMock,
+            $this->createFakeTestChecker(),
         );
 
         $initialTestRunCommandLine = $adapter->getInitialTestRunCommandLine(
@@ -245,6 +194,7 @@ final class PhpSpecAdapterTest extends TestCase
             new ArgumentsAndOptionsBuilder(),
             new FixedVersionProvider('7.2.0'),
             $commandLineBuilderMock,
+            $this->createFakeTestChecker(),
         );
 
         $initialTestRunCommandLine = $adapter->getMutantCommandLine(
@@ -273,6 +223,17 @@ final class PhpSpecAdapterTest extends TestCase
             new ArgumentsAndOptionsBuilder(),
             $this->createMock(VersionProvider::class),
             new CommandLineBuilder(),
+            new TapTestChecker(),
         );
+    }
+
+    private function createFakeTestChecker(): TapTestChecker
+    {
+        $mock = $this->createMock(TapTestChecker::class);
+        $mock
+            ->expects($this->never())
+            ->method('testsPass');
+
+        return $mock;
     }
 }
