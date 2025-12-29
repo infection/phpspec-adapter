@@ -13,6 +13,8 @@ INFECTION=var/tools/infection.phar
 MIN_MSI=68
 MIN_COVERED_MSI=97
 
+PHPSPEC=var/tools/phpspec.phar
+
 
 .PHONY: check
 check: 	 ## Runs all the checks
@@ -65,7 +67,7 @@ test:	 ## Executes the tests
 test: test-unit infection e2e
 
 .PHONY: test-unit
-test-unit: vendor/autoload.php
+test-unit: vendor/autoload.php $(PHPSPEC)
 	vendor/bin/phpunit
 
 .PHONY: e2e
@@ -97,4 +99,11 @@ $(INFECTION): .tools/infection-version
 	wget --quiet "https://github.com/infection/infection/releases/download/$(shell cat .tools/infection-version)/infection.phar" --output-document=$(INFECTION)
 	chmod a+x $@
 	$(INFECTION) --version
+	touch -c $@
+
+$(PHPSPEC): .tools/phpspec-version
+	mkdir -p $(shell dirname $(PHPSPEC))
+	wget --quiet "https://github.com/phpspec/phpspec/releases/download/$(shell cat .tools/phpspec-version)/phpspec.phar" --output-document=$(PHPSPEC)
+	chmod a+x $@
+	$(PHPSPEC) --version
 	touch -c $@

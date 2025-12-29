@@ -41,7 +41,8 @@ use Infection\TestFramework\PhpSpec\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Config\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
-use Infection\TestFramework\PhpSpec\VersionParser;
+use Infection\TestFramework\PhpSpec\Version\FixedVersionProvider;
+use Infection\TestFramework\PhpSpec\Version\VersionProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use function sprintf;
@@ -182,9 +183,8 @@ final class PhpSpecAdapterTest extends TestCase
             $initialConfigBuilderMock,
             $this->createMock(MutationConfigBuilder::class),
             new ArgumentsAndOptionsBuilder(),
-            new VersionParser(),
+            new FixedVersionProvider('7.2.0'),
             $commandLineBuilderMock,
-            '7.2.0',
         );
 
         $initialTestRunCommandLine = $adapter->getInitialTestRunCommandLine(
@@ -243,9 +243,8 @@ final class PhpSpecAdapterTest extends TestCase
             $this->createMock(InitialConfigBuilder::class),
             $mutationConfigBuilderMock,
             new ArgumentsAndOptionsBuilder(),
-            new VersionParser(),
+            new FixedVersionProvider('7.2.0'),
             $commandLineBuilderMock,
-            '7.2.0',
         );
 
         $initialTestRunCommandLine = $adapter->getMutantCommandLine(
@@ -272,7 +271,7 @@ final class PhpSpecAdapterTest extends TestCase
             $this->createMock(InitialConfigBuilder::class),
             $this->createMock(MutationConfigBuilder::class),
             new ArgumentsAndOptionsBuilder(),
-            new VersionParser(),
+            $this->createMock(VersionProvider::class),
             new CommandLineBuilder(),
         );
     }

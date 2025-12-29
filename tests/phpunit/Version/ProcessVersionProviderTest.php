@@ -33,48 +33,49 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec;
+namespace Infection\Tests\TestFramework\PhpSpec\Version;
 
-use Infection\AbstractTestFramework\InvalidVersion;
-use Infection\TestFramework\PhpSpec\Throwable\InvalidVersionFactory;
-use function preg_match;
+use function file_exists;
+use Infection\TestFramework\PhpSpec\CommandLineBuilder;
+use Infection\TestFramework\PhpSpec\Version\ProcessVersionProvider;
+use Infection\TestFramework\PhpSpec\Version\VersionParser;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
+use function Safe\file_get_contents;
 
-/**
- * @internal
- */
-final readonly class VersionParser
+#[Group('integration')]
+#[CoversClass(ProcessVersionProvider::class)]
+final class ProcessVersionProviderTest extends TestCase
 {
-    // Adapted from: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-    // It required a few adjustments for:
-    // - Accounting the fact that the value may not be strictly the version, but a string containing the version.
-    // - Supporting the HOA like versions `x.YY.mm.dd`
-    //   - x: Master Compatibility Number
-    //   - YY: year since 2000 ("Rush Epoch")
-    //   - mm = month
-    //   - dd = day
-    private const VERSION_REGEX = '/(?:.+ [vV]?)?(?<version>(?P<major>0|[1-9]\d*)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:\.\d+)?(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?: .+)?/';
+    // This is prepared and downloaded by the Makefile.
+    private const PHPSPEC_PHAR = __DIR__ . '/../../../var/tools/phpspec.phar';
 
-    /**
-     * Parses a string value to try to extract the exact version out of it. The input can
-     * typically be the output of `$ tool --version`, which usually may include information
-     * about the tool name and authors besides the version itself.
-     *
-     * @throws InvalidVersion
-     *
-     * @return non-empty-string
-     */
-    public function parse(string $value): string
+    private const PHPSPEC_VERSION = __DIR__ . '/../../../.tools/phpspec-version';
+
+    public function test_it_can_get_the_version(): void
     {
-        $matches = [];
-        $matched = preg_match(self::VERSION_REGEX, $value, $matches) > 0;
+        $this->ensurePharExists();
 
-        if (!$matched) {
-            throw InvalidVersionFactory::create(
-                'PhpSpec',
-                $value,
+        $expected = file_get_contents(self::PHPSPEC_VERSION);
+
+        $provider = new ProcessVersionProvider(
+            self::PHPSPEC_PHAR,
+            new CommandLineBuilder(),
+            new VersionParser(),
+        );
+
+        $actual = $provider->get();
+
+        $this->assertSame($expected, $actual);
+    }
+
+    private function ensurePharExists(): void
+    {
+        if (!file_exists(self::PHPSPEC_PHAR)) {
+            $this->markTestSkipped(
+                'The PhpSpec PHAR could not be found. It will be automatically downloaded when executing `make test-unit`.',
             );
         }
-
-        return $matches['version'];
     }
 }
