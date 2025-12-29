@@ -23,9 +23,3 @@ parameters:
 			identifier: method.childParameterType
 			count: 1
 			path: src/PhpSpecAdapterFactory.php
-
-		-
-			message: '#^Method Infection\\Tests\\TestFramework\\PhpSpec\\VersionParserTest\:\:versionProvider\(\) return type has no value type specified in iterable type iterable\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/phpunit/VersionParserTest.php

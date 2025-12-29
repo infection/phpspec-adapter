@@ -42,6 +42,9 @@ use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Config\InitialConfigBuilder;
 use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
+use Infection\TestFramework\PhpSpec\Version\CachedVersionProvider;
+use Infection\TestFramework\PhpSpec\Version\ProcessVersionProvider;
+use Infection\TestFramework\PhpSpec\Version\VersionParser;
 use InvalidArgumentException;
 use function method_exists;
 use function sprintf;
@@ -82,6 +85,8 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
 
         $phpSpecConfigDecodedContents = Yaml::parse($phpSpecConfigContents);
 
+        $commandLineBuilder = new CommandLineBuilder();
+
         return new PhpSpecAdapter(
             $testFrameworkExecutable,
             new InitialConfigBuilder(
@@ -97,8 +102,14 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
                 $filesystem,
             ),
             new ArgumentsAndOptionsBuilder(),
-            new VersionParser(),
-            new CommandLineBuilder(),
+            new CachedVersionProvider(
+                new ProcessVersionProvider(
+                    $testFrameworkExecutable,
+                    $commandLineBuilder,
+                    new VersionParser(),
+                ),
+            ),
+            $commandLineBuilder,
         );
     }
 

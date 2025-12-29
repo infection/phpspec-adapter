@@ -33,48 +33,34 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\PhpSpec;
+namespace Infection\TestFramework\PhpSpec\Version;
 
-use Infection\AbstractTestFramework\InvalidVersion;
-use Infection\TestFramework\PhpSpec\Throwable\InvalidVersionFactory;
-use function preg_match;
+use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
+use Symfony\Component\Process\Process;
 
 /**
  * @internal
  */
-final readonly class VersionParser
+final readonly class ProcessVersionProvider implements VersionProvider
 {
-    // Adapted from: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-    // It required a few adjustments for:
-    // - Accounting the fact that the value may not be strictly the version, but a string containing the version.
-    // - Supporting the HOA like versions `x.YY.mm.dd`
-    //   - x: Master Compatibility Number
-    //   - YY: year since 2000 ("Rush Epoch")
-    //   - mm = month
-    //   - dd = day
-    private const VERSION_REGEX = '/(?:.+ [vV]?)?(?<version>(?P<major>0|[1-9]\d*)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:\.\d+)?(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?: .+)?/';
+    public function __construct(
+        private string $testFrameworkExecutable,
+        private CommandLineBuilder $commandLineBuilder,
+        private VersionParser $versionParser,
+    ) {
+    }
 
-    /**
-     * Parses a string value to try to extract the exact version out of it. The input can
-     * typically be the output of `$ tool --version`, which usually may include information
-     * about the tool name and authors besides the version itself.
-     *
-     * @throws InvalidVersion
-     *
-     * @return non-empty-string
-     */
-    public function parse(string $value): string
+    public function get(): string
     {
-        $matches = [];
-        $matched = preg_match(self::VERSION_REGEX, $value, $matches) > 0;
+        $testFrameworkVersionExecutable = $this->commandLineBuilder->build(
+            $this->testFrameworkExecutable,
+            [],
+            ['--version'],
+        );
 
-        if (!$matched) {
-            throw InvalidVersionFactory::create(
-                'PhpSpec',
-                $value,
-            );
-        }
+        $process = new Process($testFrameworkVersionExecutable);
+        $process->mustRun();
 
-        return $matches['version'];
+        return $this->versionParser->parse($process->getOutput());
     }
 }
