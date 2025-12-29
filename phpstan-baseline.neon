@@ -16,7 +16,7 @@ parameters:
 			message: '#^PHPDoc tag @var with type string is not subtype of native type literal\-string&non\-falsy\-string\.$#'
 			identifier: varTag.nativeType
 			count: 1
-			path: src/Config/Builder/MutationConfigBuilder.php
+			path: src/Config/MutationConfigBuilder.php
 
 		-
 			message: '#^Parameter \#7 \$sourceDirectories \(array\<string\>\) of method Infection\\TestFramework\\PhpSpec\\PhpSpecAdapterFactory\:\:create\(\) should be contravariant with parameter \$sourceDirectories \(array\) of method Infection\\AbstractTestFramework\\TestFrameworkAdapterFactory\:\:create\(\)$#'
