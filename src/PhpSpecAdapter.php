@@ -48,8 +48,6 @@ use function sprintf;
 
 final readonly class PhpSpecAdapter implements TestFrameworkAdapter
 {
-    public const COVERAGE_DIR = 'phpspec-coverage-xml';
-
     public function __construct(
         private string $name,
         private string $testFrameworkExecutable,

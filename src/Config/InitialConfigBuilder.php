@@ -52,6 +52,7 @@ readonly class InitialConfigBuilder
      */
     public function __construct(
         private string $tmpDirectory,
+        private string $coverageDirectoryPath,
         private array $originalPhpSpecConfigDecodedContents,
         private bool $skipCoverage,
         private Filesystem $filesystem,
@@ -68,7 +69,7 @@ readonly class InitialConfigBuilder
 
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
-                $this->tmpDirectory,
+                $this->coverageDirectoryPath,
                 $this->originalPhpSpecConfigDecodedContents,
             );
         } catch (UnrecognisableConfiguration $exception) {
