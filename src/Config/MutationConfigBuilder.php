@@ -60,7 +60,7 @@ readonly class MutationConfigBuilder
      * @param DecodedPhpSpecConfig $originalPhpSpecConfigDecodedContents
      */
     public function __construct(
-        private string $tempDirectory,
+        private string $tmpDirectory,
         private array $originalPhpSpecConfigDecodedContents,
         private string $projectDir,
         private Filesystem $filesystem,
@@ -81,13 +81,13 @@ readonly class MutationConfigBuilder
     ): string {
         $customAutoloadFilePath = sprintf(
             '%s/interceptor.phpspec.autoload.%s.infection.php',
-            $this->tempDirectory,
+            $this->tmpDirectory,
             $mutationHash,
         );
 
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
-                $this->tempDirectory,
+                $this->tmpDirectory,
                 $this->originalPhpSpecConfigDecodedContents,
             );
         } catch (UnrecognisableConfiguration $exception) {
@@ -152,7 +152,7 @@ readonly class MutationConfigBuilder
     {
         $fileName = sprintf('phpspecConfiguration.%s.infection.yml', $mutationHash);
 
-        return $this->tempDirectory . '/' . $fileName;
+        return $this->tmpDirectory . '/' . $fileName;
     }
 
     /**
