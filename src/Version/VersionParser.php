@@ -54,6 +54,11 @@ final readonly class VersionParser
     //   - dd = day
     private const VERSION_REGEX = '/(?:.+ [vV]?)?(?<version>(?P<major>0|[1-9]\d*)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:\.\d+)?(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?: .+)?/';
 
+    public function __construct(
+        private string $name,
+    ) {
+    }
+
     /**
      * Parses a string value to try to extract the exact version out of it. The input can
      * typically be the output of `$ tool --version`, which usually may include information
@@ -70,7 +75,7 @@ final readonly class VersionParser
 
         if (!$matched) {
             throw InvalidVersionFactory::create(
-                'PhpSpec',
+                $this->name,
                 $value,
             );
         }

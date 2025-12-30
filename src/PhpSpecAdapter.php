@@ -51,6 +51,7 @@ final readonly class PhpSpecAdapter implements TestFrameworkAdapter
     public const COVERAGE_DIR = 'phpspec-coverage-xml';
 
     public function __construct(
+        private string $name,
         private string $testFrameworkExecutable,
         private InitialConfigBuilder $initialConfigBuilder,
         private MutationConfigBuilder $mutationConfigBuilder,
@@ -73,7 +74,7 @@ final readonly class PhpSpecAdapter implements TestFrameworkAdapter
 
     public function getName(): string
     {
-        return 'PhpSpec';
+        return $this->name;
     }
 
     public function getInitialTestRunCommandLine(

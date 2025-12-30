@@ -50,7 +50,7 @@ final class VersionParserTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->versionParser = new VersionParser();
+        $this->versionParser = new VersionParser('PhpSpec');
     }
 
     #[DataProvider('versionProvider')]
