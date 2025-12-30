@@ -106,7 +106,10 @@ final class MutationConfigBuilderTest extends TestCase
         $builder = new MutationConfigBuilder(
             '/path/to/tmp',
             $originalPhpSpecConfigDecodedContents,
-            new MutationAutoloadTemplate($projectDir),
+            MutationAutoloadTemplate::create(
+                $projectDir,
+                $originalPhpSpecConfigDecodedContents,
+            ),
             $fileSystemMock,
         );
 
@@ -146,7 +149,10 @@ final class MutationConfigBuilderTest extends TestCase
         $builder = new MutationConfigBuilder(
             '/path/to/tmp',
             $originalPhpSpecConfigDecodedContents,
-            new MutationAutoloadTemplate('/path/to/project'),
+            MutationAutoloadTemplate::create(
+                '/path/to/project',
+                $originalPhpSpecConfigDecodedContents,
+            ),
             $fileSystemMock,
         );
 

@@ -93,7 +93,10 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
             new MutationConfigBuilder(
                 $tmpDirectory,
                 $phpSpecConfigDecodedContents,
-                new MutationAutoloadTemplate($projectDirectory),
+                MutationAutoloadTemplate::create(
+                    $projectDirectory,
+                    $phpSpecConfigDecodedContents,
+                ),
                 $filesystem,
             ),
             new ArgumentsAndOptionsBuilder(),
