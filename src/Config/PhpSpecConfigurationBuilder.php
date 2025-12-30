@@ -60,7 +60,7 @@ final class PhpSpecConfigurationBuilder
     }
 
     /**
-     * @param mixed[] $parsedYaml
+     * @param array<string, mixed> $parsedYaml
      *
      * @throws UnrecognisableConfiguration
      */
@@ -95,6 +95,10 @@ final class PhpSpecConfigurationBuilder
         foreach ($this->parsedYaml['extensions'] as $extensionName => &$options) {
             if (!self::isCodeCoverageExtension($extensionName)) {
                 continue;
+            }
+
+            if (!is_array($options)) {
+                $options = [];
             }
 
             // We do not want to preserve the other formats & outputs configured as they
