@@ -38,7 +38,6 @@ namespace Infection\TestFramework\PhpSpec;
 use function explode;
 use function ltrim;
 use const PHP_EOL;
-use function preg_match;
 use function str_starts_with;
 
 /**
@@ -51,11 +50,6 @@ use function str_starts_with;
  */
 readonly class TapTestChecker
 {
-    private const ERROR_REGEXPS = [
-        '/Fatal error\:/',
-        '/Fatal error happened/i',
-    ];
-
     /**
      * @param string $output Output of a test execution following the TAP format.
      */
@@ -66,26 +60,16 @@ readonly class TapTestChecker
         $lines = explode(PHP_EOL, $output);
 
         foreach ($lines as $line) {
-            if (preg_match('%not ok \\d+ - %', $line) > 0
-                && preg_match('%# TODO%', $line) === 0
-            ) {
-                return false;
-            }
-
             $leftTrimmedLine = ltrim($line);
 
-            if (str_starts_with($leftTrimmedLine, 'Bail out!')) {
+            if (str_starts_with($leftTrimmedLine, 'Bail out!')
+                || str_starts_with($leftTrimmedLine, 'not ok ')
+            ) {
                 return false;
             }
 
             if (str_starts_with($leftTrimmedLine, 'ok ')) {
                 $hasAtLeastOnceSuccessfulTest = true;
-            }
-        }
-
-        foreach (self::ERROR_REGEXPS as $regExp) {
-            if (preg_match($regExp, $output) > 0) {
-                return false;
             }
         }
 
