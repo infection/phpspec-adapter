@@ -111,7 +111,7 @@ final readonly class MutationAutoloadTemplate
     }
 
     /**
-     * @param DecodedPhpSpecConfig $parsedYaml
+     * @param array<string, mixed> $parsedYaml
      */
     private static function getOriginalBootstrapFilePath(
         string $projectDirectory,
