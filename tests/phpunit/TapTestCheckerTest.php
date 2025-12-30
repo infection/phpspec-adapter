@@ -119,6 +119,11 @@ final class TapTestCheckerTest extends TestCase
             true,
         ];
 
+        yield 'TAP result type: successful (indented) test' => [
+            '  ok 3 - We should start with some Hello world!',
+            true,
+        ];
+
         yield 'TAP result type: successful test with a directive' => [
             'ok 3 - We should start with some Hello world! # TODO passed!',
             true,
