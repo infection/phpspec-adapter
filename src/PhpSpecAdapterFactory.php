@@ -133,6 +133,6 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
 
     private static function createDefaultCoverageXmlDirectoryPath(string $tmpDirectory): string
     {
-        return $tmpDirectory . '/phpspec-coverage-xml';
+        return $tmpDirectory . '/coverage-xml';
     }
 }
