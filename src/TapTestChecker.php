@@ -61,6 +61,8 @@ readonly class TapTestChecker
      */
     public function testsPass(string $output): bool
     {
+        $hasAtLeastOnceSuccessfulTest = false;
+
         $lines = explode(PHP_EOL, $output);
 
         foreach ($lines as $line) {
@@ -70,8 +72,14 @@ readonly class TapTestChecker
                 return false;
             }
 
-            if (str_starts_with(ltrim($line), 'Bail out!')) {
+            $leftTrimmedLine = ltrim($line);
+
+            if (str_starts_with($leftTrimmedLine, 'Bail out!')) {
                 return false;
+            }
+
+            if (str_starts_with($leftTrimmedLine, 'ok ')) {
+                $hasAtLeastOnceSuccessfulTest = true;
             }
         }
 
@@ -81,6 +89,6 @@ readonly class TapTestChecker
             }
         }
 
-        return true;
+        return $hasAtLeastOnceSuccessfulTest;
     }
 }

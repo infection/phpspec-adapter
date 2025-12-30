@@ -62,23 +62,55 @@ final class TapTestCheckerTest extends TestCase
     {
         yield 'TAP result type: version' => [
             'TAP version 12',
+            false,
+        ];
+
+        yield 'TAP result type: version (with a passing test)' => [
+            <<<'TAP_OUTPUT'
+                TAP version 12
+                ok This is just to show we do not fail on this statement
+                TAP_OUTPUT,
             true,
         ];
 
         yield 'TAP result type: plan' => [
             '1..42',
+            false,
+        ];
+
+        yield 'TAP result type: plan (with a passing test)' => [
+            <<<'TAP_OUTPUT'
+                1..42
+                ok This is just to show we do not fail on this statement
+                TAP_OUTPUT,
             true,
         ];
 
         yield 'TAP result type: pragma; turn on strict mode' => [
             // Not really used in the PHP community
             'pragma +strict',
+            false,
+        ];
+
+        yield 'TAP result type: pragma; turn on strict mode (with a passing test)' => [
+            <<<'TAP_OUTPUT'
+                pragma +strict
+                ok This is just to show we do not fail on this statement
+                TAP_OUTPUT,
             true,
         ];
 
         yield 'TAP result type: pragma; disable feature' => [
             // Not really used in the PHP community
             'pragma -foo',
+            false,
+        ];
+
+        yield 'TAP result type: pragma; disable feature (with a passing test)' => [
+            <<<'TAP_OUTPUT'
+                pragma -foo
+                ok This is just to show we do not fail on this statement
+                TAP_OUTPUT,
             true,
         ];
 
@@ -99,16 +131,40 @@ final class TapTestCheckerTest extends TestCase
 
         yield 'TAP result type: failing test with a directive' => [
             'not ok 17 - Pigs can fly # TODO not enough acid!',
+            false,
+        ];
+
+        yield 'AP result type: failing test with a directive (with a passing test)' => [
+            <<<'TAP_OUTPUT'
+                not ok 17 - Pigs can fly # TODO not enough acid!
+                ok This is just to show we do not fail on this statement
+                TAP_OUTPUT,
             true,
         ];
 
         yield 'TAP result type: comment' => [
             '# Hope we don\'t use up all of our tokens.',
+            false,
+        ];
+
+        yield 'TAP result type: comment (with a passing test)' => [
+            <<<'TAP_OUTPUT'
+                # Hope we don\'t use up all of our tokens.
+                ok This is just to show we do not fail on this statement
+                TAP_OUTPUT,
             true,
         ];
 
         yield 'TAP result type: bailout' => [
             'Bail out!  We ran out of tokens!',
+            false,
+        ];
+
+        yield 'TAP result type: bailout (with a passing test)' => [
+            <<<'TAP_OUTPUT'
+                Bail out!  We ran out of tokens!
+                ok This is just to show we do not fail on this statement
+                TAP_OUTPUT,
             false,
         ];
 
@@ -119,6 +175,14 @@ final class TapTestCheckerTest extends TestCase
 
         yield 'TAP result type: unknown' => [
             '... yo, this ain\'t TAP! ...',
+            false,
+        ];
+
+        yield 'TAP result type: unknown (with a passing test)' => [
+            <<<'TAP_OUTPUT'
+                ... yo, this ain\'t TAP! ...
+                ok This is just to show we do not fail on this statement
+                TAP_OUTPUT,
             true,
         ];
 
@@ -129,7 +193,7 @@ final class TapTestCheckerTest extends TestCase
                 severity: fail
                 ...
                 TAP_OUTPUT,
-            true,   // We do not fail on the diagnostic itself
+            false,
         ];
 
         yield 'TAP v13 specific: YAML block for better diagnostic (complete example)' => [
