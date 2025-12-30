@@ -144,7 +144,7 @@ final class TapTestCheckerTest extends TestCase
                 not ok 17 - Pigs can fly # TODO not enough acid!
                 ok This is just to show we do not fail on this statement
                 TAP_OUTPUT,
-            true,
+            false,
         ];
 
         yield 'TAP result type: comment' => [
