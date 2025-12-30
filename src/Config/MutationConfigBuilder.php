@@ -113,7 +113,7 @@ readonly class MutationConfigBuilder
     private function getMutationPhpSpecConfigPath(string $mutationHash): string
     {
         return sprintf(
-            '%s/mutation.phpspec.%s.php',
+            '%s/phpspecConfiguration.%s.infection.yml',
             $this->tmpDirectory,
             $mutationHash,
         );

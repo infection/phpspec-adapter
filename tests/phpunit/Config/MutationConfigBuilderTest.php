@@ -39,12 +39,10 @@ use Infection\TestFramework\PhpSpec\Config\MutationAutoloadTemplate;
 use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
-#[Group('integration')]
 #[CoversClass(MutationConfigBuilder::class)]
 final class MutationConfigBuilderTest extends TestCase
 {
