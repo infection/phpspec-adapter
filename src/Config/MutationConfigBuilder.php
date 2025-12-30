@@ -71,12 +71,62 @@ readonly class MutationConfigBuilder
         string $mutationOriginalFilePath,
         string $version,
     ): string {
-        $mutationAutoloadPath = sprintf(
+        $mutationAutoloadPath = $this->getMutationAutoloadPath($mutationHash);
+        $mutationPhpSpecConfigPath = $this->getMutationPhpSpecConfigPath($mutationHash);
+        // Note: do not inline this as it may throw! We do not want to dump files before this.
+        $mutationPhpSpecConfig = $this->getMutationPhpSpecConfig(
+            $version,
+            $mutationAutoloadPath,
+        );
+
+        $this->filesystem->dumpFile(
+            $mutationAutoloadPath,
+            $this->autoloadTemplate->build(
+                $mutationOriginalFilePath,
+                $mutantFilePath,
+            ),
+        );
+        $this->filesystem->dumpFile(
+            $mutationPhpSpecConfigPath,
+            $mutationPhpSpecConfig,
+        );
+
+        return $mutationPhpSpecConfigPath;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    private function getMutationAutoloadPath(string $mutationHash): string
+    {
+        return sprintf(
             '%s/interceptor.phpspec.autoload.%s.infection.php',
             $this->tmpDirectory,
             $mutationHash,
         );
+    }
 
+    /**
+     * @return non-empty-string
+     */
+    private function getMutationPhpSpecConfigPath(string $mutationHash): string
+    {
+        return sprintf(
+            '%s/phpspecConfiguration.%s.infection.yml',
+            $this->tmpDirectory,
+            $mutationHash,
+        );
+    }
+
+    /**
+     * @param non-empty-string $mutationAutoloadPath
+     *
+     * @throws UnrecognisableConfiguration
+     */
+    private function getMutationPhpSpecConfig(
+        string $version,
+        string $mutationAutoloadPath,
+    ): string {
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
                 '/unused',
@@ -89,26 +139,6 @@ readonly class MutationConfigBuilder
         $configuration->setBootstrap($mutationAutoloadPath);
         $configuration->removeCoverageExtension();
 
-        $newYaml = $configuration->getYaml();
-
-        $path = $this->buildPath($mutationHash);
-
-        $this->filesystem->dumpFile(
-            $mutationAutoloadPath,
-            $this->autoloadTemplate->build(
-                $mutationOriginalFilePath,
-                $mutantFilePath,
-            ),
-        );
-        $this->filesystem->dumpFile($path, $newYaml);
-
-        return $path;
-    }
-
-    private function buildPath(string $mutationHash): string
-    {
-        $fileName = sprintf('phpspecConfiguration.%s.infection.yml', $mutationHash);
-
-        return $this->tmpDirectory . '/' . $fileName;
+        return $configuration->getYaml();
     }
 }

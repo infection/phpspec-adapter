@@ -107,13 +107,13 @@ final class PhpSpecConfigurationBuilder
     }
 
     /**
-     * @param non-empty-string $mutantAutoloadPathname
+     * @param non-empty-string $boostrap
      */
-    public function setBootstrap(string $mutantAutoloadPathname): void
+    public function setBootstrap(string $boostrap): void
     {
         // bootstrap must be before other keys because of PhpSpec bug with populating container under
         // some circumstances
-        $this->parsedYaml = ['bootstrap' => $mutantAutoloadPathname] + $this->parsedYaml;
+        $this->parsedYaml = ['bootstrap' => $boostrap] + $this->parsedYaml;
     }
 
     public function getYaml(): string
