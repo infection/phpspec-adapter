@@ -58,12 +58,14 @@ final class MutationAutoloadTemplateTest extends TestCase
         array $phpSpecConfig,
         string $expected,
     ): void {
-        $template = new MutationAutoloadTemplate($projectDirectory);
+        $template = MutationAutoloadTemplate::create(
+            $projectDirectory,
+            $phpSpecConfig,
+        );
 
         $actual = $template->build(
             self::ORIGINAL_FILE_PATH,
             self::MUTATED_FILE_PATH,
-            $phpSpecConfig,
         );
 
         $this->assertSame($expected, $actual);

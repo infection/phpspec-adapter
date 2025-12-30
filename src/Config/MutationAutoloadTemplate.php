@@ -52,38 +52,58 @@ use function strstr;
  */
 final readonly class MutationAutoloadTemplate
 {
-    public function __construct(
-        private string $projectDirectory,
+    private const TEMPLATE = <<<'PHP'
+        <?php
+
+        %s
+        %s
+
+        PHP;
+
+    private function __construct(
+        private string $autoloadPlaceholder,
+        private string $interceptorPath,
+        private string $infectionPhar,
+        private string $interceptorNamespacePrefix,
     ) {
     }
 
     /**
      * @param DecodedPhpSpecConfig $phpSpecConfig
      */
-    public function build(
-        string $originalFilePath,
-        string $mutantFilePath,
+    public static function create(
+        string $projectDirectory,
         array $phpSpecConfig,
-    ): string {
-        $originalBootstrap = $this->getOriginalBootstrapFilePath($phpSpecConfig);
+    ): self {
+        $originalBootstrap = self::getOriginalBootstrapFilePath(
+            $projectDirectory,
+            $phpSpecConfig,
+        );
+
         $autoloadPlaceholder = $originalBootstrap !== null
             ? "require_once '{$originalBootstrap}';"
             : '';
         $interceptorPath = IncludeInterceptor::LOCATION;
 
-        $customAutoload = <<<AUTOLOAD
-            <?php
+        $infectionPhar = self::getLoadInfectionPhar();
+        $interceptorNamespacePrefix = self::getInterceptorNamespacePrefix();
 
-            %s
-            %s
-
-            AUTOLOAD;
-
-        return sprintf(
-            $customAutoload,
+        return new self(
             $autoloadPlaceholder,
+            $interceptorPath,
+            $infectionPhar,
+            $interceptorNamespacePrefix,
+        );
+    }
+
+    public function build(
+        string $originalFilePath,
+        string $mutantFilePath,
+    ): string {
+        return sprintf(
+            self::TEMPLATE,
+            $this->autoloadPlaceholder,
             $this->getInterceptorFileContent(
-                $interceptorPath,
                 $originalFilePath,
                 $mutantFilePath,
             ),
@@ -93,24 +113,38 @@ final readonly class MutationAutoloadTemplate
     /**
      * @param array<string, mixed> $parsedYaml
      */
-    private function getOriginalBootstrapFilePath(array $parsedYaml): ?string
-    {
-        if (!array_key_exists('bootstrap', $parsedYaml)) {
-            return null;
-        }
-
-        return sprintf('%s/%s', $this->projectDirectory, $parsedYaml['bootstrap']);
+    private static function getOriginalBootstrapFilePath(
+        string $projectDirectory,
+        array $parsedYaml,
+    ): ?string {
+        return array_key_exists('bootstrap', $parsedYaml)
+            ? sprintf(
+                '%s/%s',
+                $projectDirectory,
+                $parsedYaml['bootstrap'],
+            )
+            : null;
     }
 
     private function getInterceptorFileContent(
-        string $interceptorPath,
         string $originalFilePath,
         string $mutantFilePath,
     ): string {
-        $infectionPhar = '';
+        return <<<CONTENT
+            {$this->infectionPhar}
+            require_once '{$this->interceptorPath}';
 
+            use {$this->interceptorNamespacePrefix}Infection\StreamWrapper\IncludeInterceptor;
+
+            IncludeInterceptor::intercept('{$originalFilePath}', '{$mutantFilePath}');
+            IncludeInterceptor::enable();
+            CONTENT;
+    }
+
+    private static function getLoadInfectionPhar(): string
+    {
         if (str_starts_with(__FILE__, 'phar:')) {
-            $infectionPhar = sprintf(
+            return sprintf(
                 '\Phar::loadPhar("%s", "%s");',
                 str_replace(
                     'phar://',
@@ -121,20 +155,10 @@ final readonly class MutationAutoloadTemplate
             );
         }
 
-        $namespacePrefix = $this->getInterceptorNamespacePrefix();
-
-        return <<<CONTENT
-            {$infectionPhar}
-            require_once '{$interceptorPath}';
-
-            use {$namespacePrefix}Infection\StreamWrapper\IncludeInterceptor;
-
-            IncludeInterceptor::intercept('{$originalFilePath}', '{$mutantFilePath}');
-            IncludeInterceptor::enable();
-            CONTENT;
+        return '';
     }
 
-    private function getInterceptorNamespacePrefix(): string
+    private static function getInterceptorNamespacePrefix(): string
     {
         $prefix = strstr(__NAMESPACE__, 'Infection', true);
         assert(is_string($prefix));

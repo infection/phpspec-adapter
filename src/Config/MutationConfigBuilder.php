@@ -98,7 +98,6 @@ readonly class MutationConfigBuilder
             $this->autoloadTemplate->build(
                 $mutationOriginalFilePath,
                 $mutantFilePath,
-                $this->originalPhpSpecConfigDecodedContents,
             ),
         );
         $this->filesystem->dumpFile($path, $newYaml);
