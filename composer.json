@@ -17,10 +17,7 @@
     "autoload-dev": {
         "psr-4": {
             "Infection\\Tests\\TestFramework\\PhpSpec\\": "tests/phpunit"
-        },
-        "files": [
-            "tests/phpunit/Helpers.php"
-        ]
+        }
     },
     "config": {
         "sort-packages": true,
