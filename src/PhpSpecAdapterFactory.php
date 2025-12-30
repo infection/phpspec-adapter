@@ -60,7 +60,7 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
      */
     public static function create(
         string $testFrameworkExecutable,
-        string $tmpDir,
+        string $tmpDirectory,
         string $testFrameworkConfigPath,
         ?string $testFrameworkConfigDir,
         string $jUnitFilePath,
@@ -93,13 +93,13 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
             self::NAME,
             $testFrameworkExecutable,
             new InitialConfigBuilder(
-                $tmpDir,
+                $tmpDirectory,
                 $phpSpecConfigDecodedContents,
                 $skipCoverage,
                 $filesystem,
             ),
             new MutationConfigBuilder(
-                $tmpDir,
+                $tmpDirectory,
                 $phpSpecConfigDecodedContents,
                 $projectDir,
                 $filesystem,
