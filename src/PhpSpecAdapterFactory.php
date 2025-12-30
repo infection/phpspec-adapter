@@ -53,12 +53,14 @@ use Symfony\Component\Yaml\Yaml;
 
 final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
 {
+    private const NAME = 'PhpSpec';
+
     /**
      * @param string[] $sourceDirectories
      */
     public static function create(
         string $testFrameworkExecutable,
-        string $tmpDir,
+        string $tmpDirectory,
         string $testFrameworkConfigPath,
         ?string $testFrameworkConfigDir,
         string $jUnitFilePath,
@@ -88,15 +90,16 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
         $commandLineBuilder = new CommandLineBuilder();
 
         return new PhpSpecAdapter(
+            self::NAME,
             $testFrameworkExecutable,
             new InitialConfigBuilder(
-                $tmpDir,
+                $tmpDirectory,
                 $phpSpecConfigDecodedContents,
                 $skipCoverage,
                 $filesystem,
             ),
             new MutationConfigBuilder(
-                $tmpDir,
+                $tmpDirectory,
                 $phpSpecConfigDecodedContents,
                 $projectDir,
                 $filesystem,
@@ -106,7 +109,7 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
                 new ProcessVersionProvider(
                     $testFrameworkExecutable,
                     $commandLineBuilder,
-                    new VersionParser(),
+                    new VersionParser(self::NAME),
                 ),
             ),
             $commandLineBuilder,

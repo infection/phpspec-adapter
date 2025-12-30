@@ -55,7 +55,7 @@ final class PhpSpecAdapterTest extends TestCase
     {
         $adapter = $this->getAdapter();
 
-        $this->assertSame('PhpSpec', $adapter->getName());
+        $this->assertSame('PhpSpecAdapterTest', $adapter->getName());
     }
 
     public function test_it_determines_when_tests_pass(): void
@@ -127,6 +127,7 @@ final class PhpSpecAdapterTest extends TestCase
             ->willReturn(['/path/to/phpspec', '--dummy-argument']);
 
         $adapter = new PhpSpecAdapter(
+            'PhpSpecAdapterTest',
             '/path/to/phpspec',
             $initialConfigBuilderMock,
             $this->createMock(MutationConfigBuilder::class),
@@ -188,6 +189,7 @@ final class PhpSpecAdapterTest extends TestCase
             ->willReturn(['/path/to/phpspec', '--dummy-argument']);
 
         $adapter = new PhpSpecAdapter(
+            'PhpSpecAdapterTest',
             '/path/to/phpspec',
             $this->createMock(InitialConfigBuilder::class),
             $mutationConfigBuilderMock,
@@ -217,6 +219,7 @@ final class PhpSpecAdapterTest extends TestCase
     private function getAdapter(): PhpSpecAdapter
     {
         return new PhpSpecAdapter(
+            'PhpSpecAdapterTest',
             '/path/to/phpspec',
             $this->createMock(InitialConfigBuilder::class),
             $this->createMock(MutationConfigBuilder::class),

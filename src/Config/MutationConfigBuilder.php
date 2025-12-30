@@ -60,7 +60,7 @@ readonly class MutationConfigBuilder
      * @param DecodedPhpSpecConfig $originalPhpSpecConfigDecodedContents
      */
     public function __construct(
-        private string $tempDirectory,
+        private string $tmpDirectory,
         private array $originalPhpSpecConfigDecodedContents,
         private string $projectDir,
         private Filesystem $filesystem,
@@ -81,22 +81,13 @@ readonly class MutationConfigBuilder
     ): string {
         $customAutoloadFilePath = sprintf(
             '%s/interceptor.phpspec.autoload.%s.infection.php',
-            $this->tempDirectory,
+            $this->tmpDirectory,
             $mutationHash,
-        );
-
-        $this->filesystem->dumpFile(
-            $customAutoloadFilePath,
-            $this->createCustomAutoloadWithInterceptor(
-                $mutationOriginalFilePath,
-                $mutantFilePath,
-                $this->originalPhpSpecConfigDecodedContents,
-            ),
         );
 
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
-                $this->tempDirectory,
+                $this->tmpDirectory,
                 $this->originalPhpSpecConfigDecodedContents,
             );
         } catch (UnrecognisableConfiguration $exception) {
@@ -110,6 +101,14 @@ readonly class MutationConfigBuilder
 
         $path = $this->buildPath($mutationHash);
 
+        $this->filesystem->dumpFile(
+            $customAutoloadFilePath,
+            $this->createCustomAutoloadWithInterceptor(
+                $mutationOriginalFilePath,
+                $mutantFilePath,
+                $this->originalPhpSpecConfigDecodedContents,
+            ),
+        );
         $this->filesystem->dumpFile($path, $newYaml);
 
         return $path;
@@ -153,7 +152,7 @@ readonly class MutationConfigBuilder
     {
         $fileName = sprintf('phpspecConfiguration.%s.infection.yml', $mutationHash);
 
-        return $this->tempDirectory . '/' . $fileName;
+        return $this->tmpDirectory . '/' . $fileName;
     }
 
     /**

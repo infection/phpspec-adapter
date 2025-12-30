@@ -64,7 +64,7 @@ final class ProcessVersionProviderTest extends TestCase
         $provider = new ProcessVersionProvider(
             self::PHPSPEC_PHAR,
             new CommandLineBuilder(),
-            new VersionParser(),
+            new VersionParser('PhpSpecAdapterTest'),
         );
 
         $actual = $provider->get();
