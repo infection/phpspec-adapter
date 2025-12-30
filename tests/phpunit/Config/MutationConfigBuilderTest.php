@@ -227,7 +227,7 @@ final class MutationConfigBuilderTest extends TestCase
 
         $fileSystemMock = $this->createMock(Filesystem::class);
         $fileSystemMock
-            ->expects($this->exactly(1))
+            ->expects($this->never())
             ->method('dumpFile')
             ->withAnyParameters();
 
