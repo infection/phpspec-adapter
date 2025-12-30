@@ -71,22 +71,10 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
     ): TestFrameworkAdapter {
         $filesystem = new Filesystem();
 
-        // TODO: remove the polyfill code once we drop support for Symfony 6.4
-        // @phpstan-ignore function.alreadyNarrowedType
-        $phpSpecConfigContents = method_exists($filesystem, 'readFile')
-            ? $filesystem->readFile($testFrameworkConfigPath)
-            : file_get_contents($testFrameworkConfigPath);
-
-        if ($phpSpecConfigContents === false) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Could not read PHPSpec configuration file "%s".',
-                    $testFrameworkConfigPath,
-                ),
-            );
-        }
-
-        $phpSpecConfigDecodedContents = Yaml::parse($phpSpecConfigContents);
+        $phpSpecConfigDecodedContents = self::getPhpSpecConfigDecodedContents(
+            $filesystem,
+            $testFrameworkConfigPath,
+        );
 
         $coverageDirectoryPath = self::createDefaultCoverageXmlDirectoryPath($tmpDirectory);
 
@@ -134,5 +122,30 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
     private static function createDefaultCoverageXmlDirectoryPath(string $tmpDirectory): string
     {
         return $tmpDirectory . '/coverage-xml';
+    }
+
+    /**
+     * @return mixed[]
+     */
+    private static function getPhpSpecConfigDecodedContents(
+        Filesystem $filesystem,
+        string $testFrameworkConfigPath,
+    ): array {
+        // TODO: remove the polyfill code once we drop support for Symfony 6.4
+        // @phpstan-ignore function.alreadyNarrowedType
+        $phpSpecConfigContents = method_exists($filesystem, 'readFile')
+            ? $filesystem->readFile($testFrameworkConfigPath)
+            : file_get_contents($testFrameworkConfigPath);
+
+        if ($phpSpecConfigContents === false) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Could not read PHPSpec configuration file "%s".',
+                    $testFrameworkConfigPath,
+                ),
+            );
+        }
+
+        return Yaml::parse($phpSpecConfigContents);
     }
 }

@@ -65,8 +65,24 @@ readonly class InitialConfigBuilder
      */
     public function build(string $version): string
     {
-        $path = $this->buildPath();
+        $this->filesystem->dumpFile(
+            $this->getInitialRunPhpSpecPath(),
+            $this->getInitialRunPhpSpecConfig($version),
+        );
 
+        return $this->getInitialRunPhpSpecPath();
+    }
+
+    private function getInitialRunPhpSpecPath(): string
+    {
+        return $this->tmpDirectory . '/phpspecConfiguration.initial.infection.yml';
+    }
+
+    /**
+     * @throws UnrecognisableConfiguration
+     */
+    private function getInitialRunPhpSpecConfig(string $version): string
+    {
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
                 $this->coverageDirectoryPath,
@@ -82,13 +98,6 @@ readonly class InitialConfigBuilder
             $configuration->configureXmlCoverageReportIfNecessary();
         }
 
-        $this->filesystem->dumpFile($path, $configuration->getYaml());
-
-        return $path;
-    }
-
-    private function buildPath(): string
-    {
-        return $this->tmpDirectory . '/phpspecConfiguration.initial.infection.yml';
+        return $configuration->getYaml();
     }
 }
