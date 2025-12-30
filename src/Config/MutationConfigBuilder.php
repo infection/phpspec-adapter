@@ -85,15 +85,6 @@ readonly class MutationConfigBuilder
             $mutationHash,
         );
 
-        $this->filesystem->dumpFile(
-            $customAutoloadFilePath,
-            $this->createCustomAutoloadWithInterceptor(
-                $mutationOriginalFilePath,
-                $mutantFilePath,
-                $this->originalPhpSpecConfigDecodedContents,
-            ),
-        );
-
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
                 $this->tempDirectory,
@@ -110,6 +101,14 @@ readonly class MutationConfigBuilder
 
         $path = $this->buildPath($mutationHash);
 
+        $this->filesystem->dumpFile(
+            $customAutoloadFilePath,
+            $this->createCustomAutoloadWithInterceptor(
+                $mutationOriginalFilePath,
+                $mutantFilePath,
+                $this->originalPhpSpecConfigDecodedContents,
+            ),
+        );
         $this->filesystem->dumpFile($path, $newYaml);
 
         return $path;
