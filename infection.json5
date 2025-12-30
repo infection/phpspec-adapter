@@ -10,6 +10,9 @@
     },
     "mutators": {
         "@default": true,
+        "global-ignore": [
+            "Infection\\TestFramework\\PhpSpec\\PhpSpecAdapterFactory::createDefaultCoverageXmlDirectoryPath"
+        ],
 
         "ArrayItemRemoval": {
             "ignore": [

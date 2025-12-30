@@ -87,6 +87,8 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
 
         $phpSpecConfigDecodedContents = Yaml::parse($phpSpecConfigContents);
 
+        $coverageDirectoryPath = self::createDefaultCoverageXmlDirectoryPath($tmpDirectory);
+
         $commandLineBuilder = new CommandLineBuilder();
 
         return new PhpSpecAdapter(
@@ -94,6 +96,7 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
             $testFrameworkExecutable,
             new InitialConfigBuilder(
                 $tmpDirectory,
+                $coverageDirectoryPath,
                 $phpSpecConfigDecodedContents,
                 $skipCoverage,
                 $filesystem,
@@ -125,5 +128,10 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
     public static function getExecutableName(): string
     {
         return 'phpspec';
+    }
+
+    private static function createDefaultCoverageXmlDirectoryPath(string $tmpDirectory): string
+    {
+        return $tmpDirectory . '/phpspec-coverage-xml';
     }
 }

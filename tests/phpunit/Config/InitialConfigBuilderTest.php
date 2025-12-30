@@ -66,6 +66,7 @@ final class InitialConfigBuilderTest extends TestCase
                 YAML,
         );
         $tmpDirectory = '/path/to/tmp';
+        $coverageDirectoryPath = '/path/to/tmp/phpspec-coverage-xml';
 
         $expectedInitialConfigFilePath = '/path/to/tmp/phpspecConfiguration.initial.infection.yml';
 
@@ -85,6 +86,7 @@ final class InitialConfigBuilderTest extends TestCase
 
         $builder = new InitialConfigBuilder(
             $tmpDirectory,
+            $coverageDirectoryPath,
             $originalPhpSpecConfigDecodedContents,
             false,
             $fileSystemMock,
@@ -115,6 +117,7 @@ final class InitialConfigBuilderTest extends TestCase
 
         $builder = new InitialConfigBuilder(
             '/path/to/tmp',
+            '/path/to/tmp/phpspec-coverage-xml',
             $originalPhpSpecConfigDecodedContents,
             false,
             $fileSystemMock,

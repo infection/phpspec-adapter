@@ -87,7 +87,7 @@ readonly class MutationConfigBuilder
 
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
-                $this->tmpDirectory,
+                '/unused',
                 $this->originalPhpSpecConfigDecodedContents,
             );
         } catch (UnrecognisableConfiguration $exception) {

@@ -37,7 +37,6 @@ namespace Infection\TestFramework\PhpSpec\Config;
 
 use function array_is_list;
 use function array_key_exists;
-use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
 use Infection\TestFramework\PhpSpec\Throwable\NoCodeCoverageConfigured;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use function is_array;
@@ -55,7 +54,7 @@ final class PhpSpecConfigurationBuilder
      * @param DecodedPhpSpecConfig $parsedYaml
      */
     public function __construct(
-        private readonly string $tmpDirectory,
+        private readonly string $coverageDirectoryPath,
         private array $parsedYaml,
     ) {
     }
@@ -66,12 +65,15 @@ final class PhpSpecConfigurationBuilder
      * @throws UnrecognisableConfiguration
      */
     public static function create(
-        string $tmpDirectory,
+        string $coverageDirectoryPath,
         array $parsedYaml,
     ): self {
         self::assertIsSupportedExtensionsFormat($parsedYaml);
 
-        return new self($tmpDirectory, $parsedYaml);
+        return new self(
+            $coverageDirectoryPath,
+            $parsedYaml,
+        );
     }
 
     public function removeCoverageExtension(): void
@@ -99,7 +101,7 @@ final class PhpSpecConfigurationBuilder
             // will be unused.
             $options['format'] = ['xml'];
             $options['output'] = [
-                'xml' => $this->tmpDirectory . '/' . PhpSpecAdapter::COVERAGE_DIR,
+                'xml' => $this->coverageDirectoryPath,
             ];
         }
     }

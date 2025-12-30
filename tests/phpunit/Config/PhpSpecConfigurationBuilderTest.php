@@ -48,7 +48,7 @@ use Symfony\Component\Yaml\Yaml;
 #[CoversClass(PhpSpecConfigurationBuilder::class)]
 final class PhpSpecConfigurationBuilderTest extends TestCase
 {
-    private const TMP_DIRECTORY = '/path/to/project';
+    private const COVERAGE_DIRECTORY = '/path/to/project/phpspec-coverage-xml';
 
     #[DataProvider('legacyExtensionFormat')]
     public function test_it_cannot_be_created_with_the_legacy_phpspec_configuration_format(
@@ -60,7 +60,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         }
 
         PhpSpecConfigurationBuilder::create(
-            self::TMP_DIRECTORY,
+            self::COVERAGE_DIRECTORY,
             Yaml::parse($original) ?? [],
         );
 
@@ -138,7 +138,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         string $expected,
     ): void {
         $builder = PhpSpecConfigurationBuilder::create(
-            self::TMP_DIRECTORY,
+            self::COVERAGE_DIRECTORY,
             Yaml::parse($original) ?? [],
         );
 
@@ -346,7 +346,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         string $expected,
     ): void {
         $builder = PhpSpecConfigurationBuilder::create(
-            self::TMP_DIRECTORY,
+            self::COVERAGE_DIRECTORY,
             Yaml::parse($original) ?? [],
         );
 
@@ -566,7 +566,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         string $expected,
     ): void {
         $builder = PhpSpecConfigurationBuilder::create(
-            self::TMP_DIRECTORY,
+            self::COVERAGE_DIRECTORY,
             Yaml::parse($original) ?? [],
         );
 
@@ -667,11 +667,11 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
         $originalDecoded = Yaml::parse($original) ?? [];
 
         $builder1 = PhpSpecConfigurationBuilder::create(
-            '/path/to/tmp',
+            self::COVERAGE_DIRECTORY,
             $originalDecoded,
         );
         $builder2 = PhpSpecConfigurationBuilder::create(
-            '/path/to/tmp',
+            self::COVERAGE_DIRECTORY,
             $originalDecoded,
         );
 
@@ -704,7 +704,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 extensions:
                     Acme\Extension\FirstExampleExtension: { key1: value1 }
                     Acme\Extension\SecondExampleExtension: { key3: value3 }
-                    FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension: { format: [xml], output: { xml: /path/to/tmp/phpspec-coverage-xml } }
+                    FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension: { format: [xml], output: { xml: /path/to/project/phpspec-coverage-xml } }
 
                 YAML,
             $result2,
