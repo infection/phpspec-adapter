@@ -49,12 +49,11 @@ use function strstr;
  * @phpstan-import-type DecodedPhpSpecConfig from PhpSpecConfigurationBuilder
  *
  * @internal
- * @final
  */
-readonly class MutationAutoloadTemplate
+final readonly class MutationAutoloadTemplate
 {
     public function __construct(
-        private string $projectDir,
+        private string $projectDirectory,
     ) {
     }
 
@@ -70,7 +69,6 @@ readonly class MutationAutoloadTemplate
         $autoloadPlaceholder = $originalBootstrap !== null
             ? "require_once '{$originalBootstrap}';"
             : '';
-        /** @var literal-string&non-falsy-string $interceptorPath */
         $interceptorPath = IncludeInterceptor::LOCATION;
 
         $customAutoload = <<<AUTOLOAD
@@ -101,7 +99,7 @@ readonly class MutationAutoloadTemplate
             return null;
         }
 
-        return sprintf('%s/%s', $this->projectDir, $parsedYaml['bootstrap']);
+        return sprintf('%s/%s', $this->projectDirectory, $parsedYaml['bootstrap']);
     }
 
     private function getInterceptorFileContent(

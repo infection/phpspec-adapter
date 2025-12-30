@@ -41,6 +41,7 @@ use Infection\AbstractTestFramework\TestFrameworkAdapterFactory;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Config\InitialConfigBuilder;
+use Infection\TestFramework\PhpSpec\Config\MutationAutoloadTemplate;
 use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\Version\CachedVersionProvider;
 use Infection\TestFramework\PhpSpec\Version\ProcessVersionProvider;
@@ -64,7 +65,7 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
         string $testFrameworkConfigPath,
         ?string $testFrameworkConfigDir,
         string $jUnitFilePath,
-        string $projectDir,
+        string $projectDirectory,
         array $sourceDirectories,
         bool $skipCoverage,
     ): TestFrameworkAdapter {
@@ -104,7 +105,7 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
             new MutationConfigBuilder(
                 $tmpDirectory,
                 $phpSpecConfigDecodedContents,
-                new Config\MutationAutoloadTemplate($projectDir),
+                new MutationAutoloadTemplate($projectDirectory),
                 $filesystem,
             ),
             new ArgumentsAndOptionsBuilder(),

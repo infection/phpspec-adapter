@@ -39,7 +39,6 @@ use Infection\StreamWrapper\IncludeInterceptor;
 use Infection\TestFramework\PhpSpec\Config\MutationAutoloadTemplate;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
@@ -55,45 +54,31 @@ final class MutationAutoloadTemplateTest extends TestCase
      */
     #[DataProvider('autoloadTemplateProvider')]
     public function test_it_generates_autoload_template(
-        string $projectDir,
+        string $projectDirectory,
         array $phpSpecConfig,
-        ?string $expectedBootstrapRequire,
+        string $expected,
     ): void {
-        $template = new MutationAutoloadTemplate($projectDir);
+        $template = new MutationAutoloadTemplate($projectDirectory);
 
-        $actualContent = $template->build(
+        $actual = $template->build(
             self::ORIGINAL_FILE_PATH,
             self::MUTATED_FILE_PATH,
             $phpSpecConfig,
         );
 
-        $interceptorPath = IncludeInterceptor::LOCATION;
-        $bootstrapSection = $expectedBootstrapRequire !== null
-            ? "require_once '{$expectedBootstrapRequire}';\n\n"
-            : "\n\n";
-
-        $expectedContent = <<<PHP
-            <?php
-
-            {$bootstrapSection}require_once '{$interceptorPath}';
-
-            use Infection\StreamWrapper\IncludeInterceptor;
-
-            IncludeInterceptor::intercept('/original/file/path', '/mutated/file/path');
-            IncludeInterceptor::enable();
-
-            PHP;
-
-        $this->assertSame($expectedContent, $actualContent);
+        $this->assertSame($expected, $actual);
     }
 
     /**
-     * @return iterable<string, array{string, array<string, mixed>, string|null}>
+     * @return iterable<string, array{string, array<string, mixed>, string}>
      */
     public static function autoloadTemplateProvider(): iterable
     {
+        $projectDir = '/project/dir';
+        $interceptorPath = IncludeInterceptor::LOCATION;
+
         yield 'with bootstrap file' => [
-            '/project/dir',
+            $projectDir,
             Yaml::parse(
                 <<<'YAML'
                     bootstrap: bootstrap.php
@@ -103,11 +88,23 @@ final class MutationAutoloadTemplateTest extends TestCase
                             options: 123
                     YAML,
             ),
-            '/project/dir/bootstrap.php',
+            <<<PHP
+                <?php
+
+                require_once '/project/dir/bootstrap.php';
+
+                require_once '{$interceptorPath}';
+
+                use Infection\StreamWrapper\IncludeInterceptor;
+
+                IncludeInterceptor::intercept('/original/file/path', '/mutated/file/path');
+                IncludeInterceptor::enable();
+
+                PHP,
         ];
 
         yield 'without bootstrap file' => [
-            '/project/dir',
+            $projectDir,
             Yaml::parse(
                 <<<'YAML'
                     extensions:
@@ -116,11 +113,23 @@ final class MutationAutoloadTemplateTest extends TestCase
                             options: 123
                     YAML,
             ),
-            null,
+            <<<PHP
+                <?php
+
+
+
+                require_once '{$interceptorPath}';
+
+                use Infection\StreamWrapper\IncludeInterceptor;
+
+                IncludeInterceptor::intercept('/original/file/path', '/mutated/file/path');
+                IncludeInterceptor::enable();
+
+                PHP,
         ];
 
         yield 'with inline config without bootstrap' => [
-            '/project/dir',
+            $projectDir,
             Yaml::parse(
                 <<<'YAML'
                     suites:
@@ -129,7 +138,19 @@ final class MutationAutoloadTemplateTest extends TestCase
                             psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec
                     YAML,
             ),
-            null,
+            <<<PHP
+                <?php
+
+
+
+                require_once '{$interceptorPath}';
+
+                use Infection\StreamWrapper\IncludeInterceptor;
+
+                IncludeInterceptor::intercept('/original/file/path', '/mutated/file/path');
+                IncludeInterceptor::enable();
+
+                PHP,
         ];
     }
 }
