@@ -51,7 +51,7 @@ readonly class InitialConfigBuilder
      * @param DecodedPhpSpecConfig $originalPhpSpecConfigDecodedContents
      */
     public function __construct(
-        private string $tempDirectory,
+        private string $tmpDirectory,
         private array $originalPhpSpecConfigDecodedContents,
         private bool $skipCoverage,
         private Filesystem $filesystem,
@@ -68,7 +68,7 @@ readonly class InitialConfigBuilder
 
         try {
             $configuration = PhpSpecConfigurationBuilder::create(
-                $this->tempDirectory,
+                $this->tmpDirectory,
                 $this->originalPhpSpecConfigDecodedContents,
             );
         } catch (UnrecognisableConfiguration $exception) {
@@ -88,6 +88,6 @@ readonly class InitialConfigBuilder
 
     private function buildPath(): string
     {
-        return $this->tempDirectory . '/phpspecConfiguration.initial.infection.yml';
+        return $this->tmpDirectory . '/phpspecConfiguration.initial.infection.yml';
     }
 }
