@@ -35,6 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\PhpSpec\Config;
 
+use Infection\TestFramework\PhpSpec\Config\MutationAutoloadTemplate;
 use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -107,7 +108,7 @@ final class MutationConfigBuilderTest extends TestCase
         $builder = new MutationConfigBuilder(
             '/path/to/tmp',
             $originalPhpSpecConfigDecodedContents,
-            $projectDir,
+            new MutationAutoloadTemplate($projectDir),
             $fileSystemMock,
         );
 
@@ -123,93 +124,6 @@ final class MutationConfigBuilderTest extends TestCase
 
         $this->assertSame($expectedMutationConfigPath, $actualPath);
         $this->assertSame($expectedMutationConfig, $actualMutationConfig);
-    }
-
-    public function test_it_adds_original_bootstrap_file_to_custom_autoload(): void
-    {
-        $projectDir = '/project/dir';
-        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../Fixtures/Files/phpspec/phpspec.with.bootstrap.yml');
-
-        $dumpedFiles = [];
-
-        $fileSystemMock = $this->createMock(Filesystem::class);
-        $fileSystemMock
-            ->expects($this->exactly(2))
-            ->method('dumpFile')
-            ->with(
-                $this->anything(),
-                $this->callback(
-                    static function (string $contents) use (&$dumpedFiles) {
-                        $dumpedFiles[] = $contents;
-
-                        return true;
-                    },
-                ),
-            );
-
-        $builder = new MutationConfigBuilder(
-            '/path/to/tmp',
-            $originalPhpSpecConfigDecodedContents,
-            $projectDir,
-            $fileSystemMock,
-        );
-
-        $builder->build(
-            [],
-            self::MUTATED_FILE_PATH,
-            self::MUTATION_HASH,
-            self::ORIGINAL_FILE_PATH,
-            '2.0',
-        );
-
-        // The interceptor is dumped first
-        $interceptorContent = $dumpedFiles[0];
-
-        $this->assertStringContainsString("require_once '/project/dir/bootstrap.php';", $interceptorContent);
-        $this->assertStringNotContainsString('\Phar::loadPhar("%s", "%s");', $interceptorContent);
-    }
-
-    public function test_interceptor_is_included(): void
-    {
-        $projectDir = '/project/dir';
-        $originalPhpSpecConfigDecodedContents = Yaml::parseFile(__DIR__ . '/../../Fixtures/Files/phpspec/phpspec.yml');
-
-        $dumpedFiles = [];
-
-        $fileSystemMock = $this->createMock(Filesystem::class);
-        $fileSystemMock
-            ->expects($this->exactly(2))
-            ->method('dumpFile')
-            ->with(
-                $this->anything(),
-                $this->callback(
-                    static function (string $contents) use (&$dumpedFiles) {
-                        $dumpedFiles[] = $contents;
-
-                        return true;
-                    },
-                ),
-            );
-
-        $builder = new MutationConfigBuilder(
-            '/path/to/tmp',
-            $originalPhpSpecConfigDecodedContents,
-            $projectDir,
-            $fileSystemMock,
-        );
-
-        $builder->build(
-            [],
-            self::MUTATED_FILE_PATH,
-            self::MUTATION_HASH,
-            self::ORIGINAL_FILE_PATH,
-            '2.0',
-        );
-
-        // The interceptor is dumped first
-        $interceptorContent = $dumpedFiles[0];
-
-        $this->assertStringContainsString('IncludeInterceptor.php', $interceptorContent);
     }
 
     public function test_it_provides_a_friendly_error_if_the_configuration_is_invalid(): void
@@ -234,7 +148,7 @@ final class MutationConfigBuilderTest extends TestCase
         $builder = new MutationConfigBuilder(
             '/path/to/tmp',
             $originalPhpSpecConfigDecodedContents,
-            '/path/to/project',
+            new MutationAutoloadTemplate('/path/to/project'),
             $fileSystemMock,
         );
 

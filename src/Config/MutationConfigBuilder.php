@@ -35,17 +35,9 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec\Config;
 
-use function array_key_exists;
-use function assert;
 use Infection\AbstractTestFramework\Coverage\TestLocation;
-use Infection\StreamWrapper\IncludeInterceptor;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
-use function is_string;
-use Phar;
 use function sprintf;
-use function str_replace;
-use function str_starts_with;
-use function strstr;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -62,7 +54,7 @@ readonly class MutationConfigBuilder
     public function __construct(
         private string $tmpDirectory,
         private array $originalPhpSpecConfigDecodedContents,
-        private string $projectDir,
+        private MutationAutoloadTemplate $autoloadTemplate,
         private Filesystem $filesystem,
     ) {
     }
@@ -79,7 +71,7 @@ readonly class MutationConfigBuilder
         string $mutationOriginalFilePath,
         string $version,
     ): string {
-        $customAutoloadFilePath = sprintf(
+        $mutationAutoloadPath = sprintf(
             '%s/interceptor.phpspec.autoload.%s.infection.php',
             $this->tmpDirectory,
             $mutationHash,
@@ -94,7 +86,7 @@ readonly class MutationConfigBuilder
             throw $exception->enrichWithVersion($version);
         }
 
-        $configuration->setBootstrap($customAutoloadFilePath);
+        $configuration->setBootstrap($mutationAutoloadPath);
         $configuration->removeCoverageExtension();
 
         $newYaml = $configuration->getYaml();
@@ -102,8 +94,8 @@ readonly class MutationConfigBuilder
         $path = $this->buildPath($mutationHash);
 
         $this->filesystem->dumpFile(
-            $customAutoloadFilePath,
-            $this->createCustomAutoloadWithInterceptor(
+            $mutationAutoloadPath,
+            $this->autoloadTemplate->build(
                 $mutationOriginalFilePath,
                 $mutantFilePath,
                 $this->originalPhpSpecConfigDecodedContents,
@@ -114,96 +106,10 @@ readonly class MutationConfigBuilder
         return $path;
     }
 
-    /**
-     * @param DecodedPhpSpecConfig $parsedYaml
-     */
-    private function createCustomAutoloadWithInterceptor(
-        string $originalFilePath,
-        string $mutantFilePath,
-        array $parsedYaml,
-    ): string {
-        $originalBootstrap = $this->getOriginalBootstrapFilePath($parsedYaml);
-        $autoloadPlaceholder = $originalBootstrap !== null
-            ? "require_once '{$originalBootstrap}';"
-            : '';
-        /** @var string $interceptorPath */
-        $interceptorPath = IncludeInterceptor::LOCATION;
-
-        $customAutoload = <<<AUTOLOAD
-            <?php
-
-            %s
-            %s
-
-            AUTOLOAD;
-
-        return sprintf(
-            $customAutoload,
-            $autoloadPlaceholder,
-            $this->getInterceptorFileContent(
-                $interceptorPath,
-                $originalFilePath,
-                $mutantFilePath,
-            ),
-        );
-    }
-
     private function buildPath(string $mutationHash): string
     {
         $fileName = sprintf('phpspecConfiguration.%s.infection.yml', $mutationHash);
 
         return $this->tmpDirectory . '/' . $fileName;
-    }
-
-    /**
-     * @param array<string, mixed> $parsedYaml
-     */
-    private function getOriginalBootstrapFilePath(array $parsedYaml): ?string
-    {
-        if (!array_key_exists('bootstrap', $parsedYaml)) {
-            return null;
-        }
-
-        return sprintf('%s/%s', $this->projectDir, $parsedYaml['bootstrap']);
-    }
-
-    private function getInterceptorFileContent(
-        string $interceptorPath,
-        string $originalFilePath,
-        string $mutantFilePath,
-    ): string {
-        $infectionPhar = '';
-
-        if (str_starts_with(__FILE__, 'phar:')) {
-            $infectionPhar = sprintf(
-                '\Phar::loadPhar("%s", "%s");',
-                str_replace(
-                    'phar://',
-                    '',
-                    Phar::running(true),
-                ),
-                'infection.phar',
-            );
-        }
-
-        $namespacePrefix = $this->getInterceptorNamespacePrefix();
-
-        return <<<CONTENT
-            {$infectionPhar}
-            require_once '{$interceptorPath}';
-
-            use {$namespacePrefix}Infection\StreamWrapper\IncludeInterceptor;
-
-            IncludeInterceptor::intercept('{$originalFilePath}', '{$mutantFilePath}');
-            IncludeInterceptor::enable();
-            CONTENT;
-    }
-
-    private function getInterceptorNamespacePrefix(): string
-    {
-        $prefix = strstr(__NAMESPACE__, 'Infection', true);
-        assert(is_string($prefix));
-
-        return $prefix;
     }
 }
