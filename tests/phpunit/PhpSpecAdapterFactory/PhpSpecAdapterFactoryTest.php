@@ -33,7 +33,7 @@
 
 declare(strict_types=1);
 
-namespace Infection\Tests\TestFramework\PhpSpec;
+namespace Infection\Tests\TestFramework\PhpSpec\PhpSpecAdapterFactory;
 
 use Infection\TestFramework\PhpSpec\PhpSpecAdapter;
 use Infection\TestFramework\PhpSpec\PhpSpecAdapterFactory;
@@ -50,7 +50,7 @@ final class PhpSpecAdapterFactoryTest extends TestCase
         $adapter = PhpSpecAdapterFactory::create(
             '/path/to/phpspec',
             '/tmp',
-            __DIR__ . '/../Fixtures/Files/phpspec/phpspec.yml',
+            __DIR__ . '/phpspec.yml',
             null,
             '/path/to/junit.xml',
             '/path/to/project',
