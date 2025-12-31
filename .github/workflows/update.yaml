@@ -1,7 +1,7 @@
 # yamllint disable rule:line-length
 # yamllint disable rule:braces
 
-name: Update Infection Version
+name: Update Tool Versions
 
 on:
   schedule:
@@ -14,8 +14,17 @@ permissions:
   pull-requests: write
 
 jobs:
-  update-infection-version:
+  update-tool-version:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tool:
+          - name: Infection
+            repo: infection/infection
+            version-file: .tools/infection-version
+          - name: PHPSpec
+            repo: phpspec/phpspec
+            version-file: .tools/phpspec-version
 
     steps:
       - name: Checkout
@@ -23,17 +32,17 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Get latest Infection release
+      - name: Get latest ${{ matrix.tool.name }} release
         id: latest-release
         run: |
-          LATEST_VERSION=$(curl -s https://api.github.com/repos/infection/infection/releases/latest | jq -r '.tag_name')
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/${{ matrix.tool.repo }}/releases/latest | jq -r '.tag_name')
           echo "version=$LATEST_VERSION" >> $GITHUB_OUTPUT
-          echo "Latest Infection version: $LATEST_VERSION"
+          echo "Latest ${{ matrix.tool.name }} version: $LATEST_VERSION"
 
       - name: Get current version
         id: current-version
         run: |
-          CURRENT_VERSION=$(cat .tools/infection-version)
+          CURRENT_VERSION=$(cat ${{ matrix.tool.version-file }})
           echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
           echo "Current version: $CURRENT_VERSION"
 
@@ -51,27 +60,27 @@ jobs:
             echo "Version is up to date: $CURRENT"
           fi
 
-      - name: Update infection-version file
+      - name: Update ${{ matrix.tool.version-file }} file
         if: steps.compare.outputs.needs_update == 'true'
         run: |
-          echo "${{ steps.latest-release.outputs.version }}" > .tools/infection-version
-          echo "Updated .tools/infection-version to ${{ steps.latest-release.outputs.version }}"
+          echo "${{ steps.latest-release.outputs.version }}" > ${{ matrix.tool.version-file }}
+          echo "Updated ${{ matrix.tool.version-file }} to ${{ steps.latest-release.outputs.version }}"
 
       - name: Create Pull Request
         if: steps.compare.outputs.needs_update == 'true'
         uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v8.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: chore/update-infection-${{ steps.latest-release.outputs.version }}
+          branch: chore/update-${{ matrix.tool.name }}-${{ steps.latest-release.outputs.version }}
           delete-branch: true
           commit-message: |
-            chore: Update Infection to ${{ steps.latest-release.outputs.version }}
+            chore: Update ${{ matrix.tool.name }} to ${{ steps.latest-release.outputs.version }}
 
-            Automated update of Infection version from ${{ steps.current-version.outputs.version }} to ${{ steps.latest-release.outputs.version }}.
-          title: "chore: Update Infection to ${{ steps.latest-release.outputs.version }}"
+            Automated update of ${{ matrix.tool.name }} version from ${{ steps.current-version.outputs.version }} to ${{ steps.latest-release.outputs.version }}.
+          title: "chore: Update ${{ matrix.tool.name }} to ${{ steps.latest-release.outputs.version }}"
           body: |
-            This PR updates the Infection version from **${{ steps.current-version.outputs.version }}** to **${{ steps.latest-release.outputs.version }}**.
+            This PR updates the ${{ matrix.tool.name }} version from **${{ steps.current-version.outputs.version }}** to **${{ steps.latest-release.outputs.version }}**.
 
             ---
 
-            This PR was automatically created by the [Update Infection Version workflow](.github/workflows/update.yaml).
+            This PR was automatically created by the [Update Tool Versions workflow](.github/workflows/update.yaml).
