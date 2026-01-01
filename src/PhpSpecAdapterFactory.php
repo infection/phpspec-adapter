@@ -35,9 +35,11 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\PhpSpec;
 
+use function assert;
 use function file_get_contents;
 use Infection\AbstractTestFramework\TestFrameworkAdapter;
 use Infection\AbstractTestFramework\TestFrameworkAdapterFactory;
+use function is_array;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\CommandLine\CommandLineBuilder;
 use Infection\TestFramework\PhpSpec\Config\InitialConfigBuilder;
@@ -128,7 +130,9 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
     }
 
     /**
-     * @return mixed[]
+     * @phpstan-import-type DecodedPhpSpecConfig from Config\PhpSpecConfigurationBuilder
+     *
+     * @return DecodedPhpSpecConfig
      */
     private static function getPhpSpecConfigDecodedContents(
         Filesystem $filesystem,
@@ -149,6 +153,10 @@ final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactor
             );
         }
 
-        return Yaml::parse($phpSpecConfigContents);
+        $parsed = Yaml::parse($phpSpecConfigContents);
+        assert(is_array($parsed));
+
+        /** @var DecodedPhpSpecConfig $parsed */
+        return $parsed;
     }
 }

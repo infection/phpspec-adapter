@@ -117,13 +117,17 @@ final readonly class MutationAutoloadTemplate
         string $projectDirectory,
         array $parsedYaml,
     ): ?string {
-        return array_key_exists('bootstrap', $parsedYaml)
-            ? sprintf(
-                '%s/%s',
-                $projectDirectory,
-                $parsedYaml['bootstrap'],
-            )
-            : null;
+        if (!array_key_exists('bootstrap', $parsedYaml)) {
+            return null;
+        }
+
+        assert(is_string($parsedYaml['bootstrap']));
+
+        return sprintf(
+            '%s/%s',
+            $projectDirectory,
+            $parsedYaml['bootstrap'],
+        );
     }
 
     private function getInterceptorFileContent(

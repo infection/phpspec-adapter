@@ -3,7 +3,7 @@ includes:
 
 parameters:
     tmpDir: ../var/phpstan-cache
-    level: 8
+    level: max
     paths:
         - src
         - tests/phpunit
