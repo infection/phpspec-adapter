@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   update-tool-version:
+    name: Update ${{ matrix.tool.name }} PHAR
     runs-on: ubuntu-latest
     strategy:
       matrix:
