@@ -1,7 +1,7 @@
 # yamllint disable rule:line-length
 
 name: Downloads a PHAR and caches it
-description: Downloads a PHAR file if not cached and otherwise use the cached one.
+description: Downloads a PHAR and cache it to avoid more downloads
 
 inputs:
   tool-name:
