@@ -1,0 +1,36 @@
+# yamllint disable rule:line-length
+
+name: Downloads a PHAR and caches it
+description: Downloads a PHAR file if not cached and otherwise use the cached one.
+
+inputs:
+  tool-name:
+    description: 'Name of the tool (e.g., phpspec, infection)'
+    required: true
+  phar-path:
+    description: 'Path to the PHAR file'
+    required: true
+  version-file:
+    description: 'Path to the version file for cache key'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Cache the ${{ inputs.tool-name }} PHAR
+      uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+      id: phar-cache
+      with:
+        path: ${{ inputs.phar-path }}
+        key: ${{ inputs.tool-name }}-${{ hashFiles(inputs.version-file) }}
+
+    # This is to ensure the Makefile rule will not trigger a new download.
+    - name: Update the cached ${{ inputs.tool-name }} PHAR timestamp
+      if: steps.phar-cache.outputs.cache-hit == 'true'
+      shell: bash
+      run: touch -c ${{ inputs.phar-path }}
+
+    - name: Download ${{ inputs.tool-name }}
+      if: steps.phar-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: make ${{ inputs.phar-path }}
