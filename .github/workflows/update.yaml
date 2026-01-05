@@ -10,9 +10,7 @@ on:
   workflow_dispatch: # Allow manual triggering
 
 permissions:
-  contents: write       # Required to create a new branch and commit the changes
-  pull-requests: write  # Required to create the PR
-  actions: write        # Required to trigger workflow dispatch events
+  contents: read  # Required to checkout the repository
 
 jobs:
   update-tool-version:
@@ -71,7 +69,7 @@ jobs:
         if: steps.compare.outputs.needs_update == 'true'
         uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v8.0.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           branch: chore/update-${{ matrix.tool.name }}
           delete-branch: true
           commit-message: |
@@ -85,22 +83,3 @@ jobs:
             ---
 
             This PR was automatically created by the [Update Tool Versions workflow](.github/workflows/update.yaml).
-
-      - name: Display GitHub CLI version
-        if: steps.compare.outputs.needs_update == 'true'
-        run: gh --version
-
-      - name: Trigger CI workflows
-        if: steps.compare.outputs.needs_update == 'true'
-        run: |
-          BRANCH="chore/update-${{ matrix.tool.name }}"
-
-          echo "Triggering CI workflows for branch: $BRANCH"
-
-          gh workflow run cs.yaml --ref "$BRANCH"
-          gh workflow run tests.yaml --ref "$BRANCH"
-          gh workflow run mutation-testing.yaml --ref "$BRANCH"
-
-          echo "CI workflows triggered successfully"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
