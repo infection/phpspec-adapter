@@ -48,30 +48,15 @@ $header = \trim(
 );
 
 $finder = Finder::create()
-    ->in(__DIR__)
-    ->exclude([
-        '.box_dump',
-        '.ci',
-        '.composer',
-        '.github',
-        '.tools',
-        'build',
-        'devTools',
-        'resources',
-        'tests/autoloaded',
-        'tests/benchmark/MutationGenerator/sources',
-        'tests/benchmark/Tracing/coverage',
-        'tests/benchmark/Tracing/sources',
-        'tests/benchmark/Tracing/benchmark-source',
-        'tests/e2e',
-        'tests/phpunit/Fixtures',
+    ->in([
+        'src',
+        'tests/phpunit',
     ])
     ->ignoreDotFiles(false)
     ->name('*php')
     ->append([
-        __DIR__ . '/bin/infection',
-        __DIR__ . '/bin/infection-debug',
         __FILE__,
+        'rector.php',
     ])
 ;
 
