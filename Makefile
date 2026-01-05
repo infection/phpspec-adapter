@@ -67,7 +67,7 @@ test:	 ## Executes the tests
 test: test-unit infection e2e
 
 .PHONY: test-unit
-test-unit: vendor/autoload.php $(PHPSPEC)
+test-unit: vendor/autoload.php
 	vendor/bin/phpunit
 
 .PHONY: e2e

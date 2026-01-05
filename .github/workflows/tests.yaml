@@ -54,7 +54,7 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
 
-      - name: Run tests and generate coverage
+      - name: Run tests
         run: make test-unit
 
   e2e:
@@ -94,7 +94,37 @@ jobs:
         with:
           working-directory: tests/e2e/PhpSpec
 
-      - name: Run tests and generate coverage
+      - name: Cache the Infection PHAR
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        id: infection-cache
+        with:
+          path: var/tools/infection.phar
+          key: infection-${{ hashFiles('.tools/infection-version') }}
+
+      - name: Ensure the cached Infection PHAR is used
+        if: steps.infection-cache.outputs.cache-hit == 'true'
+        run: touch -c var/tools/infection.phar
+
+      - name: Build Infection
+        if: steps.infection-cache.outputs.cache-hit != 'true'
+        run: make var/tools/infection.phar
+
+      - name: Cache the PhpSpec PHAR
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        id: phpspec-cache
+        with:
+          path: var/tools/phpspec.phar
+          key: infection-${{ hashFiles('.tools/phpspec-version') }}
+
+      - name: Ensure the cached PhpSpec PHAR is used
+        if: steps.phpspec-cache.outputs.cache-hit == 'true'
+        run: touch -c var/tools/phpspec.phar
+
+      - name: Build PhpSpec
+        if: steps.phpspec-cache.outputs.cache-hit != 'true'
+        run: make var/tools/phpspec.phar
+
+      - name: Run tests
         run: make e2e
 
   # This is a meta job to avoid to have to constantly change the protection rules

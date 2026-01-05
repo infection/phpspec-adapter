@@ -51,9 +51,9 @@ jobs:
           path: var/tools/infection.phar
           key: infection-${{ hashFiles('.tools/infection-version') }}
 
-      - name: Build Infection
-        if: steps.infection-cache.outputs.cache-hit != 'true'
-        run: make var/tools/infection.phar
+      - name: Ensure the cached Infection PHAR is used
+        if: steps.infection-cache.outputs.cache-hit == 'true'
+        run: touch -c var/tools/infection.phar
 
       - name: Build Infection
         if: steps.infection-cache.outputs.cache-hit != 'true'
