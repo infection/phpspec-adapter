@@ -12,6 +12,7 @@ on:
 permissions:
   contents: write       # Required to create a new branch and commit the changes
   pull-requests: write  # Required to create the PR
+  actions: write        # Required to trigger workflow dispatch events
 
 jobs:
   update-tool-version:
