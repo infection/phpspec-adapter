@@ -45,7 +45,7 @@ jobs:
         uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
 
       - name: Get the Infection PHAR
-        uses: ./../actions/get-phar
+        uses: .github/actions/get-phar
         with:
           tool-name: infection
           phar-path: var/tools/infection.phar
