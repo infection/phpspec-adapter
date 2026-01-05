@@ -9,13 +9,19 @@ on:
     branches:
       - main
 
+permissions: {}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   tests:
+    permissions:
+      contents: read
+
     runs-on: ubuntu-latest
+
     env:
       SYMFONY_REQUIRE: ${{ matrix.symfony-require }}
 
@@ -52,7 +58,11 @@ jobs:
         run: make test-unit
 
   e2e:
+    permissions:
+      contents: read
+
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         php-version:

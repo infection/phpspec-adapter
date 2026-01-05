@@ -9,13 +9,14 @@ on:
     - cron: '0 3 * * *'
   workflow_dispatch: # Allow manual triggering
 
-permissions:
-  contents: read  # Required to checkout the repository
-
 jobs:
   update-tool-version:
+    permissions:
+      contents: read
+
     name: Update ${{ matrix.tool.name }} PHAR
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         tool:
