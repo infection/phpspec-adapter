@@ -9,7 +9,7 @@ on:
     branches:
       - main
 
-permissions: {}
+permissions: { }
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -27,7 +27,7 @@ jobs:
 
     strategy:
       matrix:
-        php-version: ['8.2', '8.3', '8.4', '8.5']
+        php-version: [ '8.2', '8.3', '8.4', '8.5' ]
         symfony-require:
           - '6.4.*'
           - '7.4.*'
@@ -53,6 +53,21 @@ jobs:
 
       - name: Install Composer dependencies
         uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
+
+      - name: Cache the PhpSpec PHAR
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        id: phpspec-cache
+        with:
+          path: var/tools/phpspec.phar
+          key: infection-${{ hashFiles('.tools/phpspec-version') }}
+
+      - name: Ensure the cached PhpSpec PHAR is used
+        if: steps.phpspec-cache.outputs.cache-hit == 'true'
+        run: touch -c var/tools/phpspec.phar
+
+      - name: Build PhpSpec
+        if: steps.phpspec-cache.outputs.cache-hit != 'true'
+        run: make var/tools/phpspec.phar
 
       - name: Run tests
         run: make test-unit
