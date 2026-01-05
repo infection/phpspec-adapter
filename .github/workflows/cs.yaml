@@ -30,10 +30,13 @@ jobs:
         check:
           - makefile-target: 'cs-lint'
             name: 'PHP-CS-Fixer'
+            cache: var/php-cs-fixer
           - makefile-target: 'phpstan'
             name: 'PHPStan'
+            cache: var/phpstan
           - makefile-target: 'rector-lint'
             name: 'Rector'
+            cache: var/rector
 
     name: ${{ matrix.check.name }} on PHP ${{ matrix.php-version }}
 
@@ -46,6 +49,13 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           tools: composer:v2
+
+      - name: Configure ${{ matrix.check.cache }} GitHub Actions cache
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: ${{ matrix.check.cache }}
+          key: "${{ matrix.php-version }}-${{ matrix.check.makefile-target }}-${{ github.run_id }}"
+          restore-keys: "${{ matrix.php-version }}-${{ matrix.check.makefile-target }}"
 
       - name: Install Composer dependencies
         uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
