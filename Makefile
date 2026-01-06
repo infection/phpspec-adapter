@@ -64,14 +64,14 @@ phpstan-update-baseline: vendor/autoload.php
 
 .PHONY: test
 test:	 ## Executes the tests
-test: test-unit infection e2e
+test: phpstan test-unit infection test-e2e
 
 .PHONY: test-unit
 test-unit: vendor/autoload.php $(PHPSPEC)
 	vendor/bin/phpunit
 
-.PHONY: e2e
-e2e: $(INFECTION) $(PHPSPEC)
+.PHONY: test-e2e
+test-e2e: $(INFECTION) $(PHPSPEC)
 	./tests/e2e_tests
 
 .PHONY: infection
