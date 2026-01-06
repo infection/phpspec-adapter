@@ -71,7 +71,7 @@ test-unit: vendor/autoload.php $(PHPSPEC)
 	vendor/bin/phpunit
 
 .PHONY: e2e
-e2e:
+e2e: $(INFECTION) $(PHPSPEC)
 	./tests/e2e_tests
 
 .PHONY: infection
