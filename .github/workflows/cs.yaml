@@ -30,13 +30,13 @@ jobs:
         check:
           - makefile-target: 'cs-lint'
             name: 'PHP-CS-Fixer'
-            cache: var/php-cs-fixer
+            cache: var/php-cs-fixer-cache
           - makefile-target: 'phpstan'
             name: 'PHPStan'
-            cache: var/phpstan
+            cache: var/phpstan-cache
           - makefile-target: 'rector-lint'
             name: 'Rector'
-            cache: var/rector
+            cache: var/rector-cache
 
     name: ${{ matrix.check.name }} on PHP ${{ matrix.php-version }}
 
