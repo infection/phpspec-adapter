@@ -64,7 +64,7 @@ phpstan-update-baseline: vendor/autoload.php
 
 .PHONY: test
 test:	 ## Executes the tests
-test: test-unit infection test-e2e
+test: phpstan test-unit infection test-e2e
 
 .PHONY: test-unit
 test-unit: vendor/autoload.php $(PHPSPEC)

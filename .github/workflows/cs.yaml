@@ -28,7 +28,7 @@ jobs:
         operating-system: [ubuntu-latest]
         php-version: ['8.2']
         check:
-          - makefile-target: 'cs-lint'
+          - makefile-target: 'php-cs-fixer-lint'
             name: 'PHP-CS-Fixer'
             cache: var/php-cs-fixer-cache
           - makefile-target: 'phpstan'
