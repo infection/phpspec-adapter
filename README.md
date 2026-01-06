@@ -1,9 +1,8 @@
 # PHPSpec Test Framework Adapter for Infection
 
-This package provides the test framework adapter for [infection][infection].
+This package provides the test framework adapter of [PHPSpec][PHPSpec] for [infection][infection].
 
 ![Architecture](./docs/test-framework-adapter.png)
-
 
 ## Installation
 
@@ -13,36 +12,33 @@ package.
 
 Otherwise, you can still install it as usual:
 
-```bash
+```shell
 composer require --dev infection/phpspec-adapter
 ```
 
 The adapter will be automatically registered in Infection's runtime through its auto-discovery mechanism.
 
-
 ## Usage
 
-Once installed, you can run Infection with [PHPSpec][PHPSpec]:
+Once installed, you can run Infection:
 
-```bash
-vendor/bin/infection --test-framework=phpspec
+```shell
+vendor/bin/infection # optional: --test-framework=phpspec
 ```
 
-Infection will automatically detect and use the PHPSpec adapter when PHPSpec is configured in your project.
+Infection will automatically detect and use the [PHPSpec][PHPSpec] adapter when [PHPSpec][PHPSpec] is configured in your
+project.
 
 ### Configuration
 
 The adapter works with your existing PHPSpec configuration. No additional configuration is required beyond the standard
-Infection configuration file (`infection.json.dist` or `infection.json`).
+Infection configuration file `infection.json5.dist`.
 
-For more information on configuring Infection, see
-the [Infection documentation](https://infection.github.io/guide/usage.html).
-
+For more information on configuring Infection, see the [Infection documentation][infection-configuration-docs].
 
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details.
-
 
 ## License
 
@@ -50,5 +46,6 @@ This project is licensed under the BSD 3-Clause License. See the [LICENSE](LICEN
 
 
 [infection]: https://infection.github.io
+[infection-configuration-docs]: https://infection.github.io/guide/usage.html#Configuration
 [infection/extension-installer]: https://packagist.org/packages/infection/extension-installer
 [PHPSpec]: https://packagist.org/packages/phpspec/phpspec
