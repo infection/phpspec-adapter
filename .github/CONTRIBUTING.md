@@ -1,8 +1,8 @@
-# Contributing to PHPSpec Adapter for Infection
+# Contributing to the PHPSpec Adapter for Infection
 
 This projects offers multiple commands via a [Makefile][Make]
 
-```bash
+```shell
 # List all the available commands
 make help
 ```
