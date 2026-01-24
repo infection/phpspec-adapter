@@ -75,10 +75,8 @@ jobs:
         php-version:
           - '8.2'
           - '8.3'
-          # TODO: https://github.com/phpspec/phpspec/pull/1503
-          #- '8.4'
-          # TODO: https://github.com/phpspec/phpspec/pull/1500
-          # - '8.5'
+          - '8.4'
+          - '8.5'
 
     name: End-to-end on PHP ${{ matrix.php-version }}
 

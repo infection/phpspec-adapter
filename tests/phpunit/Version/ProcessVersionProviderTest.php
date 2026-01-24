@@ -41,7 +41,6 @@ use Infection\TestFramework\PhpSpec\Version\ProcessVersionProvider;
 use Infection\TestFramework\PhpSpec\Version\VersionParser;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
 use function Safe\file_get_contents;
 
@@ -54,7 +53,6 @@ final class ProcessVersionProviderTest extends TestCase
 
     private const PHPSPEC_VERSION = __DIR__ . '/../../../.tools/phpspec-version';
 
-    #[RequiresPhp('<8.5')]
     public function test_it_can_get_the_version(): void
     {
         $this->ensurePharExists();
