@@ -76,7 +76,8 @@ jobs:
           - '8.2'
           - '8.3'
           - '8.4'
-          - '8.5'
+          # https://github.com/infection/infection/issues/2885
+          #- '8.5'
 
     name: End-to-end on PHP ${{ matrix.php-version }}
 
