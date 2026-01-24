@@ -29,6 +29,7 @@ cs: gitignore composer-validate rector php-cs-fixer
 cs-lint: ## Run CS checks
 cs-lint: composer-validate php-cs-fixer-lint rector-lint
 
+.PHONY: gitignore
 gitignore:
 	LC_ALL=C sort -u .gitignore -o .gitignore
 
