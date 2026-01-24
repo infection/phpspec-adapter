@@ -64,7 +64,7 @@ final class VersionParserTest extends TestCase
 
         $result = $this->versionParser->parse($value);
 
-        if (!($expected instanceof Exception)) {
+        if (!$expected instanceof Exception) {
             $this->assertSame($expected, $result);
         }
     }
