@@ -130,7 +130,7 @@ final class PhpSpecAdapterTest extends TestCase
             'PhpSpecAdapterTest',
             '/path/to/phpspec',
             $initialConfigBuilderMock,
-            $this->createMock(MutationConfigBuilder::class),
+            $this->createStub(MutationConfigBuilder::class),
             new ArgumentsAndOptionsBuilder(),
             new FixedVersionProvider('7.2.0'),
             $commandLineBuilderMock,
@@ -191,7 +191,7 @@ final class PhpSpecAdapterTest extends TestCase
         $adapter = new PhpSpecAdapter(
             'PhpSpecAdapterTest',
             '/path/to/phpspec',
-            $this->createMock(InitialConfigBuilder::class),
+            $this->createStub(InitialConfigBuilder::class),
             $mutationConfigBuilderMock,
             new ArgumentsAndOptionsBuilder(),
             new FixedVersionProvider('7.2.0'),
@@ -221,10 +221,10 @@ final class PhpSpecAdapterTest extends TestCase
         return new PhpSpecAdapter(
             'PhpSpecAdapterTest',
             '/path/to/phpspec',
-            $this->createMock(InitialConfigBuilder::class),
-            $this->createMock(MutationConfigBuilder::class),
+            $this->createStub(InitialConfigBuilder::class),
+            $this->createStub(MutationConfigBuilder::class),
             new ArgumentsAndOptionsBuilder(),
-            $this->createMock(VersionProvider::class),
+            $this->createStub(VersionProvider::class),
             new CommandLineBuilder(),
             new TapTestChecker(),
         );
