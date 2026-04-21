@@ -50,7 +50,7 @@ use function strstr;
  */
 final readonly class MutationAutoloadTemplate
 {
-    private const TEMPLATE = <<<'PHP'
+    private const string TEMPLATE = <<<'PHP'
         <?php
 
         %s

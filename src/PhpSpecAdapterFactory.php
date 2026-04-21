@@ -52,7 +52,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final readonly class PhpSpecAdapterFactory implements TestFrameworkAdapterFactory
 {
-    private const NAME = 'PhpSpec';
+    private const string NAME = 'PhpSpec';
 
     /**
      * @param string[] $sourceDirectories

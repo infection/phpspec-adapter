@@ -50,7 +50,7 @@ final readonly class VersionParser
     //   - YY: year since 2000 ("Rush Epoch")
     //   - mm = month
     //   - dd = day
-    private const VERSION_REGEX = '/(?:.+ [vV]?)?(?<version>(?P<major>0|[1-9]\d*)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:\.\d+)?(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?: .+)?/';
+    private const string VERSION_REGEX = '/(?:.+ [vV]?)?(?<version>(?P<major>0|[1-9]\d*)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:\.\d+)?(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?: .+)?/';
 
     public function __construct(
         private string $name,
