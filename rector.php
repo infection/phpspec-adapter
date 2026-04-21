@@ -45,6 +45,7 @@ use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\DataProviderArrayItemsNewLined
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertCompareOnCountableWithMethodToAssertCountRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector;
+use Rector\PHPUnit\CodeQuality\Rector\StmtsAwareInterface\DeclareStrictTypesTestsRector;
 use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 use Rector\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
@@ -113,6 +114,7 @@ return RectorConfig::configure()
         AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector::class,
         ClosureReturnTypeRector::class,
         DataProviderArrayItemsNewLinedRector::class,
+        DeclareStrictTypesTestsRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
         LocallyCalledStaticMethodToNonStaticRector::class,
         SafeDeclareStrictTypesRector::class,
