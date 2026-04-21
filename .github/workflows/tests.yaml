@@ -27,14 +27,12 @@ jobs:
 
     strategy:
       matrix:
-        php-version: ['8.2', '8.3', '8.4', '8.5']
+        php-version: ['8.3', '8.3', '8.4', '8.5']
         symfony-require:
           - '6.4.*'
           - '7.4.*'
           - '8.*'
         exclude:
-          - php-version: '8.2'
-            symfony-require: '8.*'
           - php-version: '8.3'
             symfony-require: '8.*'
 
@@ -73,7 +71,6 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - '8.2'
           - '8.3'
           - '8.4'
           # https://github.com/infection/infection/issues/2885
