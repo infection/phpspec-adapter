@@ -45,11 +45,11 @@ use Symfony\Component\Yaml\Yaml;
 #[CoversClass(MutationConfigBuilder::class)]
 final class MutationConfigBuilderTest extends TestCase
 {
-    private const MUTATION_HASH = 'a1b2c3';
+    private const string MUTATION_HASH = 'a1b2c3';
 
-    private const ORIGINAL_FILE_PATH = '/original/file/path';
+    private const string ORIGINAL_FILE_PATH = '/original/file/path';
 
-    private const MUTATED_FILE_PATH = '/mutated/file/path';
+    private const string MUTATED_FILE_PATH = '/mutated/file/path';
 
     public function test_it_builds_path_to_mutation_config_file(): void
     {

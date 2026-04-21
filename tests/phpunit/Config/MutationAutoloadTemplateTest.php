@@ -44,9 +44,9 @@ use Symfony\Component\Yaml\Yaml;
 #[CoversClass(MutationAutoloadTemplate::class)]
 final class MutationAutoloadTemplateTest extends TestCase
 {
-    private const ORIGINAL_FILE_PATH = '/original/file/path';
+    private const string ORIGINAL_FILE_PATH = '/original/file/path';
 
-    private const MUTATED_FILE_PATH = '/mutated/file/path';
+    private const string MUTATED_FILE_PATH = '/mutated/file/path';
 
     /**
      * @param array<string, mixed> $phpSpecConfig

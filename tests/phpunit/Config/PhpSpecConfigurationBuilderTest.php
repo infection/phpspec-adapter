@@ -47,7 +47,7 @@ use Symfony\Component\Yaml\Yaml;
 #[CoversClass(PhpSpecConfigurationBuilder::class)]
 final class PhpSpecConfigurationBuilderTest extends TestCase
 {
-    private const COVERAGE_DIRECTORY = '/path/to/project/phpspec-coverage-xml';
+    private const string COVERAGE_DIRECTORY = '/path/to/project/phpspec-coverage-xml';
 
     #[DataProvider('legacyExtensionFormat')]
     public function test_it_cannot_be_created_with_the_legacy_phpspec_configuration_format(

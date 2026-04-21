@@ -48,9 +48,9 @@ use function Safe\file_get_contents;
 final class ProcessVersionProviderTest extends TestCase
 {
     // This is prepared and downloaded by the Makefile.
-    private const PHPSPEC_PHAR = __DIR__ . '/../../../var/tools/phpspec.phar';
+    private const string PHPSPEC_PHAR = __DIR__ . '/../../../var/tools/phpspec.phar';
 
-    private const PHPSPEC_VERSION = __DIR__ . '/../../../.tools/phpspec-version';
+    private const string PHPSPEC_VERSION = __DIR__ . '/../../../.tools/phpspec-version';
 
     public function test_it_can_get_the_version(): void
     {
