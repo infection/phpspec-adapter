@@ -75,7 +75,7 @@ final class MutationConfigBuilderTest extends TestCase
             bootstrap: /path/to/tmp/interceptor.phpspec.autoload.a1b2c3.infection.php
             suites:
                 default: { namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec, psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec }
-            extensions: {  }
+            extensions: {}
 
             YAML;
 

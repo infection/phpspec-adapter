@@ -158,7 +158,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
 
                 YAML,
             <<<'YAML'
-                {  }
+                {}
                 YAML,
         ];
 
@@ -223,7 +223,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -243,7 +243,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -257,7 +257,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -275,7 +275,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -289,7 +289,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -307,7 +307,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -330,7 +330,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
             <<<'YAML'
                 suites:
                     default: { namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec, psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec }
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
