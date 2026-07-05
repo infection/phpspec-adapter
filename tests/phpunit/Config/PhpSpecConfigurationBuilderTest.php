@@ -146,7 +146,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
 
         $actual = preg_replace(
             '/\{(\s+)\}/',
-            '',
+            '{}',
             $builder->getYaml(),
         );
 

@@ -123,7 +123,7 @@ final class MutationConfigBuilderTest extends TestCase
         // This is because we first dump the interceptor.
         $actualMutationConfig = preg_replace(
             '/\{(\s+)\}/',
-            '',
+            '{}',
             $dumpedFiles[1],
         );
 
