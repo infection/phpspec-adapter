@@ -39,6 +39,7 @@ use Infection\TestFramework\PhpSpec\Config\MutationConfigBuilder;
 use Infection\TestFramework\PhpSpec\Throwable\UnrecognisableConfiguration;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use function preg_replace;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
@@ -75,7 +76,7 @@ final class MutationConfigBuilderTest extends TestCase
             bootstrap: /path/to/tmp/interceptor.phpspec.autoload.a1b2c3.infection.php
             suites:
                 default: { namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec, psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec }
-            extensions: {  }
+            extensions: {}
 
             YAML;
 
@@ -120,7 +121,11 @@ final class MutationConfigBuilderTest extends TestCase
             '2.0',
         );
         // This is because we first dump the interceptor.
-        $actualMutationConfig = $dumpedFiles[1];
+        $actualMutationConfig = preg_replace(
+            '/\{(\s+)\}/',
+            '{}',
+            $dumpedFiles[1],
+        );
 
         $this->assertSame($expectedMutationConfigPath, $actualPath);
         $this->assertSame($expectedMutationConfig, $actualMutationConfig);

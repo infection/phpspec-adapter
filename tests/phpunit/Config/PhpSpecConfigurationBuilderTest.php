@@ -42,6 +42,7 @@ use function is_a;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use function preg_replace;
 use Symfony\Component\Yaml\Yaml;
 
 #[CoversClass(PhpSpecConfigurationBuilder::class)]
@@ -143,7 +144,11 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
 
         $builder->removeCoverageExtension();
 
-        $actual = $builder->getYaml();
+        $actual = preg_replace(
+            '/\{(\s+)\}/',
+            '{}',
+            $builder->getYaml(),
+        );
 
         $this->assertSame($expected, $actual);
     }
@@ -158,7 +163,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
 
                 YAML,
             <<<'YAML'
-                {  }
+                {}
                 YAML,
         ];
 
@@ -223,7 +228,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -243,7 +248,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -257,7 +262,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -275,7 +280,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -289,7 +294,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -307,7 +312,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
                 YAML,
             <<<'YAML'
                 suites: null
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];
@@ -330,7 +335,7 @@ final class PhpSpecConfigurationBuilderTest extends TestCase
             <<<'YAML'
                 suites:
                     default: { namespace: Infection\PhpSpecAdapter\E2ETests\PhpSpec, psr4_prefix: Infection\PhpSpecAdapter\E2ETests\PhpSpec }
-                extensions: {  }
+                extensions: {}
 
                 YAML,
         ];

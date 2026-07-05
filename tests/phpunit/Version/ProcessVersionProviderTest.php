@@ -42,6 +42,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use function Safe\file_get_contents;
+use function trim;
 
 #[Group('integration')]
 #[CoversClass(ProcessVersionProvider::class)]
@@ -56,7 +57,7 @@ final class ProcessVersionProviderTest extends TestCase
     {
         $this->ensurePharExists();
 
-        $expected = file_get_contents(self::PHPSPEC_VERSION);
+        $expected = trim(file_get_contents(self::PHPSPEC_VERSION));
 
         $provider = new ProcessVersionProvider(
             self::PHPSPEC_PHAR,
