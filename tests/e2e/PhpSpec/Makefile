@@ -37,15 +37,25 @@ composer-validate: vendor/autoload.php
 
 .PHONY: test
 test:	 ## Executes the tests
-test: phpspec infection
+test: phpspec infection-phar infection-source
 
 .PHONY: phpspec
 phpspec: vendor/autoload.php
 	XDEBUG_MODE=coverage vendor/bin/phpspec run
 
-.PHONY: infection
-infection: $(INFECTION) vendor/autoload.php
+.PHONY: infection-phar
+infection-phar: $(INFECTION) vendor/autoload.php
 	$(INFECTION) \
+		--min-msi=$(MIN_MSI) \
+		--min-covered-msi=$(MIN_COVERED_MSI) \
+		--threads=max \
+		--show-mutations \
+		--test-framework="phpspec"
+	diff --ignore-all-space expected-output.txt var/infection.log
+
+.PHONY: infection-source
+infection-source: vendor/autoload.php
+	vendor/bin/infection \
 		--min-msi=$(MIN_MSI) \
 		--min-covered-msi=$(MIN_COVERED_MSI) \
 		--threads=max \
